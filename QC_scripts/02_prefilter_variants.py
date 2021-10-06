@@ -35,4 +35,4 @@ ht_rows_filter = mt.rows()
 pprint('n variants:')
 n_vars = ht_rows_filter.count()
 
-ht_rows_filter.select().write(INITIAL_VARIANT_LIST)
+ht_rows_filter.select().write(INITIAL_VARIANT_LIST, overwrite=True)
