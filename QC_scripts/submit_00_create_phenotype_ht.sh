@@ -20,4 +20,4 @@ export PYTHONPATH="${PYTHONPATH-}:/well/lindgren/dpalmer/ukb_utils/python:/well/
 set_up_hail
 
 python 00_create_phenotype_ht.py
-print_update "Finished running Hail for chr${chr}" "${SECONDS}"
+print_update "Finished running Hail" "${SECONDS}"

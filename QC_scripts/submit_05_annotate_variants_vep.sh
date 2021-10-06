@@ -15,7 +15,7 @@ module purge
 source /well/lindgren/dpalmer/ukb_utils/bash/qsub_utils.sh
 source /well/lindgren/dpalmer/ukb_utils/bash/hail_utils.sh
 
-spark_dir="/well/lindgren/dpalmer/data/tmp/spark"
+spark_dir="/well/lindgren/dpalmer/data/tmp/spark5"
 export PYTHONPATH="${PYTHONPATH-}:/well/lindgren/dpalmer/ukb_utils/python:/well/lindgren/dpalmer"
 set_up_hail
 
