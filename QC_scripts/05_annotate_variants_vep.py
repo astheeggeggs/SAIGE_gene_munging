@@ -15,7 +15,7 @@ from gnomad.utils.vep import process_consequences
 # grab this by sourcing the hail_utils.sh file in /well/lindgren/dpalmer.
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--chr", type=str, required=True)
+parser.add_argument("--chr", type=str, default=22)
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
 

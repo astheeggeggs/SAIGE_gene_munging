@@ -21,5 +21,5 @@ set_up_hail
 
 chr=$(get_chr ${SGE_TASK_ID})
 
-python 01_create_hardcalls_my.py --chr ${chr}
+python 02_prefilter_variants.py --chr ${chr}
 print_update "Finished running Hail for chr${chr}" "${SECONDS}"

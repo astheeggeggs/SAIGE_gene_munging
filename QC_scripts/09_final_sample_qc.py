@@ -10,7 +10,11 @@ from ukb_utils import genotypes
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--chr", type=str, required=True)
+parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
+
+TRANCHE = args.tranche
+CHR = str(args.chr)
 
 hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
 
