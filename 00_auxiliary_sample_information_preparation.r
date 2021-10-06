@@ -46,6 +46,8 @@ setkey(dt_batch, "eid")
 dt <- merge(dt, dt_batch, all.x=TRUE)
 setnames(dt, c("eid", "54-0.0", "21000-0.0"), c("ID", "ukbb.centre", "self.report.ethnicity"))
 
+# Send dots to underscores to make hail coding cleaner
+names(dt) <- gsub("\\.", "_", names(dt))
 # Write the result to disk
 fwrite(dt, aux_pheno_out, sep='\t')
 system(paste("bgzip", aux_pheno_out))

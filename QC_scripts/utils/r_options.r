@@ -1,3 +1,5 @@
+TRANCHE <- '200k'
+
 # 03_initial_sample_qc_plot.r
 PLOTS <- '/well/lindgren/dpalmer/ukb_exome_qc/plots/'
 # Define some thresholds 

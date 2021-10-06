@@ -5,6 +5,7 @@ library(dplyr)
 source('utils/pretty_plotting.r')
 # Thresholds and plotting file locations defined in r_options.r
 source("utils/r_options.r")
+source("utils/helpers.r")
 
 # Need to combine and plot - running sample QC metrics separately across chromosomes,
 # so need to amalgamate afterwards.
@@ -12,14 +13,13 @@ source("utils/r_options.r")
 CHR <- 1
 
 # Input files
-INITIAL_SAMPLE_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_',
-    TRANCHE, '/ukb_wes_qc/data/samples/03_chr', CHR, '_initial_sample_qc.tsv.bgz')
-PHENOFILE_CTS <- paste0('/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/',
-    TRANCHE, '/UKBB_WES200k_filtered_cts_phenotypes.tsv.gz')
+INITIAL_SAMPLE_QC_FILE <- paste0(
+    '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
+    '/ukb_wes_qc/data/samples/03_chr', CHR, '_initial_sample_qc.tsv.bgz')
 
 # Output files
-INITIAL_COMBINED_SAMPLE_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_',
-    TRANCHE, '/ukb_wes_qc/data/samples/03_initial_sample_qc.tsv')
+INITIAL_COMBINED_SAMPLE_QC_FILE <- paste0(
+    '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/03_initial_sample_qc.tsv')
 
 dt <- fread(cmd = paste('zcat', INITIAL_SAMPLE_QC_FILE),
     stringsAsFactors=FALSE, sep='\t', header=TRUE) %>% select(c(s, starts_with('sample_qc'), starts_with('gq'), starts_with('dp')))
@@ -100,25 +100,11 @@ dt <- dt %>% mutate(
     ) %>% select(c('s', starts_with('sample_qc')))
 
 setkey(dt, 's')
+
 # Create plots
-
 save_figures <- TRUE
-dt_pheno <- fread(cmd=paste('zcat', PHENOFILE_CTS)) %>% 
-    mutate(s=ID) %>% 
-    select(s, ukbb.centre, sex, genotyping.array, sequencing.batch, white.british, genetic.eur)
-setkey(dt_pheno, 's')
+dt_pheno <- create_pheno_dt(TRANCHE)
 dt <- merge(dt, dt_pheno)
-# Rename to obtain the non-Europeans
-dt <- dt %>% mutate(
-    white.british = ifelse(white.british == 1, "White-British", "Non white-British"),
-    genetic.eur = ifelse(genetic.eur == 1, "European", "Non-European"),
-    sequencing.batch = ifelse(sequencing.batch == 1, "Batch 1", "Batch 2")
-    )
-
-dt <- dt %>% mutate(
-    white.british= ifelse(is.na(white.british), "Non white-British", white.british),
-    genetic.eur = ifelse(is.na(genetic.eur), "Non-European", genetic.eur)
-    )
 
 fwrite(dt, file=INITIAL_COMBINED_SAMPLE_QC_FILE, sep='\t')
 system(paste("bgzip", INITIAL_COMBINED_SAMPLE_QC_FILE))
@@ -167,31 +153,31 @@ create_pretty_boxplots(dt, aes(x=factor(ukbb.centre), y=sample_qc.gq_stats.mean)
 
 y_label_batch <- ''
 
-# Split by LOCATION - European vs non-European
-create_pretty_boxplots(dt, aes(x=factor(white.british), y=sample_qc.call_rate), aes(color=factor(sequencing.batch)),
+# Split by LOCATION - NFE vs non-NFE
+create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.call_rate), aes(color=factor(sequencing.batch)),
     T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$call_rate, c(0.01, 0.99)), legend=legend_batch, title=titles[1], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_british'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(white.british), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing.batch)),
+    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_NFE'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing.batch)),
     T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$dp_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[2], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_british'), alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(white.british), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing.batch)),
+    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_NFE'), alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing.batch)),
     T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$gq_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[3], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_british'), alpha=alpha, jitter_size=jitter_size)
+    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_NFE'), alpha=alpha, jitter_size=jitter_size)
 
-# Split by LOCATION - White-British vs non-White-British
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur), y=sample_qc.call_rate), aes(color=factor(sequencing.batch)),
-    T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='Sequencing batch',
+# Split by self reported ancestry
+create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.call_rate), aes(color=factor(genetic.eur.no.fin.oct2021)),
+    T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$call_rate, c(0.01, 0.99)), legend=legend_batch, title=titles[1], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_eur'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing.batch)),
-    T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='Sequencing batch',
+    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_anc'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.dp_stats.mean), aes(color=factor(genetic.eur.no.fin.oct2021)),
+    T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$dp_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[2], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_eur'), alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing.batch)),
-    T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='Sequencing batch',
+    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_anc'), alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.gq_stats.mean), aes(color=factor(genetic.eur.no.fin.oct2021)),
+    T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$gq_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[3], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_eur'), alpha=alpha, jitter_size=jitter_size)
+    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_anc'), alpha=alpha, jitter_size=jitter_size)
 

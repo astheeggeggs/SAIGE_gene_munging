@@ -15,9 +15,12 @@ from gnomad.utils.vep import process_consequences
 # grab this by sourcing the hail_utils.sh file in /well/lindgren/dpalmer.
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--chr", type=str, default=22)
+parser.add_argument("--chr", type=str, default='20')
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
+
+TRANCHE = args.tranche
+CHR = str(args.chr)
 
 hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
 
@@ -32,8 +35,6 @@ def count_variants(vep_ht_path):
     ht = ht.filter(hl.literal({'pLoF', 'LC', 'missense', 'synonymous'}).contains(ht.annotation))
     print(ht.count())
 
-TRANCHE = args.tranche
-CHR = str(args.chr)
 UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
 vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
 groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
@@ -41,6 +42,7 @@ GNOMAD_SITES_38_HT = '/well/lindgren/flassen/ressources/gnomad/gnomad_v2_liftove
 
 pprint('chromosome ' + args.chr)
 pprint('tranche: ' + TRANCHE)
+
 input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '.mt'
 output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep_qc.ht'
 

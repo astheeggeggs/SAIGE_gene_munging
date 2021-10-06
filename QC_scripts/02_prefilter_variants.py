@@ -9,7 +9,7 @@ from ukb_utils import hail_init
 from ukb_utils import genotypes
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--chr", type=str, default='22')
+parser.add_argument("--chr", type=str, default='20')
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
 

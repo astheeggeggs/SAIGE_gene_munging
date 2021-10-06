@@ -9,7 +9,7 @@ from ukb_utils import hail_init
 from ukb_utils import genotypes
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--chr", type=str, required=True)
+parser.add_argument("--chr", type=str, default='20')
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
 
@@ -38,9 +38,9 @@ ht_sexcheck_samples = hl.import_table(SEXCHECK_LIST, no_header=True, key='f0')
 mt = hl.read_matrix_table(MT_HARDCALLS)
 mt = mt.annotate_cols(phenotype = sample_annotations[mt.s])
 
-# Filter down to the collection of Europeans and samples that were outliers in the initial sample QC.
+# Filter down to the collection of Non-Finnish (genetic.eur.no.fin.oct2021) Europeans and samples that were outliers in the initial sample QC.
 mt = mt.filter_rows(hl.is_defined(ht_initial_variants[mt.row_key]))
-mt = mt.filter_cols(mt.genetic.eur  == 1)
+mt = mt.filter_cols(mt.phenotype.genetic.eur.no.fin.oct2021)
 mt = mt.filter_cols(hl.is_defined(ht_initial_samples[mt.col_key]))
 mt = mt.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt.col_key]))
 # DEV: Need to decide whether to remove samples with excess ultra-rare variants

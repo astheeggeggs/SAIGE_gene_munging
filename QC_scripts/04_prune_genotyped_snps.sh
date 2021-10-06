@@ -9,9 +9,9 @@ out="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_chrX_pruned"
 
 # Create the vcf fam
 TRANCHE='200k'
-pheno_cts="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/200k/UKBB_WES${TRANCHE}_filtered_cts_phenotypes.tsv.gz"
+pheno="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/${TRANCHE}/QC_phenotypes.tsv.gz"
 vcf_samples="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/200k/UKBB_WES${TRANCHE}.txt"
-zcat $pheno_cts | awk '{print $1, $1}' | tail -n +2 > $vcf_samples
+zcat $pheno | awk '{print $1, $1}' | tail -n +2 > $vcf_samples
 
 /well/lindgren/dpalmer/plink --bed ${ukb_bed} --bim ${ukb_bim} --fam ${ukb_fam} \
       --keep ${vcf_samples} --maf 0.05 --geno 0.02 \
