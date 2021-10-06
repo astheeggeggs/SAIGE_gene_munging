@@ -12,6 +12,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
 
+TRANCHE = args.tranche
+
 hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
 
 PHENOFILE_CTS = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/UKBB_WES200k_filtered_cts_phenotypes.tsv.gz'
