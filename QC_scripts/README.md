@@ -1,12 +1,12 @@
 ## 00_tidy_bim_bed_fam_determine_EUR.r
-_Inputs: Outputs:_
+_Inputs: - Outputs: ukb_autosomes_combined{.bim,.bed,.fam}, ukb_autosomes_combined_EUR{.bim, .bed, .fam}, 1000G_phase3_common_norel_EUR.tsv (European samples), final_EUR_list.tsv (Non-Finnish European samples), plots._
 
 This script runs a bunch of munging, estimates superpopulations of the individuals by projecting into the PC spaces defined by 1000 genomes samples. Note that ancestry is determined using the genotype data here.
 We then create a random forest classifier and estimate the EUR samples. Following that restriction, we repeat the process, defining PCs in 1000G Europeans, to define the non-Finnish Europeans and remove any putatative Finns from the dataset. The output is a collection of 'Non-Finnish European' samples in the genotype data, which we will filter to as a later step in the QC pipeline.
 
 DEV: Need to pass the new European definition to 00_phenotype_file_preparation.r.
 ## 00_create_phenotype_ht.py
-_Inputs: Outputs:_
+_Inputs: UKBB_WES200k_filtered_cts_phenotypes.tsv.gz, UKBB_WES200k_filtered_binary_phenotypes.tsv.gz Outputs: phenotypes.ht_
 
 Requires the output from 00_phenotype_file_preparation.r. 
 Reads in and merges the phenotype data into a hail table and writes a ht.

@@ -1,4 +1,5 @@
 library(data.table)
+library(dplyr)
 
 # source activate /well/lindgren/users/mmq446/conda/skylake/envs/RSAIGE
 # module load BCFtools
@@ -148,8 +149,27 @@ dt[, sex := as.factor(sex)]
 dt[, ukbb.centre:=as.factor(ukbb.centre)]
 dt[, genotyping.array:=as.factor(genotyping.array)]
 dt[, sequencing.batch:=as.factor(sequencing.batch)]
+
+# Read and merge in our new definitions of Europeans and non-Finnish Europeans.
+dt_EUR_new <- fread("/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb11867_cal_chr1_v2_s488363_for_plink_EUR.tsv") %>% transmute(ID = as.character(V1)) %>% mutate(genetic.eur.oct2021 = TRUE)
+dt_EUR_no_FIN_new <- fread("/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv") %>% transmute(ID = as.character(V1)) %>% mutate(genetic.eur.no.fin.oct2021 = TRUE)
+# Read in the full fam file which was used for ancestry assignment:
+ukb_fam <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb11867_cal_chr1_v2_s488363_for_plink.fam"
+dt_fam <- fread(ukb_fam) %>% transmute(ID = as.character(V1))
+dt_fam <- data.table(dt_fam)
+setkey(dt_fam, "ID")
+setkey(dt_EUR_new, "ID")
+setkey(dt_EUR_no_FIN_new, "ID")
+dt_EUR_new <- merge(merge(dt_EUR_new, dt_EUR_no_FIN_new, all.x=TRUE), dt_fam, all.y=TRUE)
+dt_EUR_new[, genetic.eur.oct2021 := ifelse(is.na(genetic.eur.oct2021), FALSE, genetic.eur.oct2021)]
+dt_EUR_new[, genetic.eur.no.fin.oct2021 := ifelse(is.na(genetic.eur.no.fin.oct2021), FALSE, genetic.eur.no.fin.oct2021)]
+
+dt <- merge(dt, dt_EUR_new, all.x=TRUE)
+dt[, genetic.eur := ifelse(genetic.eur == 1, TRUE, FALSE)]
+
 filter_to <- c("ID", "age", paste0("PC", seq(1,40)), "ukbb.centre", "sex",
     "genotyping.array", "sequencing.batch",  "white.british", "genetic.eur",
+    "genetic.eur.oct2021", "genetic.eur.no.fin.oct2021",
     cts_phenotypes, binary_phenotypes)
 
 dt <- cbind(dt[, ..filter_to], model.matrix(~ ukbb.centre + sex + genotyping.array + sequencing.batch, dt))
