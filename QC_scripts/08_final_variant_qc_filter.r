@@ -14,7 +14,7 @@ args <- parser$parse_args()
 
 TRANCHE <- args$tranche
 
-source("08_final_variant_qc_plot..r")
+source("08_final_variant_qc_plot.r")
 
 FINAL_VARIANT_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list')
 VARIANT_SUMMARY <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_variant_count.tsv')

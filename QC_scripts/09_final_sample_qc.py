@@ -23,8 +23,7 @@ INITIAL_SAMPLES = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_
 SEXCHECK_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/05_sexcheck.remove.sample_list'
 
 INITIAL_VARIANT_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/02_prefilter_chr' + CHR + '.keep.variant.ht'
-FINAL_VARIANT_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list')
-
+FINAL_VARIANT_LIST <- '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list'
 
 sample_annotations = hl.read_table(PHENOTYPES_TABLE)
 impute_sex_annotations = hl.read_table(IMPUTESEX_TABLE)
@@ -32,8 +31,8 @@ ht_initial_variants = hl.read_table(INITIAL_VARIANT_LIST)
 ht_initial_samples = hl.import_table(INITIAL_SAMPLES, no_header=True, key='f0')
 ht_sexcheck_samples = hl.import_table(SEXCHECK_LIST, no_header=True, key='f0')
 
-SAMPLE_BEFORE_QC_FILE = 'gs://dalio_bipolar_w1_w2_hail_02/data/samples/15_final_qc.before.samples.tsv'
-SAMPLE_AFTER_QC_FILE = 'gs://dalio_bipolar_w1_w2_hail_02/data/samples/15_final_qc.after.samples.tsv'
+SAMPLE_BEFORE_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.before.samples.tsv.bgz'
+SAMPLE_AFTER_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.after.samples.tsv.bgz'
 
 ht_final_variants = hl.import_table(FINAL_VARIANT_LIST,
 	types={'locus':hl.tlocus(reference_genome='GRCh38'), 'alleles':hl.tarray(hl.tstr)})
@@ -50,7 +49,7 @@ mt_before = mt_before.filter_rows(hl.is_defined(ht_initial_variants[mt_before.ro
 mt_before = mt_before.filter_cols(mt_before.genetic.eur  == 1)
 mt_before = mt_before.filter_cols(hl.is_defined(ht_initial_samples[mt_before.col_key]))
 mt_before = mt_before.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt_before.col_key]))
-# Need to decide whether to remove samples with excess ultra-rare variants
+# DEV: Need to decide whether to remove samples with excess ultra-rare variants
 
 mt_before = hl.variant_qc(mt_before, name = 'qc')
 

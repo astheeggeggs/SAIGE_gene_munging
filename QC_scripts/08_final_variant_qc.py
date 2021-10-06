@@ -43,7 +43,7 @@ mt = mt.filter_rows(hl.is_defined(ht_initial_variants[mt.row_key]))
 mt = mt.filter_cols(mt.genetic.eur  == 1)
 mt = mt.filter_cols(hl.is_defined(ht_initial_samples[mt.col_key]))
 mt = mt.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt.col_key]))
-# Need to decide whether to remove samples with excess ultra-rare variants
+# DEV: Need to decide whether to remove samples with excess ultra-rare variants
 
 mt = mt.annotate_cols(imputesex = impute_sex_annotations[mt.col_key])
 mt = hl.variant_qc(mt, name='qc')
