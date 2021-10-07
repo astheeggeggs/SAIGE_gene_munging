@@ -16,7 +16,7 @@ args = parser.parse_args()
 TRANCHE = args.tranche
 CHR = str(args.chr)
 
-hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
+hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
 MT = 'gs://raw_data_bipolar_dalio_w1_w2_hail_02/bipolar_wes_dalio_W1_W2/filterGT_GRCh38_6_multi.mt'
 MT_HARDCALLS = 'gs://raw_data_bipolar_dalio_w1_w2_hail_02/bipolar_wes_dalio_W1_W2/filterGT_GRCh38_6_multi.hardcalls.mt'

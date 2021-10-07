@@ -16,7 +16,7 @@ args = parser.parse_args()
 TRANCHE = args.tranche
 CHR = str(args.chr)
 
-hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
+hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
 # Names of .mt files.
 MT_HARDCALLS = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_hardcalls_chr' + CHR + '.mt'

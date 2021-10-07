@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 TRANCHE = args.tranche
 
-hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
+hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
 # # Exome
 # MT_HARDCALLS = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_hardcalls_chr' + args.chr + '.mt'
