@@ -1,7 +1,7 @@
 import hail as hl
-from hail.plot import show
+#from hail.plot import show
 from pprint import pprint
-hl.plot.output_notebook()
+#hl.plot.output_notebook()
 
 import argparse
 
@@ -32,5 +32,4 @@ mt = mt.filter_rows(hl.is_defined(variants_to_filter[mt.row_key]))
 mt = mt.annotate_cols(gq = hl.agg.stats(mt.GQ), dp = hl.agg.stats(mt.DP))
 mt = hl.sample_qc(mt, name='sample_qc')
 
-mt.count_rows()
 mt.cols().select('sample_qc', 'gq', 'dp').flatten().export(output=INITIAL_SAMPLE_QC_FILE)
