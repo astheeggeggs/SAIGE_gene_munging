@@ -16,7 +16,21 @@ args = parser.parse_args()
 TRANCHE = args.tranche
 CHR = str(args.chr)
 
-hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
+def hail_bmrc_init(log, default_reference):
+    """Initialize Hail for responsible use on Oxford Biomedical Research Computing Cluster
+    """
+    import hail as hl
+    import os
+    hl.init(
+        log=log,
+        default_reference=default_reference,
+        append=True,
+	tmp_dir='/users/lindgren/qen698/.local/tmp/',
+	local_tmpdir='/users/lindgren/qen698/.local/tmp/',
+        master='local[%s]' % os.environ.get('NSLOTS', 1) # Required to prevent using more CPU resources than requested
+    )
+
+hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
 
 # Inputs
 MT  = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '.mt'
