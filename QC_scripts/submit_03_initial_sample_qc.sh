@@ -17,8 +17,6 @@ source /well/lindgren/dpalmer/ukb_utils/bash/hail_utils.sh
 
 module load Anaconda3/2020.07
 module load java/1.8.0_latest
-# set_up_conda
-# conda activate hail-new
 source activate hail-new
 _mem=$( get_hail_memory )
 new_spark_dir=/well/lindgren/dpalmer/tmp/spark_test/
