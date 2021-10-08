@@ -24,7 +24,7 @@ SEXCHECK_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_
 
 dt <- fread(cmd = paste('zcat', IMPUTESEX_FILE), sep='\t', stringsAsFactors=FALSE, header=TRUE, data.table=FALSE) %>%
   mutate(imputed_sex=as.factor(ifelse(impute_sex.is_female == TRUE, 'Female', 'Male')))
-dt_y <- fread(paste('zcat', Y_NCALLED_FILE), sep='\t', stringsAsFactors=FALSE, header=TRUE, data.table=FALSE)
+dt_y <- fread(cmd = paste('zcat', Y_NCALLED_FILE), sep='\t', stringsAsFactors=FALSE, header=TRUE, data.table=FALSE)
 dt <- merge(dt, dt_y, by='s')
 
 colors <- pal_d3('category20')(20)[c(1,2)]
