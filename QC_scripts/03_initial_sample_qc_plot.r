@@ -27,10 +27,12 @@ dt <- dt %>% mutate(
     dp.stdev_sum = (dp.stdev)^2 * dp.n,
     gq.stdev_sum = (gq.stdev)^2 * gq.n
     )
+
 setkey(dt, 's')
 
 for (CHR in seq(2,22)) {
     # Input files
+    cat(paste0("chromosome ", CHR, "\n"))
     INITIAL_SAMPLE_QC_FILE <- paste0(
         '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
         '/ukb_wes_qc/data/samples/03_chr', CHR, '_initial_sample_qc.tsv.bgz')

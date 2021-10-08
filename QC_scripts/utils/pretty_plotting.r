@@ -133,7 +133,7 @@ create_pretty_boxplots <- function(df, aes, aes_col, threshold=NULL,
 {
     p = ggplot(df, aes) +
         geom_boxplot(outlier.shape=outlier.shape, coef=0, color='grey50', fill='grey95', show.legend=FALSE) + 
-        geom_jitter(width=0.2, height=0, size=jitter_size, aes_col, show.legend=legend, alpha=alpha, stroke=0.05) + 
+        geom_jitter_rast(width=0.2, height=0, size=jitter_size, aes_col, show.legend=legend, alpha=alpha, stroke=0.05) + 
         coord_flip(ylim=xlim) +
         labs(title=title, x=y_label, y=x_label, color=key_label) + 
         scale_color_d3('category20') +

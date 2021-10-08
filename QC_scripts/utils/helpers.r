@@ -8,23 +8,23 @@ create_pheno_dt <- function(TRANCHE)
     dt <- fread(cmd=paste('zcat', PHENOFILE)) %>% 
         mutate(s=ID) %>% 
         select(
-            s, ukbb.centre, Submitted.Gender, Inferred.Gender, genotyping.array, sequencing.batch,
-            self.report.ethnicity, genetic.eur.oct2021, genetic.eur.no.fin.oct2021,
-            genetically_european, `in.white.British.ancestry.subset`)
+            s, ukbb_centre, Submitted_Gender, Inferred_Gender, genotyping_array, sequencing_batch,
+            self_report_ethnicity, genetic_eur_oct2021, genetic_eur_no_fin_oct2021,
+            genetically_european, `in_white_British_ancestry_subset`)
     
     # Rename to obtain the non-Europeans
     dt <- dt %>% mutate(
-        white.british = ifelse(`in.white.British.ancestry.subset` == 1, "White-British", "Non white-British"),
-        genetic.eur.no.fin.oct2021 = ifelse(genetic.eur.no.fin.oct2021, "NFE", "Non-NFE"),
-        genetic.eur.oct2021 = ifelse(genetic.eur.oct2021, "European", "Non-European"),
-        sequencing.batch = ifelse(sequencing.batch == 1, "Batch 1", "Batch 2"),
-        ukbb.centre = factor(ukbb.centre),
-        self.report.ethnicity = factor(self.report.ethnicity)
+        white_british = ifelse(`in_white_British_ancestry_subset` == 1, "White-British", "Non white-British"),
+        genetic_eur_no_fin_oct2021 = ifelse(genetic_eur_no_fin_oct2021, "NFE", "Non-NFE"),
+        genetic_eur_oct2021 = ifelse(genetic_eur_oct2021, "European", "Non-European"),
+        sequencing_batch = ifelse(sequencing_batch == 1, "Batch 1", "Batch 2"),
+        ukbb_centre = factor(ukbb_centre),
+        self_report_ethnicity = factor(self_report_ethnicity)
         )
 
     # Re-level manually.
-    dt$self.report.ethnicity <- recode_factor(
-        dt$self.report.ethnicity,
+    dt$self_report_ethnicity <- recode_factor(
+        dt$self_report_ethnicity,
         `1` = "White",
         `1001` = "British",
         `2001` = "White and Black Caribbean",
@@ -49,8 +49,8 @@ create_pheno_dt <- function(TRANCHE)
         `-3` = "Prefer not to answer"
         )
 
-    dt$ukbb.centre <- recode_factor(
-        dt$ukbb.centre,
+    dt$ukbb_centre <- recode_factor(
+        dt$ukbb_centre,
         `11012` =  "Barts",
         `11021` =  "Birmingham",
         `11011` =  "Bristol",
