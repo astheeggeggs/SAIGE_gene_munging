@@ -1,8 +1,4 @@
 import hail as hl
-#from hail.plot import show
-from pprint import pprint
-#hl.plot.output_notebook()
-
 import argparse
 
 from ukb_utils import hail_init
