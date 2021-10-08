@@ -3,9 +3,9 @@ TRANCHE <- '200k'
 # 03_initial_sample_qc_plot.r
 PLOTS <- '/well/lindgren/dpalmer/ukb_exome_qc/plots/'
 # Define some thresholds 
-T_sample_callRate <- 0.90
-T_dpMean <- 20
-T_gqMean <- 48
+T_sample_callRate <- 0.95
+T_dpMean <- 19.5
+T_gqMean <- 47.8
 
 # 05_impute_sex_plot.r
 T_impute_sex <- 0.6

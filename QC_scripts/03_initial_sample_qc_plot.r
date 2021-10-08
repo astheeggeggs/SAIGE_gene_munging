@@ -140,45 +140,45 @@ alpha <- 0.8
 jitter_size <- 0.1
 
 # Split by UKB Centre
-create_pretty_boxplots(dt, aes(x=factor(ukbb.centre), y=sample_qc.call_rate), aes(color=factor(sequencing.batch)),
+create_pretty_boxplots(dt, aes(x=factor(ukbb_centre), y=sample_qc.call_rate), aes(color=factor(sequencing_batch)),
     T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$call_rate, c(0.01, 0.99)), legend=legend_batch, title=titles[1], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_centre'), n_ticks=5, alpha=alpha, height=300, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(ukbb.centre), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing.batch)),
+    file=paste0(PLOTS, TRANCHE, '_03_callRate_by_centre'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(ukbb_centre), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing_batch)),
     T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$dp_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[2], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_centre'), alpha=alpha, height=300, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(ukbb.centre), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing.batch)),
+    file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_centre'), alpha=alpha, jitter_size=jitter_size)
+create_pretty_boxplots(dt, aes(x=factor(ukbb_centre), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing_batch)),
     T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$gq_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[3], save_figure=save_figures,
-    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_centre'), alpha=alpha, height=300, jitter_size=jitter_size)
+    file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_centre'), alpha=alpha, jitter_size=jitter_size)
 
 y_label_batch <- ''
 
 # Split by LOCATION - NFE vs non-NFE
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.call_rate), aes(color=factor(sequencing.batch)),
+create_pretty_boxplots(dt, aes(x=factor(genetic_eur_no_fin_oct2021), y=sample_qc.call_rate), aes(color=factor(sequencing_batch)),
     T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$call_rate, c(0.01, 0.99)), legend=legend_batch, title=titles[1], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_callRate_by_NFE'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing.batch)),
+create_pretty_boxplots(dt, aes(x=factor(genetic_eur_no_fin_oct2021), y=sample_qc.dp_stats.mean), aes(color=factor(sequencing_batch)),
     T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$dp_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[2], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_NFE'), alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(genetic.eur.no.fin.oct2021), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing.batch)),
+create_pretty_boxplots(dt, aes(x=factor(genetic_eur_no_fin_oct2021), y=sample_qc.gq_stats.mean), aes(color=factor(sequencing_batch)),
     T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='Sequencing batch',
     xlim=quantile(dt$gq_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[3], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_NFE'), alpha=alpha, jitter_size=jitter_size)
 
 # Split by self reported ancestry
-create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.call_rate), aes(color=factor(genetic.eur.no.fin.oct2021)),
+create_pretty_boxplots(dt, aes(x=factor(self_report_ethnicity), y=sample_qc.call_rate), aes(color=factor(genetic_eur_no_fin_oct2021)),
     T_sample_callRate, x_label='Call Rate', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$call_rate, c(0.01, 0.99)), legend=legend_batch, title=titles[1], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_callRate_by_anc'), n_ticks=5, alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.dp_stats.mean), aes(color=factor(genetic.eur.no.fin.oct2021)),
+create_pretty_boxplots(dt, aes(x=factor(self_report_ethnicity), y=sample_qc.dp_stats.mean), aes(color=factor(genetic_eur_no_fin_oct2021)),
     T_dpMean, x_label='Mean Depth', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$dp_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[2], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_dpMean_by_anc'), alpha=alpha, jitter_size=jitter_size)
-create_pretty_boxplots(dt, aes(x=factor(self.report.ethnicity), y=sample_qc.gq_stats.mean), aes(color=factor(genetic.eur.no.fin.oct2021)),
+create_pretty_boxplots(dt, aes(x=factor(self_report_ethnicity), y=sample_qc.gq_stats.mean), aes(color=factor(genetic_eur_no_fin_oct2021)),
     T_gqMean, x_label='Mean Genotype Quality', y_label=y_label_batch, key_label='',
     xlim=quantile(dt$gq_stats.mean, c(0.01, 0.99)), legend=legend_batch, title=titles[3], save_figure=save_figures,
     file=paste0(PLOTS, TRANCHE, '_03_gqMean_by_anc'), alpha=alpha, jitter_size=jitter_size)
