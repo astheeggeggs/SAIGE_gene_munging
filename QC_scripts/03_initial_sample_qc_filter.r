@@ -1,6 +1,9 @@
 library(dplyr)
 library(data.table)
 
+# module purge
+# module load R/3.6.2-foss-2019b
+# Rscript 03_initial_sample_qc_filter.r --tranche 200k
 suppressPackageStartupMessages(library("argparse"))
 
 parser <- ArgumentParser()
@@ -37,16 +40,16 @@ dt_summary_count <- data.table(
                 nrow(filter(dt, dp_stats.mean <= T_dpMean)),
                 nrow(filter(dt, gq_stats.mean <= T_gqMean)),
                 nrow(dt_out)),
-    "Batch 1" = c(nrow(dt %>% filter(sequencing.batch == "Batch 1")),
-			    nrow(filter(dt, call_rate <= T_sample_callRate) %>% filter(sequencing.batch == "Batch 1")),
-				nrow(filter(dt, dp_stats.mean <= T_dpMean) %>% filter(sequencing.batch == "Batch 1")),
-				nrow(filter(dt, gq_stats.mean <= T_gqMean) %>% filter(sequencing.batch == "Batch 1")),
-				sum(dt_out$s %in% (dt %>% filter(sequencing.batch == "Batch 1"))$s)),
-	"Batch 2" = c(nrow(dt %>% filter(sequencing.batch == "Batch 2")),
-                nrow(filter(dt, call_rate <= T_sample_callRate) %>% filter(sequencing.batch == "Batch 2")),
-                nrow(filter(dt, dp_stats.mean <= T_dpMean) %>% filter(sequencing.batch == "Batch 2")),
-                nrow(filter(dt, gq_stats.mean <= T_gqMean) %>% filter(sequencing.batch == "Batch 2")),
-                sum(dt_out$s %in% (dt %>% filter(sequencing.batch == "Batch 2"))$s))
+    "Batch 1" = c(nrow(dt %>% filter(sequencing_batch == "Batch 1")),
+			    nrow(filter(dt, call_rate <= T_sample_callRate) %>% filter(sequencing_batch == "Batch 1")),
+				nrow(filter(dt, dp_stats.mean <= T_dpMean) %>% filter(sequencing_batch == "Batch 1")),
+				nrow(filter(dt, gq_stats.mean <= T_gqMean) %>% filter(sequencing_batch == "Batch 1")),
+				sum(dt_out$s %in% (dt %>% filter(sequencing_batch == "Batch 1"))$s)),
+	"Batch 2" = c(nrow(dt %>% filter(sequencing_batch == "Batch 2")),
+                nrow(filter(dt, call_rate <= T_sample_callRate) %>% filter(sequencing_batch == "Batch 2")),
+                nrow(filter(dt, dp_stats.mean <= T_dpMean) %>% filter(sequencing_batch == "Batch 2")),
+                nrow(filter(dt, gq_stats.mean <= T_gqMean) %>% filter(sequencing_batch == "Batch 2")),
+                sum(dt_out$s %in% (dt %>% filter(sequencing_batch == "Batch 2"))$s))
     )
 
 fwrite(dt_summary_count, file=SAMPLE_LIST_INITIAL_SAMPLE_COUNT , quote=FALSE, row.names=FALSE, col.names=FALSE, sep='\t')
