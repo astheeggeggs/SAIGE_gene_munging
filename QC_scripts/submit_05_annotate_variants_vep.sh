@@ -4,7 +4,7 @@
 #$ -o /well/lindgren/dpalmer/logs/hail.log
 #$ -e /well/lindgren/dpalmer/logs/hail.errors.log
 #$ -P lindgren.prjc
-#$ -pe shmem 24
+#$ -pe shmem 10
 #$ -q short.qe
 #$ -t 1-24
 
