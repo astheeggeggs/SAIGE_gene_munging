@@ -36,8 +36,8 @@ vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
 groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
 GNOMAD_SITES_38_HT = '/well/lindgren/flassen/ressources/gnomad/gnomad_v2_liftover/exomes/gnomad.exomes.r2.1.1.sites.' + CHR + '.liftover_grch38.vcf.bgz'
 
-pprint('chromosome ' + args.chr)
-pprint('tranche: ' + TRANCHE)
+print('chromosome ' + args.chr)
+print('tranche: ' + TRANCHE)
 
 input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '.mt'
 output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep_qc.ht'
