@@ -18,16 +18,17 @@ CHR = str(args.chr)
 
 hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
+# Inputs
 MT_HARDCALLS = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_hardcalls_chr' + CHR + '.mt'
-
+UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
 ANNOTATION_TABLE = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '_vep_qc.ht'
-URV_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/07_URVs_chr' + CHR + '.tsv.bgz'
 PHENOTYPES_TABLE = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/phenotypes.ht'
-
 INITIAL_SAMPLES = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/03_initial_qc.keep.sample_list'
-
 INITIAL_VARIANT_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/02_prefilter_chr' + CHR +'.keep.variant.ht'
 SEXCHECK_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list'
+
+# Outputs
+URV_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/07_URVs_chr' + CHR + '.tsv.bgz'
 
 ht_initial_variants = hl.read_table(INITIAL_VARIANT_LIST)
 ht_initial_samples = hl.import_table(INITIAL_SAMPLES, no_header=True, key='f0')

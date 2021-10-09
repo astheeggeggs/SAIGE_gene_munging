@@ -59,35 +59,30 @@ if(any(is.na(dt$phenotype.ukbb_centre))) {
   dt <- dt %>% mutate(phenotype.ukbb_centre = ifelse(is.na(phenotype.ukbb_centre), "Unknown", phenotype.ukbb_centre))
 }
 
-p <- ggplot(dt, aes(x=impute_sex.f_stat, y=phenotype.ukbb_centre, colour=phenotype.Submitted_Gender)) +
-  geom_jitter(width=0, height=0.2, size=1, alpha=0.2, stroke=0.05) + 
+p <- ggplot(dt, aes(x=impute_sex.f_stat, y=factor(phenotype.ukbb_centre), colour=phenotype.Submitted_Gender)) +
+  geom_jitter_rast(width=0, height=0.2, size=1, alpha=0.2, stroke=0.05) + 
   theme_minimal() +
   geom_vline(xintercept=T_impute_sex, linetype='dashed') +
   labs(x='X chromosome F-statistic',
        y='Location',
        color='Reported Sex') 
 
-ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.pdf'), p, width=160, height=300, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.pdf'), p, width=160, height=90, units='mm')
 
 dt_false <- dt %>% filter(
   (impute_sex.f_stat > T_impute_sex & phenotype.Submitted_Gender == 'Female') |
   (impute_sex.f_stat < T_impute_sex & phenotype.Submitted_Gender == 'Male') |
   (impute_sex.f_stat > T_impute_sex & n_called < 100))
-# dt_false_plot <- dt %>% filter(phenotype.Submitted_Gender == 'Unknown' | (impute_sex.f_stat > T_impute_sex & phenotype.Submitted_Gender == 'Female') | (impute_sex.f_stat < T_impute_sex & phenotype.Submitted_Gender == 'Male'))
 
-# Plots of gender estimates using Giulios plotting method.
+# Plots of sex estimates using Giulios plotting method.
 p <- ggplot(dt, aes(x=impute_sex.f_stat, y=n_called, colour=factor(phenotype.Submitted_Gender))) +
-geom_point(size=0.5) + 
+geom_point_rast(size=0.5) + 
 labs(x='X chromosome F-statistic', y='Number of calls in Y', color='Reported Sex') +
 scale_color_d3('category10') +
 scale_x_continuous(breaks=scales::pretty_breaks(n=10)) +
 scale_y_continuous(label=scales::comma, breaks=scales::pretty_breaks(n=10)) +
-geom_point(data=dt_false, aes(x=impute_sex.f_stat, y=n_called), size=0.5) + 
-# geom_point(data=dt_false_plot, aes(x=impute_sex.f_stat, y=impute_sex.n_called), size=0.5) + 
+geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=impute_sex.n_called), size=0.5) + 
 theme_minimal()
-p <- ggExtra::ggMarginal(p, type = "density",
-  xparams = list(adjust=1), yparams=list(adjust=1.5))
-
 ggsave(paste0(PLOTS, '04_imputesex_scatter', '.pdf'), p, width=160, height=90, units='mm')
 
 dt_out <- dt_false %>% select(s)
