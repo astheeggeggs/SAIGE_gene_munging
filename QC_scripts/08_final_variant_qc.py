@@ -38,9 +38,11 @@ ht_urv_samples = hl.import_table(URV_LIST, no_header=True, key='f0')
 mt = hl.read_matrix_table(MT_HARDCALLS)
 mt = mt.annotate_cols(phenotype = sample_annotations[mt.s])
 
-# Filter down to the collection of Non-Finnish (genetic.eur.no.fin.oct2021) Europeans and samples that were outliers in the initial sample QC.
+# Filter down to the collection of Non-Finnish (genetic_eur_no_fin_oct2021) Europeans and samples that were outliers in the initial sample QC.
 mt = mt.filter_rows(hl.is_defined(ht_initial_variants[mt.row_key]))
-mt = mt.filter_cols((hl.is_defined(mt.phenotype.genetic.eur.no.fin.oct2021)) & (mt.phenotype.genetic.eur.no.fin.oct2021))
+mt = mt.filter_cols(
+	(hl.is_defined(mt.phenotype.genetic_eur_no_fin_oct2021)) & (mt.phenotype.genetic_eur_no_fin_oct2021)
+	)
 mt = mt.filter_cols(hl.is_defined(ht_initial_samples[mt.col_key]))
 mt = mt.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt.col_key]))
 mt = mt.filter_cols(~hl.is_defined(ht_urv_samples[mt.col_key]))
