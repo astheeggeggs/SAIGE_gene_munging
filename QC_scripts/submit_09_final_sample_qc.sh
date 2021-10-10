@@ -5,7 +5,7 @@
 #$ -e /well/lindgren/dpalmer/logs/hail.errors.log
 #$ -P lindgren.prjc
 #$ -pe shmem 24
-#$ -q short.qe
+#$ -q short.qe@@short.hge
 #$ -t 1-24
 
 set -o errexit
