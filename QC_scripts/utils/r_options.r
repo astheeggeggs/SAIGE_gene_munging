@@ -11,8 +11,8 @@ T_gqMean <- 47.8
 T_impute_sex <- 0.6
 
 # 07_ultra_rare_counts_plot.r
-T_nURVSNP <- 300
-T_nURVIndel <- 25
+T_nURVSNP <- 100
+T_nURVIndel <- 10
 
 # 08_final_variant_qc_plot.r
 T_variant_call_rate  <- 0.97

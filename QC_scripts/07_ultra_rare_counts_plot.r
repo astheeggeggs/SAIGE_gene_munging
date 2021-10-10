@@ -26,6 +26,7 @@ URV_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
 # Output files
 URV_COMBINED_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
 	'/ukb_wes_qc/data/samples/07_URVs.tsv')
+URV_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/07_URV.remove.sample_list')
 
 dt <- fread(cmd = paste('zcat', URV_FILE),
     stringsAsFactors=FALSE, sep='\t', header=TRUE) %>% select(c(s, starts_with('n_')))
@@ -62,6 +63,7 @@ dt <- merge(dt, dt_pheno)
 fwrite(dt, file=URV_COMBINED_FILE, sep='\t')
 system(paste("bgzip", URV_COMBINED_FILE))
 
+dt <- fread(URV_COMBINED_FILE)
 dt <- dt[sample(nrow(dt), replace=FALSE),]
 
 # Scatters of URV-SNPs against URV-Indels.
@@ -87,15 +89,14 @@ titles <- c(
 	'Number of singletons, split by NFE status'
     )
 
-create_pretty_boxplots(dt %>% filter(!is.na(ukbb_centre)), aes(x=factor(ukbb_centre), y=(n_coding_URV_SNP + n_coding_URV_indel)), aes(colour=factor(genetic_eur_no_fin_oct2021)), 
+create_pretty_boxplots(dt, aes(x=factor(ukbb_centre), y=(n_coding_URV_SNP + n_coding_URV_indel)), aes(colour=factor(genetic_eur_no_fin_oct2021)), 
 	y_label=y_label_batch[1], x_label='Number of Singletons', key_label='',
 	title=titles[1], legend=TRUE, save_figure=save_figures,  file=paste0(PLOTS,'07_URVs_by_centre'), xlim=c(0,NA),
 	threshold=T_nURVSNP)
-create_pretty_boxplots(dt %>% filter(!is.na(self_report_ethnicity)), aes(x=factor(self_report_ethnicity), y=(n_coding_URV_SNP + n_coding_URV_indel)), aes(colour=factor(genetic_eur_no_fin_oct2021)), 
+create_pretty_boxplots(dt, aes(x=factor(self_report_ethnicity), y=(n_coding_URV_SNP + n_coding_URV_indel)), aes(colour=factor(genetic_eur_no_fin_oct2021)), 
     y_label=y_label_batch[1], x_label='Number of Singletons', key_label='',
     title=titles[2], legend=TRUE, save_figure=save_figures,  file=paste0(PLOTS,'07_URVs_by_ethnicity'), xlim=c(0,NA),
     threshold=T_nURVSNP)
-create_pretty_boxplots(dt %>% filter(!is.na(genetic_eur_no_fin_oct2021)), aes(x=factor(genetic_eur_no_fin_oct2021), y=(n_coding_URV_SNP + n_coding_URV_indel)), aes(colour=factor(ukbb_centre)),
-	y_label=y_label_batch[2], x_label='Number of Singletons', key_label='UKBB centre',
-	title=titles[3], legend=TRUE, save_figure=save_figures,  file=paste0(PLOTS,'07_URVs_by_batch'),  xlim=c(0,NA),
-	threshold=T_nURVSNP)
+
+dt_out <- dt %>% filter((n_coding_URV_SNP + n_coding_URV_indel) > T_nURVSNP) %>% select(s)
+write.table(dt_out, file=URV_LIST, quote=FALSE, row.names=FALSE, col.names=FALSE)
