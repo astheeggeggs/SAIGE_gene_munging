@@ -20,17 +20,6 @@ CHR = str(args.chr)
 
 hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
-def count_variants(vep_ht_path):
-    from gnomad.utils.vep import process_consequences
-    ht = hl.read_table(vep_ht_path)
-    ht = process_consequences(ht)
-    ht = ht.explode(ht.vep.worst_csq_by_gene_canonical)
-    ht = ht.annotate(
-        variant_id=ht.locus.contig + ':' + hl.str(ht.locus.position) + '_' + ht.alleles[0] + '/' + ht.alleles[1],
-        annotation=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical))
-    ht = ht.filter(hl.literal({'pLoF', 'LC', 'missense', 'synonymous'}).contains(ht.annotation))
-    print(ht.count())
-
 UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
 vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
 groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"

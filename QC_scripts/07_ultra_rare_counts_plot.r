@@ -20,11 +20,11 @@ CHR <- 1
 
 # Input files
 URV_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
-	'/ukb_wes_qc/data/samples/08_URVs_chr',  CHR, '.tsv.bgz')
+	'/ukb_wes_qc/data/samples/07_URVs_chr',  CHR, '.tsv.bgz')
 
 # Output files
 URV_COMBINED_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
-	'/ukb_wes_qc/data/samples/08_URVs.tsv')
+	'/ukb_wes_qc/data/samples/07_URVs.tsv')
 
 dt <- fread(cmd = paste('zcat', URV_FILE),
     stringsAsFactors=FALSE, sep='\t', header=TRUE) %>% select(c(s, starts_with('n_')))
