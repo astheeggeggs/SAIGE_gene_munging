@@ -37,7 +37,7 @@ for (CHR in c(seq(2,22), "X")) {
 dt <- rbindlist(dt_list)
 
 fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t')
-system(paste("bgzip", INITIAL_COMBINED_SAMPLE_QC_FILE))
+# system(paste("bgzip", COMBINED_VARIANT_QC_FILE))
 
 # call rate across all variants
 create_pretty_hist(dt, aes(x=qc.call_rate), threshold=T_variant_call_rate, x_label='Call Rate', xlim=c(0.9,1), save_figure=save_figures,
