@@ -19,7 +19,7 @@ source("08_final_variant_qc_plot.r")
 FINAL_VARIANT_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list')
 VARIANT_SUMMARY <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_variant_count.tsv')
 
-dt <- fread(cmd = paste0('zcat ', COMBINED_VARIANT_QC_FILE, '.bgz'), header=TRUE, sep='\t')
+dt <- fread(COMBINED_VARIANT_QC_FILE, header=TRUE, sep='\t')
 print(paste0("Initial number of variants: ", nrow(dt)))
 current_variants <- nrow(dt)
 

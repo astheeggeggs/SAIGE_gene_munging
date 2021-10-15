@@ -53,7 +53,7 @@ mt_before = mt_before.annotate_cols(imputesex = impute_sex_annotations[mt_before
 # Filter down to the collection of Europeans and samples that were outliers in the initial sample QC.
 mt_before = mt_before.filter_rows(hl.is_defined(ht_initial_variants[mt_before.row_key]))
 mt_before = mt_before.filter_cols(
-	(hl.is_defined(mt.phenotype.genetic_eur_no_fin_oct2021)) & (mt.phenotype.genetic_eur_no_fin_oct2021)
+	(hl.is_defined(mt_before.phenotype.genetic_eur_no_fin_oct2021)) & (mt_before.phenotype.genetic_eur_no_fin_oct2021)
 	)
 mt_before = mt_before.filter_cols(hl.is_defined(ht_initial_samples[mt_before.col_key]))
 mt_before = mt_before.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt_before.col_key]))
