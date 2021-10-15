@@ -57,7 +57,7 @@ mt_before = mt_before.filter_cols(
 	)
 mt_before = mt_before.filter_cols(hl.is_defined(ht_initial_samples[mt_before.col_key]))
 mt_before = mt_before.filter_cols(~hl.is_defined(ht_sexcheck_samples[mt_before.col_key]))
-mt_before = mt_before.filter_cols(~hl.is_defined(ht_urv_samples[mt.col_key]))
+mt_before = mt_before.filter_cols(~hl.is_defined(ht_urv_samples[mt_before.col_key]))
 
 mt_before = hl.variant_qc(mt_before, name = 'qc')
 
