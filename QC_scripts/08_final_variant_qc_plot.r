@@ -12,23 +12,26 @@ suppressPackageStartupMessages(library("argparse"))
 CHR <- 1
 save_figures <- TRUE
 
+# Input files
+VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants_chr', CHR, '.tsv.bgz')
+
 # Output files
 COMBINED_VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants.tsv')
 
-VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants_chr', CHR, '.tsv.bgz')
 dt <- fread(cmd = paste('zcat', VARIANT_QC_FILE), header=TRUE, sep='\t')
 dt <- dt %>% filter(qc.AF > 0 & qc.AF < 1)
 
 dt_list <- list()
 dt_list[[1]] <- dt
 
-for (CHR in seq(2,22)) {
+for (CHR in c(seq(2,22), "X")) {
     # Input files
+    cat(paste0("chromosome ", CHR, "\n"))
     VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants_chr', CHR, '.tsv.bgz')
-    dt <- fread(cmd = paste('zcat', VARIANT_QC_FILE), header=TRUE, sep='\t')
-    setkeyv(dt, c('locus', 'alleles'))
-    dt_list[[CHR]] <- dt
-    dt  <- merge(dt, dt_tmp)
+    dt_tmp <- fread(cmd = paste('zcat', VARIANT_QC_FILE), header=TRUE, sep='\t')
+    dt_tmp <- dt_tmp %>% filter(qc.AF > 0 & qc.AF < 1)
+    setkeyv(dt_tmp, c('locus', 'alleles'))
+    dt_list[[CHR]] <- dt_tmp
 }
 
 dt <- rbindlist(dt_list)

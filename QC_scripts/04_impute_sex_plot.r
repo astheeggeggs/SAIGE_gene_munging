@@ -81,7 +81,7 @@ labs(x='X chromosome F-statistic', y='Number of calls in Y', color='Reported Sex
 scale_color_d3('category10') +
 scale_x_continuous(breaks=scales::pretty_breaks(n=10)) +
 scale_y_continuous(label=scales::comma, breaks=scales::pretty_breaks(n=10)) +
-geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=impute_sex.n_called), size=0.5) + 
+geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=n_called), size=0.5) + 
 theme_minimal()
 ggsave(paste0(PLOTS, '04_imputesex_scatter', '.pdf'), p, width=160, height=90, units='mm')
 

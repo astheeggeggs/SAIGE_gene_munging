@@ -46,7 +46,6 @@ ht_final_variants = hl.import_table(FINAL_VARIANT_LIST,
 	types={'locus':hl.tlocus(reference_genome='GRCh38'), 'alleles':hl.tarray(hl.tstr)})
 ht_final_variants = ht_final_variants.key_by(ht_final_variants.locus, ht_final_variants.alleles)
 
-
 mt_before = hl.read_matrix_table(MT_HARDCALLS)
 mt_before = mt_before.annotate_cols(phenotype = sample_annotations[mt_before.s])
 mt_before = mt_before.annotate_cols(imputesex = impute_sex_annotations[mt_before.col_key])

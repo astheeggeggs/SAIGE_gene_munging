@@ -196,8 +196,8 @@ system(paste("bgzip", binary_output))
 # We also need to ensure that all samples with phenotype information are present in the vcf.
 # We can do this by making use of the savvy library in SAIGE.
 
-vcfFile <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/ukb_wes_qc/data/filtered/ukb_wes_200k_filtered_chr21.vcf.bgz"
-vcfFileIndex <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/ukb_wes_qc/data/filtered/ukb_wes_200k_filtered_chr21.vcf.bgz.csi"
+vcfFile <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/phase_ukb_wes/data/phased/final/ukb_wes_200k_phased_chr21.vcf.gz"
+vcfFileIndex <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/phase_ukb_wes/data/phased/final/ukb_wes_200k_phased_chr21.vcf.gz.csi"
 vcfField <- "GT"
 isVariant <- setvcfDosageMatrix(vcfFile, vcfFileIndex, vcfField)
 sampleListinvcf <- data.table(ID = getSampleIDlist_vcfMatrix())

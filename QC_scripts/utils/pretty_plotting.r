@@ -1,7 +1,6 @@
 library(ggplot2)
 library(dplyr)
 library(ggsci)
-library(latex2exp)
 library(ggrastr)
 library(ggrepel)
 
