@@ -36,7 +36,7 @@ for (CHR in c(seq(2,22), "X")) {
 
 dt <- rbindlist(dt_list)
 
-fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t')
+fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t', quote=FALSE)
 # system(paste("bgzip", COMBINED_VARIANT_QC_FILE))
 
 # call rate across all variants

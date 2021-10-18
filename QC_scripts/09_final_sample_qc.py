@@ -28,9 +28,11 @@ SEXCHECK_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc
 URV_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/07_URV.remove.sample_list'
 
 INITIAL_VARIANT_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/02_prefilter_chr' + CHR + '.keep.variant.ht'
+FINAL_VARIANT_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list'
 
 # Outputs:
-FINAL_VARIANT_LIST = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/variants/08_final_qc.keep.variant_list'
+SAMPLE_BEFORE_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.before.samples.tsv.bgz'
+SAMPLE_AFTER_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.after.samples.tsv.bgz'
 
 sample_annotations = hl.read_table(PHENOTYPES_TABLE)
 impute_sex_annotations = hl.read_table(IMPUTESEX_TABLE)
@@ -38,9 +40,6 @@ ht_initial_variants = hl.read_table(INITIAL_VARIANT_LIST)
 ht_initial_samples = hl.import_table(INITIAL_SAMPLES, no_header=True, key='f0')
 ht_sexcheck_samples = hl.import_table(SEXCHECK_LIST, no_header=True, key='f0')
 ht_urv_samples = hl.import_table(URV_LIST, no_header=True, key='f0')
-
-SAMPLE_BEFORE_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.before.samples.tsv.bgz'
-SAMPLE_AFTER_QC_FILE = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/samples/09_final_qc_chr' + CHR + '.after.samples.tsv.bgz'
 
 ht_final_variants = hl.import_table(FINAL_VARIANT_LIST,
 	types={'locus':hl.tlocus(reference_genome='GRCh38'), 'alleles':hl.tarray(hl.tstr)})
