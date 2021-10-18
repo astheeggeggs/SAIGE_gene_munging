@@ -59,9 +59,9 @@ mt = hl.sample_qc(mt)
 mt.write(QC_MT, overwrite=True)
 mt.select_entries(mt.GT).repartition(512).write(QC_HARDCALLS_MT, overwrite=True)
 
-mt = hl.read_matrix_table(QC_HARDCALLS_MT)
-mt = mt.select_rows()
-mt = mt.select_cols()
+# mt = hl.read_matrix_table(QC_HARDCALLS_MT)
+# mt = mt.select_rows()
+# mt = mt.select_cols()
 
 # Drop all annotations except keys
-export_vcf(mt, output=QC_HARDCALLS_VCF)
+# export_vcf(mt, output=QC_HARDCALLS_VCF)
