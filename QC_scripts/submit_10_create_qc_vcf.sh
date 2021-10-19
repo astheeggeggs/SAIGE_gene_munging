@@ -4,9 +4,9 @@
 #$ -o /well/lindgren/dpalmer/logs/hail.log
 #$ -e /well/lindgren/dpalmer/logs/hail.errors.log
 #$ -P lindgren.prjc
-#$ -pe shmem 12
+#$ -pe shmem 20
 #$ -q short.qe@@short.hge
-#$ -t 1-24
+#$ -t 1-23
 
 set -o errexit
 set -o nounset
@@ -25,5 +25,5 @@ export PYTHONPATH="${PYTHONPATH-}:/well/lindgren/dpalmer/ukb_utils/python:/well/
 
 chr=$(get_chr ${SGE_TASK_ID})
 
-python 10_create_vcf.py --chr ${chr}
+python 10_create_qc_vcf.py --chr ${chr}
 print_update "Finished running Hail for chr${chr}" "${SECONDS}"

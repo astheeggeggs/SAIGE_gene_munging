@@ -14,7 +14,7 @@ source /well/lindgren/dpalmer/ukb_utils/bash/qsub_utils.sh
 chr=$(get_chr ${SGE_TASK_ID})
 
 # Use the fam file to determine the Europeans, filter to just those
-eur_fam="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_imp_eur_chr1_22_sparse_markers.fam"
+eur_tsv="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_imp_eur_chr1_22_sparse_markers.tsv"
 
 # UKB genotype calls
 ukb_bed="/well/lindgren/UKBIOBANK/DATA/CALLS/ukb_cal_chr${chr}_v2.bed"
@@ -25,5 +25,5 @@ out="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_chr${chr}_saige
 
 # Filter to rare variants and remove SNPs with high missingness
 plink2 --bed ${ukb_bed} --bim ${ukb_bim} --fam ${ukb_fam} \
-    --keep ${eur_fam} --maf 0.0000000000001 --geno 0.02 --max-maf 0.0099 \
+    --keep ${eur_tsv} --maf 0.0000000000001 --geno 0.02 --max-maf 0.0099 \
     --make-bed --out ${out}
