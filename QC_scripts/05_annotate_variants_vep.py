@@ -18,18 +18,19 @@ args = parser.parse_args()
 TRANCHE = args.tranche
 CHR = str(args.chr)
 
-hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
-
-UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
-vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
-groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
-GNOMAD_SITES_38_HT = '/well/lindgren/flassen/ressources/gnomad/gnomad_v2_liftover/exomes/gnomad.exomes.r2.1.1.sites.' + CHR + '.liftover_grch38.vcf.bgz'
-
 print('chromosome ' + args.chr)
 print('tranche: ' + TRANCHE)
 
+hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
+
+# Inputs
+vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
+GNOMAD_SITES_38_HT = '/well/lindgren/flassen/ressources/gnomad/gnomad_v2_liftover/exomes/gnomad.exomes.r2.1.1.sites.' + CHR + '.liftover_grch38.vcf.bgz'
 input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '.mt'
-output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep_qc.ht'
+
+# Outputs
+UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
+output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + CHR + '_vep_qc.ht'
 
 mt = hl.read_matrix_table(input_mt_path)
 ht = mt.rows()

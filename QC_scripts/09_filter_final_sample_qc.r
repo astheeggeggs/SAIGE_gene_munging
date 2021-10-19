@@ -9,8 +9,18 @@ source('utils/pretty_plotting.r')
 source("utils/r_options.r")
 source("utils/helpers.r")
 
+# Inputs:
 SAMPLE_AFTER_COMBINED_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
     '/ukb_wes_qc/data/samples/09_final_qc.after.samples.tsv')
+
+# Outputs
+FINAL_SAMPLE_SUMMARY <- paste0(
+  '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
+  '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv')
+
+FINAL_SAMPLE_LIST <- paste0(
+  '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
+  '/ukb_wes_qc/data/samples/09_final_qc.keep.sample_list')
 
 dt_after <- fread(SAMPLE_AFTER_COMBINED_QC_FILE, sep='\t', stringsAsFactors=FALSE, header=TRUE) %>%
   mutate(phase='After Variant QC')
@@ -82,14 +92,6 @@ dt_final_sample_summary <- data.table(
     nrow(dt_after) - nrow(dt_keep_n_singletons),
     nrow(dt_keep))
   )
-
-FINAL_SAMPLE_SUMMARY <- paste0(
-  '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
-  '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv')
-
-FINAL_SAMPLE_LIST <- paste0(
-  '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
-  '/ukb_wes_qc/data/samples/09_final_qc.keep.sample_list')
 
 fwrite(dt_final_sample_summary, file=FINAL_SAMPLE_SUMMARY, quote=FALSE, row.names=FALSE, col.names=FALSE, sep='\t')
 

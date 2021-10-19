@@ -12,12 +12,12 @@ source("utils/helpers.r")
 
 CHR <- 1
 
-# Input files
+# Inputs:
 INITIAL_SAMPLE_QC_FILE <- paste0(
     '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
     '/ukb_wes_qc/data/samples/03_chr', CHR, '_initial_sample_qc.tsv.bgz')
 
-# Output files
+# Outputs:
 INITIAL_COMBINED_SAMPLE_QC_FILE <- paste0(
     '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/03_initial_sample_qc.tsv')
 

@@ -16,19 +16,9 @@ TRANCHE = args.tranche
 
 hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
 
-PHENOFILE_CTS = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/UKBB_WES200k_filtered_cts_phenotypes.tsv.gz'
-PHENOFILE_BINARY = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/UKBB_WES200k_filtered_binary_phenotypes.tsv.gz'
+# Inputs
 PHENOFILE_AUX = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/QC_phenotypes.tsv.gz'
 PHENOTYPES_TABLE = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/' + TRANCHE + '/phenotypes.ht'
-
-# DEV: Phenotype curation needs an overhaul
-# pheno_table_cts = hl.import_table(PHENOFILE_CTS, key='ID', types={'ID': hl.tstr}, impute=True, missing=['', 'NA'], force_bgz=True)
-# pheno_table_binary = hl.import_table(PHENOFILE_BINARY, key='ID', types={'ID': hl.tstr}, impute=True, missing=['', 'NA'], force_bgz=True)
-
-# drop_cols = list(set(list(pheno_table_cts.row_value)) & set(pheno_table_binary.row_value))
-# pheno_table_binary = pheno_table_binary.drop(*drop_cols)
-
-# pheno_table = pheno_table_cts.annotate(**pheno_table_binary[pheno_table_cts.key])
 
 pheno_table_aux = hl.import_table(PHENOFILE_AUX, key='ID', types={'ID': hl.tstr}, impute=True, missing=['', 'NA'], force_bgz=True)
 pheno_table_aux.write(PHENOTYPES_TABLE, overwrite=True)

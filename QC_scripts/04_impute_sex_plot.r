@@ -18,8 +18,11 @@ args <- parser$parse_args()
 
 TRANCHE <- args$tranche
 
+# Inputs:
 IMPUTESEX_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/04_imputesex.tsv.bgz')
 Y_NCALLED_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/04_ycalled.tsv.bgz')
+
+# Outputs:
 SEXCHECK_LIST <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list')
 
 dt <- fread(cmd = paste('zcat', IMPUTESEX_FILE), sep='\t', stringsAsFactors=FALSE, header=TRUE, data.table=FALSE) %>%
