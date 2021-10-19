@@ -25,5 +25,5 @@ export PYTHONPATH="${PYTHONPATH-}:/well/lindgren/dpalmer/ukb_utils/python:/well/
 
 chr=$(get_chr ${SGE_TASK_ID})
 
-python 10_create_qc_hardcalls_mt.py --chr ${chr}
+python 10_create_vcf.py --chr ${chr}
 print_update "Finished running Hail for chr${chr}" "${SECONDS}"

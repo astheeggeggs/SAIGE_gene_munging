@@ -18,7 +18,7 @@ hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 QC_MT = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr' + CHR + '.mt'
 
 # Outputs:
-QC_HARDCALLS_MT = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr' + CHR + '.hardcalls.mt'
+QC_VCF = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr' + CHR + '.vcf.bgz'
 
 mt = hl.read_matrix_table(QC_MT)
-mt.select_entries(mt.GT).repartition(512).write(QC_HARDCALLS_MT, overwrite=True)
+hl.export_vcf(mt, output=QC_VCF)
