@@ -52,6 +52,7 @@ p <- ggplot(dt, aes(x=impute_sex.f_stat, fill=imputed_sex)) +
   geom_vline(xintercept=T_impute_sex, linetype='dashed')
 
 ggsave(paste0(PLOTS, '04_imputesex_histogram', '.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_histogram', '.jpg'), p, width=160, height=90, units='mm')
 
 dt <- dt %>% mutate(phenotype.Submitted_Gender = ifelse(phenotype.Submitted_Gender == "F", "Female", "Male"))
 if(any(is.na(dt$phenotype.Submitted_Gender))) {
@@ -71,6 +72,7 @@ p <- ggplot(dt, aes(x=impute_sex.f_stat, y=factor(phenotype.ukbb_centre), colour
        color='Reported Sex') 
 
 ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.jpg'), p, width=160, height=90, units='mm')
 
 dt_false <- dt %>% filter(
   (impute_sex.f_stat > T_impute_sex & phenotype.Submitted_Gender == 'Female') |
@@ -87,6 +89,7 @@ scale_y_continuous(label=scales::comma, breaks=scales::pretty_breaks(n=10)) +
 geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=n_called), size=0.5) + 
 theme_minimal()
 ggsave(paste0(PLOTS, '04_imputesex_scatter', '.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_scatter', '.jpg'), p, width=160, height=90, units='mm')
 
 dt_out <- dt_false %>% select(s)
 write.table(dt_out, file=SEXCHECK_LIST, quote=FALSE, row.names=FALSE, col.names=FALSE)
