@@ -1,0 +1,6 @@
+Filter	Samples	Batch 1	Batch 2	%
+Initial samples in vcf	199795	49759	150036	100
+Sample call rate < 0.95	7400	4780	2620	3.7
+Mean DP < 19.5	3253	511	2742	1.6
+Mean GQ < 47.8	2123	834	1289	1.1
+Samples after sample QC filters	190924	44846	146078	95.6
