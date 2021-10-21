@@ -26,7 +26,13 @@ require(htmltools)
 source("../QC_scripts/utils/r_options.r")
 source("../QC_scripts/utils/helpers.r")
 
+# Note to update the website, we need to compile it on the cluster first (to sort tables and plots), and then locally to ensure the correct formatting.
+
 options(dplyr.summarise.inform=F)
+if (file.exists(PLOTS)) {
+  # We're on the cluster, update the plots
+  system(paste0("cp ", PLOTS, "*jpg ", "../plots/"))
+}
 ```
  <br>
 On this page we detail the quality control (QC) pipeline for the UK Biobank exomes before starting our analyses. Further plots and the underlying [code](https://github.com/astheeggeggs/SAIGE_gene_munging/tree/main/QC_scripts) can be found on the SAIGE gene munging github [repository](https://github.com/astheeggeggs/SAIGE_gene_munging).
@@ -34,18 +40,24 @@ On this page we detail the quality control (QC) pipeline for the UK Biobank exom
 We first summarise the collection of samples for which the exome sequence data is available, splitting across UKBB centres and sequencing batch.
 
 ```{r sample_composition, echo=FALSE, out.width = '100%', warning=FALSE}
-dt_pheno <- create_pheno_dt(TRANCHE)
-dt_pheno <- dt_pheno %>% mutate(ukbb_centre = as.character(ukbb_centre)) %>% mutate(ukbb_centre = ifelse(is.na(ukbb_centre), "Unknown", ukbb_centre)) %>% mutate(`UKBB centre` = ukbb_centre)
 
-dt_loc <- dt_pheno %>% group_by(`UKBB centre`) %>% 
-  summarize("Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
-            "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE),
-            "Total"=sum(!is.na(sequencing_batch)))
-dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+if (file.exists(PLOTS)) {
+  dt_pheno <- create_pheno_dt(TRANCHE)
+  dt_pheno <- dt_pheno %>% mutate(ukbb_centre = as.character(ukbb_centre)) %>% mutate(ukbb_centre = ifelse(is.na(ukbb_centre), "Unknown", ukbb_centre)) %>% mutate(`UKBB centre` = ukbb_centre)
+
+  dt_loc <- dt_pheno %>% group_by(`UKBB centre`) %>% 
+    summarize("Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
+              "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE),
+              "Total"=sum(!is.na(sequencing_batch)))
+  dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+  fwrite(dt_loc, file="../site_tables/00_initial_table_ukbb_centre.tsv", sep="\t")
+} else {
+  dt_loc <- fread("../site_tables/00_initial_table.tsv")
+}
 
 dt_loc %>%
   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-  row_spec(nrow(dt_loc), bold = T, color = "white", background = "#c24100") %>% 
+  row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover', font_size=12)
 
 ```
@@ -56,16 +68,22 @@ Finally, the split by [Data-Field 21000](https://biobank.ndph.ox.ac.uk/showcase/
 
 ```{r sample_composition_PI, echo=FALSE, out.width = '100%', warning=FALSE}
 
-dt_loc <- dt_pheno %>% group_by(self_report_ethnicity) %>% 
-    summarize("Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
-              "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE),
-              "Total"=sum(!is.na(sequencing_batch)))
-dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+if (file.exists(PLOTS)) {
+  dt_pheno <- dt_pheno %>% mutate(self_report_ethnicity = as.character(self_report_ethnicity)) %>% mutate(self_report_ethnicity = ifelse(is.na(self_report_ethnicity), "Unknown", self_report_ethnicity)) %>% mutate(`Self reported ethnicity` = self_report_ethnicity)
+  dt_loc <- dt_pheno %>% group_by(`Self reported ethnicity`) %>% 
+      summarize("Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
+                "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE),
+                "Total"=sum(!is.na(sequencing_batch)))
+  dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+  fwrite(dt_loc, file = "../site_tables/00_initial_table_21000.tsv", sep="\t")
+} else {
+  dt_loc <- fread("../site_tables/00_initial_table_21000.tsv")
+}
 
 dt_loc %>%
   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% 
-  row_spec(nrow(dt_loc), bold = T, color = "white", background = "#c24100") %>% row_spec(0, bold=TRUE) %>%
-  kable_styling('hover', font_size=11)
+  row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>% row_spec(0, bold=TRUE) %>%
+  kable_styling('hover', font_size=12)
 
 ```
 
@@ -123,20 +141,25 @@ Thresholds used were based on plotting the distributions of these metrics. Here 
 
 ```{r init_samples, echo=FALSE, out.width = '100%', warning=FALSE}
 # knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
+# knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
 # knitr::include_graphics("../plots/200k_03_dpMean_by_centre.jpg")
 # knitr::include_graphics("../plots/200k_03_gqMean_by_centre.jpg")
 ```
 
 ```{r sample_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
-dt <-fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_sample_count.tsv"), header=FALSE)
-names(dt) <- c("Filter", "Samples", "Batch 1", "Batch 2")
-
-dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+if (file.exists(PLOTS)) {
+  dt <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_sample_count.tsv"), header=FALSE)
+  names(dt) <- c("Filter", "Samples", "Batch 1", "Batch 2")
+  dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+  fwrite(dt, file = "../site_tables/01_variant_summary.tsv", sep="\t")
+} else {
+  dt <- fread( "../site_tables/01_variant_summary.tsv")
+}
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-  row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
 
 ```
@@ -165,30 +188,36 @@ Here we show the distribution of the F-statistic, with the `r T_impute_sex` thre
 
 # Note that in these two tables, dt is the table that is displayed after the boxplots on webpage.
 
-sex_removed <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list"), header=FALSE)
-dt_sex_removed <- dt_pheno[which(dt_pheno$s %in% sex_removed$V1),]
-n_sex_removed <- c(nrow(dt_sex_removed),
-                   nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 1")),
-                   nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 2")))
+if (file.exists(PLOTS)) {
+  sex_removed <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list"), header=FALSE)
+  dt_sex_removed <- dt_pheno[which(dt_pheno$s %in% sex_removed$V1),]
+  n_sex_removed <- c(nrow(dt_sex_removed),
+                     nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 1")),
+                     nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 2")))
 
-# This is the number of samples after the initial round of sample QC filters.
-n_before <- dt[nrow(dt),2:4]
-# This is the number after then removing the samples removed due to sex-swaps.
-n_after_sex_removed <- n_before - n_sex_removed
+  # This is the number of samples after the initial round of sample QC filters.
+  n_before <- dt[nrow(dt),2:4]
+  # This is the number after then removing the samples removed due to sex-swaps.
+  n_after_sex_removed <- n_before - n_sex_removed
 
-dt_sex_removal <- rbindlist(
-    list(dt[nrow(dt),],
-        list(c("Samples with sex swap", "Samples after sex swap removal"),
-             c(n_sex_removed[1], n_after_sex_removed$Samples),
-             c(n_sex_removed[2], n_after_sex_removed$`Batch 1`),
-             c(n_sex_removed[3], n_after_sex_removed$`Batch 2`),
-             c(round(n_sex_removed[1] / unlist(dt[nrow(dt),2]) * 100,1),
-               round(n_after_sex_removed$Samples / unlist(dt[nrow(dt),2]) * 100,1)))), use.names=FALSE)
+  dt_sex_removal <- rbindlist(
+      list(dt[nrow(dt),],
+          list(c("Samples with sex swap", "Samples after sex swap removal"),
+               c(n_sex_removed[1], n_after_sex_removed$Samples),
+               c(n_sex_removed[2], n_after_sex_removed$`Batch 1`),
+               c(n_sex_removed[3], n_after_sex_removed$`Batch 2`),
+               c(round(n_sex_removed[1] / unlist(dt[nrow(dt),2]) * 100,1),
+                 round(n_after_sex_removed$Samples / unlist(dt[nrow(dt),2]) * 100,1)))), use.names=FALSE)
 
-dt_sex_removal[1,5] <- 100
+  dt_sex_removal[1,5] <- 100
+  fwrite(dt_sex_removal, file = "../site_tables/02_sex_removal_summary.tsv", sep="\t")
+} else {
+  dt_sex_removal <- fread("../site_tables/02_sex_removal_summary.tsv")
+}
+
 dt_sex_removal %>% mutate("%" = color_bar("#0081c2")(unlist(dt_sex_removal[,'%']))) %>% 
   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-  row_spec(nrow(dt_sex_removal), bold = T, color = "white", background = "#c24100") %>% 
+  row_spec(nrow(dt_sex_removal), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
 ```
 
@@ -252,7 +281,7 @@ We first train a classifier to remove non-Europeans. To do this, we train a rand
 
 # dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
 #   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
+#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
 #   kable_styling('hover')
 
 ```
@@ -287,7 +316,7 @@ The following plot shows the `r T_variant_call_rate` threshold for call rate.
 
 # dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
 #   kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
+#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
 #   kable_styling('hover')
 
 ```
@@ -328,7 +357,7 @@ We also remove samples with over 175 singletons in the dataset.
 
 # dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
 #   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
+#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
 #   kable_styling('hover')
 
 ```
@@ -357,7 +386,7 @@ The resultant composition of the samples according to UKBB centre was as follows
 # dt_loc <- fread("../phenotype_data/17_phenotypes_and_location_summary.tsv") %>% rename(Location=LOCATION)
 # dt_loc %>%
 #   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#c24100") %>%  
+#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
 #   kable_styling('hover', font_size=12)
 
 ```
@@ -383,7 +412,7 @@ The composition by sequencing batch was as follows:
 
 # dt_loc %>%
 #   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#c24100") %>%  
+#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
 #   kable_styling('hover', font_size=12)
 
 ```
