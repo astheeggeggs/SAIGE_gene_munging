@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Quality control pipeline</title>
+
+<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="my-style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">UKBB 200k Exome QC</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="qc.html">Detailed QC</a>
+</li>
+<li>
+  <a href="qc_summary.html">QC Summary</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/astheeggeggs/SAIGE_gene_munging">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Quality control pipeline</h1>
+
+</div>
+
+
+<p><br> On this page we detail the quality control (QC) pipeline for the UK Biobank exomes before starting our analyses. Further plots and the underlying <a href="https://github.com/astheeggeggs/SAIGE_gene_munging/tree/main/QC_scripts">code</a> can be found on the SAIGE gene munging github <a href="https://github.com/astheeggeggs/SAIGE_gene_munging">repository</a>.</p>
+<p>We first summarise the collection of samples for which the exome sequence data is available, splitting across UKBB centres and sequencing batch.</p>
+<p><br></p>
+<p>Finally, the split by <a href="https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=21000">Data-Field 21000</a> was as follows:</p>
+<p><br></p>
+<p>For our QC pipeline, we first perform a collection of careful <a href="https://github.com/lindgrengroup/ukb_wes_qc">QC steps</a>. The initial step in this process is to read in the <code>.vcf</code> files, split multiallelics and realign indels, and calculate a collection of sample-level statistics.</p>
+<div id="initial-sample-filtering" class="section level1">
+<h1>Initial sample filtering</h1>
+<ul>
+<li>Filter out samples based on MAD thresholds.</li>
+</ul>
+<p><br></p>
+</div>
+<div id="initial-genotype-filtering" class="section level1">
+<h1>Initial genotype filtering</h1>
+<p>Our next step (after conversion of the joint called <code>.vcf</code> file to a hail matrix table) is to remove genotypes based on the following collection of criteria:</p>
+<ul>
+<li>If homozygous reference, remove if at least one of the following is true:
+<ul>
+<li>Genotype quality <span class="math inline">\(&lt;\)</span> 20</li>
+<li>Depth <span class="math inline">\(&lt;\)</span> 10</li>
+</ul></li>
+<li>If heterozygous, at least one of the following is true:
+<ul>
+<li>(Reference allele depth + alternative allele depth) divided by total depth <span class="math inline">\(&lt;\)</span> 0.8</li>
+<li>Alternative allele depth divided by total depth <span class="math inline">\(&lt;\)</span> 0.2</li>
+<li>Reference phred-scaled genotype posterior <span class="math inline">\(&lt;\)</span> 20</li>
+<li>Depth <span class="math inline">\(&lt;\)</span> 10</li>
+</ul></li>
+<li>If homozygous variant, at least one of the following is true:
+<ul>
+<li>Alternative allele depth divided by total depth <span class="math inline">\(&lt;\)</span> 0.8</li>
+<li>Reference phred-scaled genotype posterior <span class="math inline">\(&lt;\)</span> 20</li>
+<li>Depth <span class="math inline">\(&lt;\)</span> 10</li>
+</ul></li>
+</ul>
+<p><br></p>
+</div>
+<div id="initial-variant-filtering" class="section level1">
+<h1>Initial variant filtering</h1>
+<p>Remove variants that either:</p>
+<ul>
+<li>Are invariant after the initial GT filter</li>
+<li>Fall in a low complexity region</li>
+<li>Fall outside padded target intervals (50bp padding)</li>
+<li>Have GATK ExcessHet &gt; 54.69</li>
+</ul>
+<p><br></p>
+<p>Following this initial curation we perform a series of further QC steps detailed in this repository.</p>
+<p>We run the sample_qc function in hail and remove samples according to the following:</p>
+<ul>
+<li>Sample call rate <span class="math inline">\(&lt;\)</span> 0.95</li>
+<li>Mean depth <span class="math inline">\(&lt;\)</span> 19.5</li>
+<li>Mean genotype quality <span class="math inline">\(&lt;\)</span> 47.8</li>
+</ul>
+<p>Thresholds used were based on plotting the distributions of these metrics. Here we show boxplots with overlaid scatterplots of the above metrics, split by UKBB centre, and coloured by sequencing batch. The threshold for exclusion is shown as a dashed line.</p>
+<p><img src="../plots/200k_03_callRate_by_centre.jpg" width="100%" /><img src="../plots/200k_03_dpMean_by_centre.jpg" width="100%" /><img src="../plots/200k_03_gqMean_by_centre.jpg" width="100%" /></p>
+<p>Following this step, we export genotyped variants on the X chromosome (allele frequency between 0.05 to 0.95 with high call rate (&gt; 0.98)) to plink format and prune to pseudo-independent SNPs using <code>--indep 50 5 2</code>. This pruned set of SNPs feeds into the sex imputation step.</p>
+<p><br></p>
+</div>
+<div id="sex-imputation" class="section level1">
+<h1>Sex imputation</h1>
+<p>We impute the sexes of the individuals with this pruned set of variants on the X chromosome, and create list of samples with incorrect or unknown sex as defined by:</p>
+<ul>
+<li>Sex is unknown in the phenotype files</li>
+<li>F-statistic <span class="math inline">\(&gt;\)</span> 0.6 and the sex is female in the phenotype file</li>
+<li>F-statistic <span class="math inline">\(&lt;\)</span> 0.6 and the sex is male in the phenotype file</li>
+<li>DEV: check definition used</li>
+</ul>
+<p>Here we show the distribution of the F-statistic, with the 0.6 threshold defining our sex impututation shown as a dashed line.</p>
+<p><img src="../plots/04_imputesex_histogram.jpg" width="100%" /><img src="../plots/04_imputesex_scatter_box.jpg" width="100%" /></p>
+<p><br></p>
+</div>
+<div id="pca" class="section level1">
+<h1>PCA</h1>
+<p>We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans.</p>
+<p><br></p>
+<div id="pca-including-1000-genomes" class="section level2">
+<h2>PCA including 1000 genomes</h2>
+<p>Next, we included the 1000 genomes samples (minus the small subset of related individuals within 1000 geneomes), and rerun PCA after including those individuals. Plots of the first six principal components are shown below. 1000 genomes samples are coloured in dark blue.</p>
+<p>We restrict to the European subset of individuals to perform analysis to remove Finns. To do this, we train a random forest on the super populations labels of 1000 genomes and predict the super population that each of the BipEx samples. We denote strictly defined European subset as those with probability <span class="math inline">\(&gt;\)</span> 0.95 of being European according to the classifier. BipEx samples are coloured by their assignment or unsure if none of the classifier probabilities exceeded 0.95 in the following plots.</p>
+<p>Samples not assigned to the Non-Finnish European cluster were removed from downstream analysis.</p>
+<p><br></p>
+</div>
+</div>
+<div id="ultra-rare-variant-counts" class="section level1">
+<h1>Ultra-rare variant counts</h1>
+</div>
+<div id="final-variant-filtering" class="section level1">
+<h1>Final variant filtering</h1>
+<p>For our final variant filtering step, we first restrict to samples in the strictly defined non-Finnish European subset, filter out samples with incorrectly defined sex or unknown sex, and run variant QC. We then evaluate a collection of variant metrics and remove variants that satisfy at least one of:</p>
+<ul>
+<li>Invariant site in cleaned sample subset</li>
+<li>Call rate <span class="math inline">\(&lt;\)</span> 0.97</li>
+<li>_p_HWE <span class="math inline">\(&lt;\)</span> 10<sup>-6</sup></li>
+</ul>
+<p>The following plot shows the 0.97 threshold for call rate.</p>
+<p><img src="../plots/200k_08_callRate_cdf.jpg" width="100%" /></p>
+<p>After these steps we plot the resulting changes in metrics across the samples in our data set. Each of this first set plots splits the data by sequencing batch. The first collection of subplots in each figure shows the variant metrics before sample removal, with the lower collection of subplots showing the resultant change after our QC steps. <img src="../plots/09_nSingletons_by_batch.jpg" width="100%" /><img src="../plots/09_rHetHomVar_by_batch.jpg" width="100%" /><img src="../plots/09_rInsertionDeletion_by_batch.jpg" width="100%" /><img src="../plots/09_rTiTv_by_batch.jpg" width="100%" /> Splitting by UKBB centre and colouring by sequencing batch:</p>
+<p><img src="../plots/09_nSingletons_by_centre.jpg" width="100%" /><img src="../plots/09_rHetHomVar_by_centre.jpg" width="100%" /><img src="../plots/09_rInsertionDeletion_by_centre.jpg" width="100%" /><img src="../plots/09_rTiTv_by_centre.jpg" width="100%" /></p>
+<p><br></p>
+</div>
+<div id="final-sample-filtering" class="section level1">
+<h1>Final sample filtering</h1>
+<p>In this step we remove sample outliers after the variant cleaning in the previous step. Samples are removed if at least one of the following lies more than four standard deviations away from the mean:</p>
+<ul>
+<li>Ratio of transitions to transversions</li>
+<li>Ratio of heterozygous to homozygous variant</li>
+<li>Ratio of insertions to deletions</li>
+</ul>
+<p>We also remove samples with over 175 singletons in the dataset.</p>
+<p><br></p>
+<p>After all of this data cleaning, we save the resultant hail matrix tables for downstream analyses.</p>
+<p>The resultant composition of the samples according to UKBB centre was as follows:</p>
+<p>The composition by sequencing batch was as follows:</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
