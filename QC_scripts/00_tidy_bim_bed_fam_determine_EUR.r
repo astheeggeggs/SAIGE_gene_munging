@@ -82,8 +82,6 @@ bed.ref <- bed(download_1000G("/well/lindgren/dpalmer/ukb_get_EUR/data"))
 outdir <- '/well/lindgren/dpalmer/ukb_get_EUR/'
 filename <- 'ukb_projected_to_1kg_PCs'
 n_PCs <- 10
-T_European_RF <- 0.99
-T_Finnish_RF <- 0.95
 save_figures <- TRUE
 perform_plotting <- TRUE
 creating_new_EUR_def <- TRUE

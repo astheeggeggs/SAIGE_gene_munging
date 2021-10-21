@@ -1,0 +1,15 @@
+name: "200k-exome-QC"
+output_dir: "../docs"
+navbar:
+  title: 'UKBB 200k Exome QC'
+  left:
+    - text: "Detailed QC"
+      href: qc.html
+    - text: "QC Summary"
+      href: qc_summary.html
+  right:
+    - icon: fa-github
+      href: https://github.com/astheeggeggs/SAIGE_gene_munging
+output:
+  html_document:
+    self_contained: true

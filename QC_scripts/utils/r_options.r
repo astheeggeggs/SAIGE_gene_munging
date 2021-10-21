@@ -1,5 +1,9 @@
 TRANCHE <- '200k'
 
+# OO_tidy_bim_bed_fam_determine_EUR.r
+T_European_RF <- 0.99
+T_Finnish_RF <- 0.95
+
 # 03_initial_sample_qc_plot.r
 PLOTS <- '/well/lindgren/dpalmer/ukb_exome_qc/plots/'
 # Define some thresholds 

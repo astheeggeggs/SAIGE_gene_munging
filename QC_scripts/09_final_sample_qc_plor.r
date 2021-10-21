@@ -180,11 +180,3 @@ create_pretty_boxplots(dt, aes(y=sample_qc.r_ti_tv, x=factor(sequencing_batch)),
     aes(color=factor(sequencing_batch)), facet=TRUE, facet_grid=facet_grid(phase~.), x_label='rTiTv',
     save_figure=save_figures, file=paste0(PLOTS, '09_rTiTv_by_batch'), n_ticks=5, y_label=y_labels,
     alpha=alpha, height=80)
-
-q <- function(x, n_sd=4) {
-    y <- subset(x, x < (mean(x) - n_sd * sd(x))| x > (mean(x) + n_sd * sd(x)))
-    print(y)
-    if (length(y) == 0) y <- NA
-    return(y)
-}
-

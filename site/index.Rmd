@@ -1,0 +1,31 @@
+---
+title: 'UKBB 200k Exome QC'
+pagetitle: 'UKBB 200k Exome QC'
+output: 
+  html_document:
+    theme: lumen
+    highlight: tango
+    css: "my-style.css"
+---
+
+<br>
+
+<center>
+```{r init_samples, echo=FALSE, out.width = '30%'}
+# knitr::include_graphics("bipex.svg")
+```
+</center>
+
+<br>
+
+<div class="well">
+
+In this website and repository, we detail the collection of quality control steps and analyses applied to the 200k UK Biobank exomes release. Each step of the quality control pipeline is explained in detail and links to python code utilising the [hail](https://hail.is/) software developed in the Neale lab, and R code used to generate the plots that you see when clicking around the website.
+<br>
+
+
+<div style="text-align: center;">
+<a href="https://astheeggeggs.github.io/SAIGE_gene_munging/qc.html" class="btn btn-primary btn-lg">Quality control</a>
+</div>
+
+</div>
