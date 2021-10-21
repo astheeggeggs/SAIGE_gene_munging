@@ -39,6 +39,7 @@ dt <- rbindlist(dt_list)
 fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t', quote=FALSE)
 # system(paste("bgzip", COMBINED_VARIANT_QC_FILE))
 
+dt <- fread(COMBINED_VARIANT_QC_FILE)
 # call rate across all variants
 create_pretty_hist(dt, aes(x=qc.call_rate), threshold=T_variant_call_rate, x_label='Call Rate', xlim=c(0.9,1), save_figure=save_figures,
 	file=paste0(PLOTS, TRANCHE, '_08_callRate_hist'))
@@ -53,6 +54,8 @@ p <- create_pretty_hist(dt, aes(x=qc.p_value_hwe), threshold=T_pHWE,  x_label='p
     labels = scales::trans_format("log10", scales::math_format(10^.x))
   )
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.jpg'), p, width=160, height=90, units='mm', dpi="500")
+
 
 # cumulative pHWE
 p <- create_pretty_cumulative(dt, aes(x=qc.p_value_hwe), x_label='p(HWE)',
@@ -61,3 +64,4 @@ p <- create_pretty_cumulative(dt, aes(x=qc.p_value_hwe), x_label='p(HWE)',
     labels = scales::trans_format("log10", scales::math_format(10^.x))
   )
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_cdf.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_cdf.jpg'), p, width=160, height=90, units='mm', dpi="500")

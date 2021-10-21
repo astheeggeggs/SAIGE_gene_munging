@@ -302,6 +302,7 @@ if (perform_plotting)
               mapping=aes_string(x=paste0('PC',i), y=paste0('PC',i+1)),
               inherit.aes=FALSE, shape=4, show.legend=FALSE)
             ggsave(file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_FIN_loose_1kg_labelled.pdf'), width=160, height=90, units='mm')
+            ggsave(file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_FIN_loose_1kg_labelled.jpg'), width=160, height=90, units='mm', dpi=500)
         }
 
         aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='classification_strict')

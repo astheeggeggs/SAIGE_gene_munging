@@ -65,21 +65,26 @@ system(paste("bgzip", URV_COMBINED_FILE))
 
 dt <- fread(URV_COMBINED_FILE)
 dt <- dt[sample(nrow(dt), replace=FALSE),]
+dt[, genetic_eur_oct2021:= ifelse(genetic_eur_oct2021 == "", "Unknown", genetic_eur_oct2021)]
+dt[, genetic_eur_no_fin_oct2021:= ifelse(genetic_eur_no_fin_oct2021 == "", "Unknown", genetic_eur_no_fin_oct2021)]
+dt[, self_report_ethnicity:= ifelse(self_report_ethnicity == "", "Unknown", self_report_ethnicity)]
 
 # Scatters of URV-SNPs against URV-Indels.
 p <- ggplot(dt, aes(x=n_coding_URV_SNP, y=n_coding_URV_indel, colour=factor(genetic_eur_no_fin_oct2021))) + 
-geom_point_rast(size=0.5, alpha=0.5) + 
-scale_color_d3('category10') + theme_minimal() + labs(x='n URV SNPs', y='n URV indels', color='')
+geom_point_rast(size=0.5, alpha=0.5, raster.dpi=500) + 
+scale_color_d3('category10') + theme_classic() + labs(x='n URV SNPs', y='n URV indels', color='')
 p <- ggExtra::ggMarginal(p, type = "density",
   xparams = list(adjust=1), yparams=list(adjust=1.5))
 ggsave(paste0(PLOTS, '07_URVs_SNPs_vs_indels_by_NFE.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '07_URVs_SNPs_vs_indels_by_NFE.jpg'), p, width=160, height=90, units='mm', dpi="500")
 
 p <- ggplot(dt, aes(x=n_coding_URV_SNP, y=n_coding_URV_indel, colour=factor(white_british))) + 
-geom_point_rast(size=0.5, alpha=0.5) + 
-scale_color_d3('category10') + theme_minimal() + labs(x='n URV SNPs', y='n URV indels', color='')
+geom_point_rast(size=0.5, alpha=0.5, raster.dpi=500) + 
+scale_color_d3('category10') + theme_classic() + labs(x='n URV SNPs', y='n URV indels', color='')
 p <- ggExtra::ggMarginal(p, type = "density",
   xparams = list(adjust=1), yparams=list(adjust=1.5))
 ggsave(paste0(PLOTS, '07_URVs_SNPs_vs_indels_by_british.pdf'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '07_URVs_SNPs_vs_indels_by_british.jpg'), p, width=160, height=90, units='mm', dpi="500")
 
 y_labels <- c('UKBB centre', 'Sequencing batch')
 y_label_batch <- c('', '')

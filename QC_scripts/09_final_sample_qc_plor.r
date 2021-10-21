@@ -112,6 +112,9 @@ dt_after <- merge(dt_after, dt_pheno)
 fwrite(dt_before, file=SAMPLE_BEFORE_COMBINED_QC_FILE, sep='\t')
 fwrite(dt_after, file=SAMPLE_AFTER_COMBINED_QC_FILE, sep='\t')
 
+dt_before <- fread(SAMPLE_BEFORE_COMBINED_QC_FILE)
+dt_after <- fread(SAMPLE_AFTER_COMBINED_QC_FILE)
+
 dt_before <- fread(SAMPLE_BEFORE_COMBINED_QC_FILE, sep='\t', stringsAsFactors=FALSE, header=TRUE) %>% 
     mutate(phase='Before Variant QC')
 

@@ -109,7 +109,12 @@ dt_pheno <- create_pheno_dt(TRANCHE)
 dt <- merge(dt, dt_pheno)
 
 fwrite(dt, file=INITIAL_COMBINED_SAMPLE_QC_FILE, sep='\t')
-system(paste("bgzip", INITIAL_COMBINED_SAMPLE_QC_FILE))
+dt <- fread(INITIAL_COMBINED_SAMPLE_QC_FILE)
+dt[, genetic_eur_oct2021:= ifelse(genetic_eur_oct2021 == "", "Unknown", genetic_eur_oct2021)]
+dt[, genetic_eur_no_fin_oct2021:= ifelse(genetic_eur_no_fin_oct2021 == "", "Unknown", genetic_eur_no_fin_oct2021)]
+dt[, self_report_ethnicity:= ifelse(self_report_ethnicity == "", "Unknown", self_report_ethnicity)]
+
+# system(paste("bgzip", INITIAL_COMBINED_SAMPLE_QC_FILE))
 
 # Want to combine all the sample metrics (because we're limited to parallelisation within chr).
 

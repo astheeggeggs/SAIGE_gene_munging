@@ -45,14 +45,14 @@ p <- ggplot(dt, aes(x=impute_sex.f_stat, fill=imputed_sex)) +
        fill='Imputed Sex') +
   scale_x_continuous(breaks=scales::pretty_breaks(n=10)) +
   scale_y_continuous(label=scales::comma, breaks=scales::pretty_breaks(n=10)) +
-  theme_minimal() +
+  theme_classic() +
   theme(axis.title.x=element_text(margin=ggplot2::margin(t=10)),
         axis.title.y=element_text(margin=ggplot2::margin(r=10)),
         plot.title=element_text(hjust=0.5)) +
   geom_vline(xintercept=T_impute_sex, linetype='dashed')
 
 ggsave(paste0(PLOTS, '04_imputesex_histogram', '.pdf'), p, width=160, height=90, units='mm')
-ggsave(paste0(PLOTS, '04_imputesex_histogram', '.jpg'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_histogram', '.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
 dt <- dt %>% mutate(phenotype.Submitted_Gender = ifelse(phenotype.Submitted_Gender == "F", "Female", "Male"))
 if(any(is.na(dt$phenotype.Submitted_Gender))) {
@@ -64,15 +64,15 @@ if(any(is.na(dt$phenotype.ukbb_centre))) {
 }
 
 p <- ggplot(dt, aes(x=impute_sex.f_stat, y=factor(phenotype.ukbb_centre), colour=phenotype.Submitted_Gender)) +
-  geom_jitter_rast(width=0, height=0.2, size=1, alpha=0.2, stroke=0.05) + 
-  theme_minimal() +
+  geom_jitter_rast(width=0, height=0.2, size=1, alpha=0.2, stroke=0.05, raster.dpi=500) + 
+  theme_classic() +
   geom_vline(xintercept=T_impute_sex, linetype='dashed') +
   labs(x='X chromosome F-statistic',
        y='Location',
        color='Reported Sex') 
 
 ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.pdf'), p, width=160, height=90, units='mm')
-ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.jpg'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
 dt_false <- dt %>% filter(
   (impute_sex.f_stat > T_impute_sex & phenotype.Submitted_Gender == 'Female') |
@@ -81,15 +81,15 @@ dt_false <- dt %>% filter(
 
 # Plots of sex estimates using Giulios plotting method.
 p <- ggplot(dt, aes(x=impute_sex.f_stat, y=n_called, colour=factor(phenotype.Submitted_Gender))) +
-geom_point_rast(size=0.5) + 
+geom_point_rast(size=0.5, raster.dpi=500) + 
 labs(x='X chromosome F-statistic', y='Number of calls in Y', color='Reported Sex') +
 scale_color_d3('category10') +
 scale_x_continuous(breaks=scales::pretty_breaks(n=10)) +
 scale_y_continuous(label=scales::comma, breaks=scales::pretty_breaks(n=10)) +
-geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=n_called), size=0.5) + 
-theme_minimal()
+geom_point_rast(data=dt_false, aes(x=impute_sex.f_stat, y=n_called), size=0.5, raster.dpi=500) + 
+theme_classic()
 ggsave(paste0(PLOTS, '04_imputesex_scatter', '.pdf'), p, width=160, height=90, units='mm')
-ggsave(paste0(PLOTS, '04_imputesex_scatter', '.jpg'), p, width=160, height=90, units='mm')
+ggsave(paste0(PLOTS, '04_imputesex_scatter', '.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
 dt_out <- dt_false %>% select(s)
 write.table(dt_out, file=SEXCHECK_LIST, quote=FALSE, row.names=FALSE, col.names=FALSE)
