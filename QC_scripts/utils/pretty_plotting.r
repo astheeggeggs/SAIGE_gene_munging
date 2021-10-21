@@ -30,7 +30,7 @@ create_pretty_forest <- function(df, title, save_figure=FALSE, file='file_out',
     if (print_p)  print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width*scaling, height=height*scaling, units='mm')
     }
     
@@ -71,7 +71,7 @@ create_pretty_hist <- function(df, aest, x_label, threshold=NULL, threshold_max=
     if (print_p) print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width*scaling, height=height*scaling, units='mm')
     }
     
@@ -117,7 +117,7 @@ create_pretty_density <- function(df, aest, x_label, threshold=NULL, threshold_m
     if (print_p) print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width*scaling, height=height*scaling, units='mm')
     }
     
@@ -155,7 +155,7 @@ create_pretty_boxplots <- function(df, aes, aes_col, threshold=NULL,
     if (print_p) print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width*scaling, height=height*scaling, units='mm')
     }
     return(p)
@@ -190,7 +190,7 @@ create_pretty_cumulative <- function(df, aes, x_label, threshold, threshold_max=
     if (print_p) print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width*scaling, height=height*scaling, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width*scaling, height=height*scaling, units='mm')
     }
     return(p)
@@ -251,9 +251,9 @@ create_pretty_scatter <- function(dt, aes, file='file_out', save_figure=FALSE,
         if (presentation == TRUE) {
             width <- 160
             height <- 90
-            ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi="500")
+            ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi=500)
         } else {
-            ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi="500")
+            ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi=500)
             ggsave(paste0(file, '.pdf'), p, width=width, height=height, units='mm')
         }
     
@@ -292,7 +292,7 @@ create_pretty_qq_plot <- function(dt, aes, file='file_out', save_figure=FALSE,
     }
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width, height=height, units='mm')
     }
     
@@ -365,7 +365,7 @@ create_pretty_pointrange <- function(dt, y, ymin, ymax, colors="phenotype",
     if(print_p) print(p)
 
     if (save_figure) {
-        ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi="500")
+        ggsave(paste0(file, '.jpg'), p, width=width, height=height, units='mm', dpi=500)
         ggsave(paste0(file, '.pdf'), p, width=width, height=height, units='mm')
     }
     return(p)
