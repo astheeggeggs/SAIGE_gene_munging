@@ -52,7 +52,7 @@ if (file.exists(PLOTS)) {
   dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
   fwrite(dt_loc, file="../site_tables/00_initial_table_ukbb_centre.tsv", sep="\t")
 } else {
-  dt_loc <- fread("../site_tables/00_initial_table.tsv")
+  dt_loc <- fread("../site_tables/00_initial_table_ukbb_centre.tsv")
 }
 
 dt_loc %>%
