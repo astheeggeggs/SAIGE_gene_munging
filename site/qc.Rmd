@@ -140,10 +140,10 @@ We run the sample_qc function in hail and remove samples according to the follow
 Thresholds used were based on plotting the distributions of these metrics. Here we show boxplots with overlaid scatterplots of the above metrics, split by UKBB centre, and coloured by sequencing batch. The threshold for exclusion is shown as a dashed line.
 
 ```{r init_samples, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
-# knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
-# knitr::include_graphics("../plots/200k_03_dpMean_by_centre.jpg")
-# knitr::include_graphics("../plots/200k_03_gqMean_by_centre.jpg")
+knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
+knitr::include_graphics("../plots/200k_03_callRate_by_centre.jpg")
+knitr::include_graphics("../plots/200k_03_dpMean_by_centre.jpg")
+knitr::include_graphics("../plots/200k_03_gqMean_by_centre.jpg")
 ```
 
 ```{r sample_table, echo=FALSE, out.width = '100%', warning=FALSE}
@@ -180,8 +180,8 @@ We impute the sexes of the individuals with this pruned set of variants on the X
 Here we show the distribution of the F-statistic, with the `r T_impute_sex` threshold defining our sex impututation shown as a dashed line.
 
 ```{r impute_sex, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("../plots/04_imputesex_histogram.jpg")
-# knitr::include_graphics("../plots/04_imputesex_scatter_box.jpg")
+knitr::include_graphics("../plots/04_imputesex_histogram.jpg")
+knitr::include_graphics("../plots/04_imputesex_scatter_box.jpg")
 ```
 
 ```{r sample_sex_removal_table, echo=FALSE, out.width = '100%', warning=FALSE}
@@ -323,18 +323,18 @@ The following plot shows the `r T_variant_call_rate` threshold for call rate.
 
 After these steps we plot the resulting changes in metrics across the samples in our data set. Each of this first set plots splits the data by sequencing batch. The first collection of subplots in each figure shows the variant metrics before sample removal, with the lower collection of subplots showing the resultant change after our QC steps.
 ```{r final_sample, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("../plots/09_nSingletons_by_batch.jpg")
-# knitr::include_graphics("../plots/09_rHetHomVar_by_batch.jpg")
-# knitr::include_graphics("../plots/09_rInsertionDeletion_by_batch.jpg")
-# knitr::include_graphics("../plots/09_rTiTv_by_batch.jpg")
+knitr::include_graphics("../plots/09_nSingletons_by_batch.jpg")
+knitr::include_graphics("../plots/09_rHetHomVar_by_batch.jpg")
+knitr::include_graphics("../plots/09_rInsertionDeletion_by_batch.jpg")
+knitr::include_graphics("../plots/09_rTiTv_by_batch.jpg")
 ```
 Splitting by UKBB centre and colouring by sequencing batch:
 
 ```{r final_sample_centre, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("../plots/09_nSingletons_by_centre.jpg")
-# knitr::include_graphics("../plots/09_rHetHomVar_by_centre.jpg")
-# knitr::include_graphics("../plots/09_rInsertionDeletion_by_centre.jpg")
-# knitr::include_graphics("../plots/09_rTiTv_by_centre.jpg")
+knitr::include_graphics("../plots/09_nSingletons_by_centre.jpg")
+knitr::include_graphics("../plots/09_rHetHomVar_by_centre.jpg")
+knitr::include_graphics("../plots/09_rInsertionDeletion_by_centre.jpg")
+knitr::include_graphics("../plots/09_rTiTv_by_centre.jpg")
 ```
 
 <br>
