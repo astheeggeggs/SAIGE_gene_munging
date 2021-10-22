@@ -31,13 +31,15 @@ source("../QC_scripts/utils/helpers.r")
 options(dplyr.summarise.inform=F)
 if (file.exists(PLOTS)) {
   # We're on the cluster, update the plots
-  system(paste0("cp ", PLOTS, "*jpg ", "./plots/"))
+  system(paste0("cp ", PLOTS, "*jpg ", "../docs/plots/"))
 }
 ```
  <br>
 On this page we detail the quality control (QC) pipeline for the UK Biobank exomes before starting our analyses. Further plots and the underlying [code](https://github.com/astheeggeggs/SAIGE_gene_munging/tree/main/QC_scripts) can be found on the SAIGE gene munging github [repository](https://github.com/astheeggeggs/SAIGE_gene_munging).
 
 We first summarise the collection of samples for which the exome sequence data is available, splitting across UKBB centres and sequencing batch.
+
+<br>
 
 ```{r sample_composition, echo=FALSE, out.width = '100%', warning=FALSE}
 
@@ -66,6 +68,8 @@ dt_loc %>%
 
 Finally, the split by [Data-Field 21000](https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=21000) was as follows:
 
+<br>
+
 ```{r sample_composition_PI, echo=FALSE, out.width = '100%', warning=FALSE}
 
 if (file.exists(PLOTS)) {
@@ -91,6 +95,8 @@ dt_loc %>%
 
 For our QC pipeline, we first perform a collection of careful [QC steps](https://github.com/lindgrengroup/ukb_wes_qc). The initial step in this process is to read in the `.vcf` files, split multiallelics and realign indels, and calculate a collection of sample-level statistics. 
 
+<br>
+
 # Initial sample filtering
 
 * Filter out samples based on MAD thresholds.
@@ -101,20 +107,15 @@ For our QC pipeline, we first perform a collection of careful [QC steps](https:/
 
 Our next step (after conversion of the joint called `.vcf` file to a hail matrix table) is to remove genotypes based on the following collection of criteria:
 
-* If homozygous reference, remove if at least one of the following is true:
+* Remove if at least one of the following is true:
     + Genotype quality $<$ 20
     + Depth $<$ 10
 
-* If heterozygous, at least one of the following is true:
-    + (Reference allele depth + alternative allele depth) divided by total depth $<$ 0.8
-    + Alternative allele depth divided by total depth $<$ 0.2
-    + Reference phred-scaled genotype posterior $<$ 20
-    + Depth $<$ 10
+* If heterozygous and a SNP:
+    + $p$-value from 1-sided binomial test of alt allele read depth relative to ref+alt read depth $<$ 10^-3^
 
-* If homozygous variant, at least one of the following is true:
-    + Alternative allele depth divided by total depth $<$ 0.8
-    + Reference phred-scaled genotype posterior $<$ 20
-    + Depth $<$ 10
+* If heterozygous and an indel:
+    + Alternative allele depth divided by total depth $<$ 0.3
 
 <br>
 
@@ -292,7 +293,12 @@ Samples not assigned to the Non-Finnish European cluster were removed from downs
 
 # Ultra-rare variant counts
 
-# DEV: need to include these.
+We next annotate with presence in gnomAD v2 liftover, and determine the number of singletons in the dataset that are not present in gnomAD. We then remove samples that contain over `r T_nURVSNP`. 
+
+```{r URV_variants, echo=FALSE, out.width = '100%', warning=FALSE}
+knitr::include_graphics("./plots/07_URVs_SNPs_vs_indels_by_NFE.jpg")
+knitr::include_graphics("./plots/07_URVs_by_ethnicity.jpg")
+```
 
 # Final variant filtering
 
@@ -300,24 +306,30 @@ For our final variant filtering step, we first restrict to samples in the strict
 
 * Invariant site in cleaned sample subset
 * Call rate $<$ `r T_variant_call_rate`
-* _p_HWE $<$ 10^-6^
+* $p$HWE $<$ 10^-6^
 
-The following plot shows the `r T_variant_call_rate` threshold for call rate.
+The following plots shows the `r T_variant_call_rate` threshold for call rate.
 
 ```{r final_variant, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("./plots/200k_08_callRate_cdf.jpg")
+knitr::include_graphics("./plots/200k_08_callRate_hist.jpg")
+knitr::include_graphics("./plots/200k_08_callRate_cdf.jpg")
 ```
 
 ```{r variant_final_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
-# dt <- fread('../samples_BipEx/14_variant_count.tsv', header=FALSE)
-# names(dt) <- c("Filter", "Variants")
-# dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
+if (file.exists(PLOTS)) {
+  dt <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_variant_count.tsv') header=FALSE)
+  names(dt) <- c("Filter", "Variants")
+  dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
+  fwrite(dt, file = "../site_tables/03_variant_count_summary.tsv", sep="\t")
+} else {
+  dt <- fread("../site_tables/03_variant_count_summary.tsv")
+}
 
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
-#   kable_styling('hover')
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
 
 ```
 
@@ -351,14 +363,23 @@ We also remove samples with over 175 singletons in the dataset.
 
 ```{r variant_sample_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
-# dt <- fread('../samples_BipEx/15_sample_count.tsv', header=FALSE)
-# names(dt) <- c("Filter", "Samples", "Bipolar Cases", "Controls")
-# dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+if (file.exists(PLOTS)) {
+  dt <- fread(
+    paste0(
+      '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
+      '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv'),
+    header=FALSE)
+  names(dt) <- c("Filter", "Samples")
+  fwrite()
+} else {
 
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
-#   kable_styling('hover')
+}
+  dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
 
 ```
 

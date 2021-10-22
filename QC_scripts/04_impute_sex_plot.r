@@ -9,6 +9,7 @@ library(data.table)
 source('utils/pretty_plotting.r')
 # Thresholds and plotting file locations defined in r_options.r
 source("utils/r_options.r")
+source("utils/helpers.r")
 
 suppressPackageStartupMessages(library("argparse"))
 
@@ -54,16 +55,15 @@ p <- ggplot(dt, aes(x=impute_sex.f_stat, fill=imputed_sex)) +
 ggsave(paste0(PLOTS, '04_imputesex_histogram', '.pdf'), p, width=160, height=90, units='mm')
 ggsave(paste0(PLOTS, '04_imputesex_histogram', '.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
-dt <- dt %>% mutate(phenotype.Submitted_Gender = ifelse(phenotype.Submitted_Gender == "F", "Female", "Male"))
-if(any(is.na(dt$phenotype.Submitted_Gender))) {
-  dt <- dt %>% mutate(phenotype.Submitted_Gender = ifelse(is.na(phenotype.Submitted_Gender), "Unknown", phenotype.Submitted_Gender))
+dt_pheno <- create_pheno_dt(TRANCHE)
+dt <- merge(dt, dt_pheno)
+
+dt <- dt %>% mutate(Submitted_Gender = ifelse(Submitted_Gender == "F", "Female", "Male"))
+if(any(is.na(dt$Submitted_Gender))) {
+  dt <- dt %>% mutate(Submitted_Gender = ifelse(is.na(Submitted_Gender), "Unknown", Submitted_Gender))
 }
 
-if(any(is.na(dt$phenotype.ukbb_centre))) {
-  dt <- dt %>% mutate(phenotype.ukbb_centre = ifelse(is.na(phenotype.ukbb_centre), "Unknown", phenotype.ukbb_centre))
-}
-
-p <- ggplot(dt, aes(x=impute_sex.f_stat, y=factor(phenotype.ukbb_centre), colour=phenotype.Submitted_Gender)) +
+p <- ggplot(dt, aes(x=impute_sex.f_stat, y=factor(ukbb_centre), colour=Submitted_Gender)) +
   geom_jitter_rast(width=0, height=0.2, size=1, alpha=0.2, stroke=0.05, raster.dpi=500) + 
   theme_classic() +
   geom_vline(xintercept=T_impute_sex, linetype='dashed') +
@@ -75,12 +75,12 @@ ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.pdf'), p, width=160, height=9
 ggsave(paste0(PLOTS, '04_imputesex_scatter_box', '.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
 dt_false <- dt %>% filter(
-  (impute_sex.f_stat > T_impute_sex & phenotype.Submitted_Gender == 'Female') |
-  (impute_sex.f_stat < T_impute_sex & phenotype.Submitted_Gender == 'Male') |
+  (impute_sex.f_stat > T_impute_sex & Submitted_Gender == 'Female') |
+  (impute_sex.f_stat < T_impute_sex & Submitted_Gender == 'Male') |
   (impute_sex.f_stat > T_impute_sex & n_called < 100))
 
 # Plots of sex estimates using Giulios plotting method.
-p <- ggplot(dt, aes(x=impute_sex.f_stat, y=n_called, colour=factor(phenotype.Submitted_Gender))) +
+p <- ggplot(dt, aes(x=impute_sex.f_stat, y=n_called, colour=factor(Submitted_Gender))) +
 geom_point_rast(size=0.5, raster.dpi=500) + 
 labs(x='X chromosome F-statistic', y='Number of calls in Y', color='Reported Sex') +
 scale_color_d3('category10') +
