@@ -1,0 +1,7 @@
+Filter	Samples
+Samples after population filters	177226
+Within batch Ti/Tv ratio outside 4 standard deviations	13
+Within batch Het/HomVar ratio outside 4 standard deviations	251
+Within batch Insertion/Deletion ratio outside 4 standard deviations	9
+n singletons >175	19
+Samples after final sample filters	176935
