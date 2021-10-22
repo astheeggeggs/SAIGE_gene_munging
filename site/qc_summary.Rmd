@@ -28,13 +28,89 @@ require(DT)
 require(kableExtra)
 require(formattable)
 require(htmltools)
-# source("../scripts_BipEx/QC_BipEx/r_functions_and_parameters/r_options_BipEx.r")
+source("../QC_scripts/utils/r_options.r")
+source("../QC_scripts/utils/helpers.r")
 options(dplyr.summarise.inform=F)
+
+summary_fun <- function(dt) {
+  return(
+    dt %>% summarize(
+        "Samples"=sum(!is.na(sequencing_batch)),
+        "Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
+        "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE)
+        )
+    )
+}
+
+if (file.exists(PLOTS)) {
+  # We're on the cluster, update the plots
+  system(paste0("cp ", PLOTS, "*jpg ", "../docs/plots/"))
+
+  # Determine all of the removals
+  # Everyone
+  dt_pheno <- create_pheno_dt(TRANCHE)
+  # Everyone after Nik's initial QC, and initial sample filters
+  dt_initial_vcf <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_initial_sample_qc.tsv"), key='s', select='s') %>% mutate(initial_vcf=TRUE)
+  dt_initial_sample_qc <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_initial_qc.keep.sample_list")) %>% transmute(s=V1) %>% mutate(initial_sample_qc = TRUE)
+  sex_removed <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list"), header=FALSE) %>% transmute(s=V1) %>% mutate(sex_removed = TRUE)
+  urv_removed <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/07_URV.remove.sample_list')) %>% transmute(s=V1) %>% mutate(urv_removed = TRUE)
+  rf_eur <- fread("/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb11867_cal_chr1_v2_s488363_for_plink_EUR.tsv") %>% transmute(s = V1) %>% mutate(rf_eur = TRUE) 
+  rf_nfe <- fread("/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv") %>% transmute(s = V1) %>% mutate(rf_nfe = TRUE)
+  final_list <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/09_final_qc.keep.sample_list")) %>% transmute(s=V1) %>% mutate(final_list = TRUE)
+
+  dt_initial_vcf <- data.table(dt_initial_vcf)
+  setkey(dt_initial_vcf, 's')
+  dt_initial_sample_qc <- data.table(dt_initial_sample_qc)
+  setkey(dt_initial_sample_qc, 's')
+  sex_removed <- data.table(sex_removed)
+  setkey(sex_removed, 's')
+  urv_removed <- data.table(urv_removed)
+  setkey(urv_removed, 's')
+  rf_eur <- data.table(rf_eur)
+  setkey(rf_eur, 's')
+  rf_nfe <- data.table(rf_nfe)
+  setkey(rf_nfe, 's')
+  final_list <- data.table(final_list)
+  setkey(final_list, 's')
+
+  dt_pheno <- merge(dt_pheno, dt_initial_vcf, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, dt_initial_sample_qc, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, sex_removed, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, urv_removed, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, rf_eur, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, rf_nfe, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, final_list, all.x=TRUE)
+
+  dt_pheno[, initial_vcf:=ifelse(is.na(initial_vcf), FALSE, initial_vcf)]
+  dt_pheno[, initial_sample_qc:=ifelse(is.na(initial_sample_qc), FALSE, initial_sample_qc)]
+  dt_pheno[, sex_removed:=ifelse(is.na(sex_removed), FALSE, sex_removed)]
+  dt_pheno[, urv_removed:=ifelse(is.na(urv_removed), FALSE, urv_removed)]
+  dt_pheno[, rf_eur:=ifelse(is.na(rf_eur), FALSE, rf_eur)]
+  dt_pheno[, rf_nfe:=ifelse(is.na(rf_nfe), FALSE, rf_nfe)]
+  dt_pheno[, final_list:=ifelse(is.na(final_list), FALSE, final_list)]
+
+  # Check counts
+  dt_pheno %>% filter(initial_vcf)
+  # 199795
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc)
+  # 190924
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed)
+  # 190839
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed)
+  # 190763
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_eur)
+  # 177405
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_eur, rf_nfe)
+  # 177226
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_eur, rf_nfe, final_list)
+
+}
+
 ```
 
 ```{r variant_table, echo=FALSE, out.width = '100%', warning=FALSE}
 # dt_1 <- fread('../variants_BipEx/02_summary_variant_table.tsv')
-# dt_2 <- fread('../samples_BipEx/14_variant_count.tsv', header=FALSE)
+# dt_2 <- fread('../site_tables/03_variant_count_summary.tsv', header=FALSE)
 # names(dt_2) <- c("Filter", "Variants")
 
 # dt <- rbind(dt_1[1:(nrow(dt_1)-1),], dt_2[2:nrow(dt_2),])
@@ -44,7 +120,7 @@ options(dplyr.summarise.inform=F)
 
 # dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
 #   kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
+#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
 #   kable_styling('hover')
 
 ```
@@ -57,45 +133,54 @@ options(dplyr.summarise.inform=F)
 
 ```{r sample_summary_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
-# # Initial sample counts
-# dt_tmp <- fread('../samples_BipEx/03_initial_sample_count.tsv', header=FALSE)
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-# dt <- dt_tmp[1:(nrow(dt_tmp)-1),]
+dt_initial <- fread(
+  paste0(
+    "/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE,
+    "/ukb_wes_qc/data/samples/03_sample_count.tsv"),
+  header=FALSE
+  )
+names(dt_initial) <- c("Filter", "Samples", "Batch 1", "Batch 2")
 
-# # First set of filters
-# dt_tmp <- fread('../samples_BipEx/03_sample_count.tsv', header=FALSE)
-# dt_tmp <- dt_tmp[2:(nrow(dt_tmp)-1),]
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-# dt <- rbind(dt, dt_tmp)
+dt_final_sample <- fread(
+  paste0(
+    "/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE,
+    "/ukb_wes_qc/data/samples/09_final_sample.summary.tsv")
+  )
 
-# # Sex check
-# dt <- rbind(dt, fread("../samples_BipEx/05_sexcheck_sample_count.tsv")[2,1:4])
+dt <- rbind(
+  dt_initial[-nrow(dt_initial),] %>% select(-Filter),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, sex_removed)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, urv_removed)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, !rf_nfe)),
+  dt_final_sample[-c(1,nrow(dt_final_sample)),] %>% select(-Filter),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, final_list))
+)
 
-# # Relatedness check
-# dt <- rbind(dt, fread("../samples_BipEx/06_ibd_sample_count.tsv")[2, 1:4])
+dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
 
-# # PCA based filters
-# # This will likely break in the future and should be gone through carefully.
-# dt_tmp <- fread('../samples_BipEx/15_sample_count.tsv', header=FALSE)[1, 2:4]
-# dt_tmp <- fread("../samples_BipEx/06_ibd_sample_count.tsv")[3, 2:4] - dt_tmp
-# dt_tmp <- cbind("PCA based filters", dt_tmp)
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
+dt <- cbind(
+  data.table(
+    Filter = c(
+      "Initial samples in vcf",
+      "Sample call rate < 0.95",
+      "Mean DP < 19.5",
+      "Mean GQ < 47.8",
+      "Samples with sex swap",
+      "Samples with excess URVs",
+      "PCA based filters",
+      "Within batch Ti/Tv ratio outside 4 standard deviations",
+      "Within batch Het/HomVar ratio outside 4 standard deviations",
+      "Within batch Insertion/Deletion ratio outside 4 standard deviations",
+      "n singletons > 175",
+      "Samples after all sample filters")
+    ),
+  dt)
 
-# dt <- rbind(dt, dt_tmp)
-
-# # Final sample filters
-# dt_tmp <- fread('../samples_BipEx/15_sample_count.tsv', header=FALSE)
-# dt_tmp <- dt_tmp[2:nrow(dt_tmp),]
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-
-# dt <- rbind(dt, dt_tmp)
-# dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
-
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
-#   kable_styling('hover')
-
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
+  
 ```
 
 <br>
@@ -104,45 +189,36 @@ options(dplyr.summarise.inform=F)
 
 ```{r sample_summary_of_summary_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
-# # Initial sample counts
-# dt_tmp <- fread('../samples_BipEx/03_initial_sample_count.tsv', header=FALSE)
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-# dt <- dt_tmp[1:(nrow(dt_tmp)-1),]
 
-# # First set of filters
-# dt_tmp <- fread('../samples_BipEx/03_sample_count.tsv', header=FALSE)
-# dt_tmp <- cbind('Below sample metric thresholds', dt_tmp[1,2:ncol(dt_tmp)] - dt_tmp[nrow(dt_tmp),2:ncol(dt_tmp)])
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-# dt <- rbind(dt, dt_tmp)
+dt <- rbind(
+  summary_fun(dt_pheno %>% filter(initial_vcf)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, !initial_sample_qc)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, sex_removed)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, urv_removed)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, !rf_nfe)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, !final_list)),
+  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, final_list))
+)
 
-# # Sex check
-# dt <- rbind(dt, fread("../samples_BipEx/05_sexcheck_sample_count.tsv")[2,1:4])
+dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
 
-# # Relatedness check
-# dt <- rbind(dt, fread("../samples_BipEx/06_ibd_sample_count.tsv")[2, 1:4])
+dt <- cbind(
+  data.table(
+    Filter = c(
+      "Initial samples in vcf",
+      "Below sample metric thresholds",
+      "Samples with sex swap",
+      "Samples with excess URVs",
+      "PCA based filters",
+      "Outliers in batch-specific sample metrics",
+      "Samples after all sample filters")
+    ),
+  dt)
 
-# # PCA based filters
-# # This will likely break in the future and should be gone through carefully.
-# dt_tmp <- fread('../samples_BipEx/15_sample_count.tsv', header=FALSE)[1, 2:4]
-# dt_tmp <- fread("../samples_BipEx/06_ibd_sample_count.tsv")[3, 2:4] - dt_tmp
-# dt_tmp <- cbind("PCA based filters", dt_tmp)
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-
-# dt <- rbind(dt, dt_tmp)
-
-# # Final sample filters
-# dt_tmp <- fread('../samples_BipEx/15_sample_count.tsv', header=FALSE)
-# dt_tmp <- rbind(cbind('Outliers in batch-specific sample metrics', dt_tmp[1,2:ncol(dt_tmp)] - dt_tmp[nrow(dt_tmp),2:ncol(dt_tmp)]),
-#   dt_tmp[nrow(dt_tmp),])
-# names(dt_tmp) <- c("Filter", "Samples", "Bipolar cases", "Controls")
-
-# dt <- rbind(dt, dt_tmp)
-# dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
-
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#c24100") %>% 
-#   kable_styling('hover')
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
 
 ```
 

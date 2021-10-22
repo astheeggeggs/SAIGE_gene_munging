@@ -1123,7 +1123,6 @@ Total
 <li>Fall outside padded target intervals (50bp padding)</li>
 <li>Have GATK ExcessHet &gt; 54.69</li>
 </ul>
-<p><br></p>
 <p>Following this initial curation we perform a series of further QC steps detailed in this repository.</p>
 <p>We run the sample_qc function in hail and remove samples according to the following:</p>
 <ul>
@@ -1249,9 +1248,9 @@ Samples after sample QC filters
 <p>We impute the sexes of the individuals with this pruned set of variants on the X chromosome, and create list of samples with incorrect or unknown sex as defined by:</p>
 <ul>
 <li>Sex is unknown in the phenotype files</li>
-<li>F-statistic <span class="math inline">\(&gt;\)</span> 0.6 and the sex is female in the phenotype file</li>
-<li>F-statistic <span class="math inline">\(&lt;\)</span> 0.6 and the sex is male in the phenotype file</li>
-<li>DEV: check definition used</li>
+<li><span class="math inline">\(F\)</span>-statistic <span class="math inline">\(&gt;\)</span> 0.6 and the sex is female in the phenotype file</li>
+<li><span class="math inline">\(F\)</span>-statistic <span class="math inline">\(&lt;\)</span> 0.6 and the sex is male in the phenotype file</li>
+<li><span class="math inline">\(F\)</span>-statistic <span class="math inline">\(&gt;\)</span> 0.6 and number of calls on the Y is <span class="math inline">\(&lt;\)</span> 100.</li>
 </ul>
 <p>Here we show the distribution of the F-statistic, with the 0.6 threshold defining our sex impututation shown as a dashed line.</p>
 <p><img src="plots/04_imputesex_histogram.jpg" width="100%" /><img src="plots/04_imputesex_scatter_box.jpg" width="100%" /></p>
@@ -1331,22 +1330,21 @@ Samples after sex swap removal
 </table>
 <p><br></p>
 </div>
-<div id="pca" class="section level1">
-<h1>PCA</h1>
-<p>We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans.</p>
-<p><br></p>
-<div id="pca-including-1000-genomes" class="section level2">
-<h2>PCA including 1000 genomes</h2>
-<p>Next, we included the 1000 genomes samples (minus the small subset of related individuals within 1000 geneomes), and rerun PCA after including those individuals. Plots of the first six principal components are shown below. 1000 genomes samples are coloured in dark blue.</p>
-<p>We first train a classifier to remove non-Europeans. To do this, we train a random forest on the super populations labels of 1000 genomes and predict the super population for each of the UK Biobank samples. We denote strictly defined European subset as those with probability <span class="math inline">\(&gt;\)</span> 0.99 of being European according to the classifier. UK Biobank samples are coloured by their assignment or unsure if none of the classifier probabilities exceeded 0.99 in the following plots. Another classifier is trained following restriction of the 1000 genomes samples to Europeans to determine non-Finnish Europeans, using a classifier probability of 0.95.</p>
-<p>Samples not assigned to the Non-Finnish European cluster were removed from downstream analysis.</p>
-<p><br></p>
-</div>
-</div>
 <div id="ultra-rare-variant-counts" class="section level1">
 <h1>Ultra-rare variant counts</h1>
 <p>We next annotate with presence in gnomAD v2 liftover, and determine the number of singletons in the dataset that are not present in gnomAD. We then remove samples that contain over 100.</p>
 <p><img src="plots/07_URVs_SNPs_vs_indels_by_NFE.jpg" width="100%" /><img src="plots/07_URVs_by_ethnicity.jpg" width="100%" /></p>
+</div>
+<div id="pca-to-classify-non-finnish-europeans" class="section level1">
+<h1>PCA to classify non-Finnish Europeans</h1>
+<p>We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans. We first run PCA on the 1000 genomes samples (minus the small subset of related individuals within 1000 geneomes). We then project in the UK Biobank samples, ensuring that we correctly account for shrinkage bias in the projection.</p>
+<p>We then train a classifier to remove non-Europeans. To do this, we train a random forest on the super populations labels of 1000 genomes and predict the super population for each of the UK Biobank samples. We denote strictly defined European subset as those with probability <span class="math inline">\(&gt;\)</span> 0.99 of being European according to the classifier. UK Biobank samples are coloured by their assignment or unsure if none of the classifier probabilities exceeded 0.99 in the following plots. Another classifier is trained following restriction of the 1000 genomes samples to Europeans to determine non-Finnish Europeans, using a classifier probability of 0.95.</p>
+<p>Here is the loose classifier, with no probability restriction on classification:</p>
+<p><img src="plots/00_PC1_PC2_classify_EUR_loose_1kg_labelled.jpg" width="100%" /><img src="plots/00_PC3_PC4_classify_EUR_loose_1kg_labelled.jpg" width="100%" /><img src="plots/00_PC5_PC6_classify_EUR_loose_1kg_labelled.jpg" width="100%" /></p>
+<p>And here are the resultant classifications after imposing a probability cutoff of 0.99.</p>
+<p><img src="plots/00_PC1_PC2_classify_EUR_strict.jpg" width="100%" /><img src="plots/00_PC3_PC4_classify_EUR_strict.jpg" width="100%" /><img src="plots/00_PC5_PC6_classify_EUR_strict.jpg" width="100%" /></p>
+<p>Samples not assigned to the Non-Finnish European cluster were removed from downstream analysis.</p>
+<p><br></p>
 </div>
 <div id="final-variant-filtering" class="section level1">
 <h1>Final variant filtering</h1>
@@ -1452,7 +1450,7 @@ Filter
 <th style="text-align:right;font-weight: bold;">
 Samples
 </th>
-<th style="text-align:left;font-weight: bold;">
+<th style="text-align:right;font-weight: bold;">
 %
 </th>
 </tr>
@@ -1465,7 +1463,7 @@ Samples after population filters
 <td style="text-align:right;">
 177,226
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
 </td>
 </tr>
@@ -1476,7 +1474,7 @@ Within batch Ti/Tv ratio outside 4 standard deviations
 <td style="text-align:right;">
 13
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
@@ -1487,7 +1485,7 @@ Within batch Het/HomVar ratio outside 4 standard deviations
 <td style="text-align:right;">
 251
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
 </td>
 </tr>
@@ -1498,7 +1496,7 @@ Within batch Insertion/Deletion ratio outside 4 standard deviations
 <td style="text-align:right;">
 9
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
@@ -1509,7 +1507,7 @@ n singletons &gt;175
 <td style="text-align:right;">
 19
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
@@ -1520,7 +1518,7 @@ Samples after final sample filters
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
 176,935
 </td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 99.80%">99.8</span>
 </td>
 </tr>
@@ -1528,8 +1526,349 @@ Samples after final sample filters
 </table>
 <p><br></p>
 <p>After all of this data cleaning, we save the resultant hail matrix tables for downstream analyses.</p>
-<p>The resultant composition of the samples according to UKBB centre was as follows:</p>
-<p>The composition by sequencing batch was as follows:</p>
+<p>The resultant composition of the samples according to UKBB centre and sequencing batch was as follows:</p>
+<table class="table table-hover" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;">
+UKBB centre
+</th>
+<th style="text-align:right;font-weight: bold;">
+Batch 1
+</th>
+<th style="text-align:right;font-weight: bold;">
+Batch 2
+</th>
+<th style="text-align:right;font-weight: bold;">
+Total
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Barts
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+3,079
+</td>
+<td style="text-align:right;">
+3,124
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Birmingham
+</td>
+<td style="text-align:right;">
+7,805
+</td>
+<td style="text-align:right;">
+4,131
+</td>
+<td style="text-align:right;">
+11,936
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bristol
+</td>
+<td style="text-align:right;">
+93
+</td>
+<td style="text-align:right;">
+13,892
+</td>
+<td style="text-align:right;">
+13,985
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Bury
+</td>
+<td style="text-align:right;">
+1,544
+</td>
+<td style="text-align:right;">
+8,250
+</td>
+<td style="text-align:right;">
+9,794
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cardiff
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+5,812
+</td>
+<td style="text-align:right;">
+5,892
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Croydon
+</td>
+<td style="text-align:right;">
+5,248
+</td>
+<td style="text-align:right;">
+5,068
+</td>
+<td style="text-align:right;">
+10,316
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Edinburgh
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+5,353
+</td>
+<td style="text-align:right;">
+5,406
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glasgow
+</td>
+<td style="text-align:right;">
+85
+</td>
+<td style="text-align:right;">
+5,665
+</td>
+<td style="text-align:right;">
+5,750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hounslow
+</td>
+<td style="text-align:right;">
+3,948
+</td>
+<td style="text-align:right;">
+5,764
+</td>
+<td style="text-align:right;">
+9,712
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Leeds
+</td>
+<td style="text-align:right;">
+1,841
+</td>
+<td style="text-align:right;">
+13,026
+</td>
+<td style="text-align:right;">
+14,867
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Liverpool
+</td>
+<td style="text-align:right;">
+4,246
+</td>
+<td style="text-align:right;">
+8,430
+</td>
+<td style="text-align:right;">
+12,676
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Manchester
+</td>
+<td style="text-align:right;">
+1,534
+</td>
+<td style="text-align:right;">
+3,442
+</td>
+<td style="text-align:right;">
+4,976
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Middlesborough
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+6,660
+</td>
+<td style="text-align:right;">
+6,750
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Newcastle
+</td>
+<td style="text-align:right;">
+131
+</td>
+<td style="text-align:right;">
+11,565
+</td>
+<td style="text-align:right;">
+11,696
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nottingham
+</td>
+<td style="text-align:right;">
+1,407
+</td>
+<td style="text-align:right;">
+9,960
+</td>
+<td style="text-align:right;">
+11,367
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oxford
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+4,655
+</td>
+<td style="text-align:right;">
+4,695
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Reading
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+9,011
+</td>
+<td style="text-align:right;">
+9,065
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sheffield
+</td>
+<td style="text-align:right;">
+12,239
+</td>
+<td style="text-align:right;">
+4,911
+</td>
+<td style="text-align:right;">
+17,150
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Stockport (pilot)
+</td>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+64
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Stoke
+</td>
+<td style="text-align:right;">
+747
+</td>
+<td style="text-align:right;">
+6,011
+</td>
+<td style="text-align:right;">
+6,758
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swansea
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+709
+</td>
+<td style="text-align:right;">
+720
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wrexham
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+170
+</td>
+<td style="text-align:right;">
+236
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+Total
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+41,371
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+135,564
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+176,935
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

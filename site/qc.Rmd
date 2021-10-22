@@ -29,10 +29,75 @@ source("../QC_scripts/utils/helpers.r")
 # Note to update the website, we need to compile it on the cluster first (to sort tables and plots), and then locally to ensure the correct formatting.
 
 options(dplyr.summarise.inform=F)
+
+summary_fun <- function(dt) {
+  return(
+    dt %>% summarize(
+        "Samples"=sum(!is.na(sequencing_batch)),
+        "Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
+        "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE)
+        )
+    )
+}
+
 if (file.exists(PLOTS)) {
   # We're on the cluster, update the plots
   system(paste0("cp ", PLOTS, "*jpg ", "../docs/plots/"))
+
+  # Determine all of the removals
+  # Everyone
+  dt_pheno <- create_pheno_dt(TRANCHE)
+  # Everyone after Nik's initial QC, and initial sample filters
+  dt_initial_vcf <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_initial_sample_qc.tsv"), key='s', select='s') %>% mutate(initial_vcf=TRUE)
+  dt_initial_sample_qc <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_initial_qc.keep.sample_list")) %>% transmute(s=V1) %>% mutate(initial_sample_qc = TRUE)
+  sex_removed <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list"), header=FALSE) %>% transmute(s=V1) %>% mutate(sex_removed = TRUE)
+  urv_removed <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/samples/07_URV.remove.sample_list')) %>% transmute(s=V1) %>% mutate(urv_removed = TRUE)
+  rf_eur <- fread("/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb11867_cal_chr1_v2_s488363_for_plink_EUR.tsv") %>% transmute(s = V1) %>% mutate(rf_eur = TRUE) 
+  rf_nfe <- fread("/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv") %>% transmute(s = V1) %>% mutate(rf_nfe = TRUE)
+  final_list <- fread("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/09_final_qc.keep.sample_list") %>% transmute(s=V1) %>% mutate(final_list = TRUE)
+
+  dt_initial_vcf <- data.table(dt_initial_vcf)
+  setkey(dt_initial_vcf, 's')
+  dt_initial_sample_qc <- data.table(dt_initial_sample_qc)
+  setkey(dt_initial_sample_qc, 's')
+  sex_removed <- data.table(sex_removed)
+  setkey(sex_removed, 's')
+  urv_removed <- data.table(urv_removed)
+  setkey(urv_removed, 's')
+  rf_eur <- data.table(rf_eur)
+  setkey(rf_eur, 's')
+  rf_nfe <- data.table(rf_nfe)
+  setkey(rf_nfe, 's')
+
+  dt_pheno <- merge(dt_pheno, dt_initial_vcf, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, dt_initial_sample_qc, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, sex_removed, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, urv_removed, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, rf_eur, all.x=TRUE)
+  dt_pheno <- merge(dt_pheno, rf_nfe, all.x=TRUE)
+
+  dt_pheno[, initial_vcf:=ifelse(is.na(initial_vcf), FALSE, initial_vcf)]
+  dt_pheno[, initial_sample_qc:=ifelse(is.na(initial_sample_qc), FALSE, initial_sample_qc)]
+  dt_pheno[, sex_removed:=ifelse(is.na(sex_removed), FALSE, sex_removed)]
+  dt_pheno[, urv_removed:=ifelse(is.na(urv_removed), FALSE, urv_removed)]
+  dt_pheno[, rf_eur:=ifelse(is.na(rf_eur), FALSE, rf_eur)]
+  dt_pheno[, rf_nfe:=ifelse(is.na(rf_nfe), FALSE, rf_nfe)]
+
+  # Check counts
+  dt_pheno %>% filter(initial_vcf)
+  # 199795
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc)
+  # 190924
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed)
+  # 190839
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed)
+  # 190763
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_eur)
+  # 177405
+  dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_eur, rf_nfe)
+  # 177226
 }
+
 ```
  <br>
 On this page we detail the quality control (QC) pipeline for the UK Biobank exomes before starting our analyses. Further plots and the underlying [code](https://github.com/astheeggeggs/SAIGE_gene_munging/tree/main/QC_scripts) can be found on the SAIGE gene munging github [repository](https://github.com/astheeggeggs/SAIGE_gene_munging).
@@ -44,7 +109,6 @@ We first summarise the collection of samples for which the exome sequence data i
 ```{r sample_composition, echo=FALSE, out.width = '100%', warning=FALSE}
 
 if (file.exists(PLOTS)) {
-  dt_pheno <- create_pheno_dt(TRANCHE)
   dt_pheno <- dt_pheno %>% mutate(ukbb_centre = as.character(ukbb_centre)) %>% mutate(ukbb_centre = ifelse(is.na(ukbb_centre), "Unknown", ukbb_centre)) %>% mutate(`UKBB centre` = ukbb_centre)
 
   dt_loc <- dt_pheno %>% group_by(`UKBB centre`) %>% 
@@ -60,7 +124,7 @@ if (file.exists(PLOTS)) {
 dt_loc %>%
   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>% 
-  kable_styling('hover', font_size=12)
+  kable_styling('hover')
 
 ```
 <br>
@@ -87,7 +151,7 @@ if (file.exists(PLOTS)) {
 dt_loc %>%
   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% 
   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>% row_spec(0, bold=TRUE) %>%
-  kable_styling('hover', font_size=12)
+  kable_styling('hover')
 
 ```
 
@@ -151,9 +215,9 @@ if (file.exists(PLOTS)) {
   dt <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/03_sample_count.tsv"), header=FALSE)
   names(dt) <- c("Filter", "Samples", "Batch 1", "Batch 2")
   dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
-  fwrite(dt, file = "../site_tables/01_variant_summary.tsv", sep="\t")
+  fwrite(dt, file = "../site_tables/01_sample_summary.tsv", sep="\t")
 } else {
-  dt <- fread( "../site_tables/01_variant_summary.tsv")
+  dt <- fread( "../site_tables/01_sample_summary.tsv")
 }
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
@@ -188,35 +252,37 @@ knitr::include_graphics("./plots/04_imputesex_scatter_box.jpg")
 # Note that in these two tables, dt is the table that is displayed after the boxplots on webpage.
 
 if (file.exists(PLOTS)) {
-  sex_removed <- fread(paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/samples/04_sexcheck.remove.sample_list"), header=FALSE)
-  dt_sex_removed <- dt_pheno[which(dt_pheno$s %in% sex_removed$V1),]
-  n_sex_removed <- c(nrow(dt_sex_removed),
-                     nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 1")),
-                     nrow(dt_sex_removed %>% filter(sequencing_batch == "Batch 2")))
 
-  # This is the number of samples after the initial round of sample QC filters.
-  n_before <- dt[nrow(dt),2:4]
-  # This is the number after then removing the samples removed due to sex-swaps.
-  n_after_sex_removed <- n_before - n_sex_removed
+  dt_before <- dt_pheno %>% filter(initial_vcf, initial_sample_qc)
+  dt_removed <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, sex_removed)
+  dt_after <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed)
 
-  dt_sex_removal <- rbindlist(
-      list(dt[nrow(dt),],
-          list(c("Samples with sex swap", "Samples after sex swap removal"),
-               c(n_sex_removed[1], n_after_sex_removed$Samples),
-               c(n_sex_removed[2], n_after_sex_removed$`Batch 1`),
-               c(n_sex_removed[3], n_after_sex_removed$`Batch 2`),
-               c(round(n_sex_removed[1] / unlist(dt[nrow(dt),2]) * 100,1),
-                 round(n_after_sex_removed$Samples / unlist(dt[nrow(dt),2]) * 100,1)))), use.names=FALSE)
+  dt <- rbind(
+    summary_fun(dt_before),
+    summary_fun(dt_removed),
+    summary_fun(dt_after)
+  ) 
 
-  dt_sex_removal[1,5] <- 100
-  fwrite(dt_sex_removal, file = "../site_tables/02_sex_removal_summary.tsv", sep="\t")
+  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
+
+  dt <- cbind(
+    data.table(
+      Filter = c(
+        "Samples after sample QC filters",
+        "Samples with sex swap",
+        "Samples after sex swap removal")
+      ),
+    dt)
+
+  fwrite(dt, file = "../site_tables/02_sex_removal_summary.tsv", sep="\t")
+
 } else {
-  dt_sex_removal <- fread("../site_tables/02_sex_removal_summary.tsv")
+  dt <- fread("../site_tables/02_sex_removal_summary.tsv")
 }
 
-dt_sex_removal %>% mutate("%" = color_bar("#0081c2")(unlist(dt_sex_removal[,'%']))) %>% 
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-  row_spec(nrow(dt_sex_removal), bold = T, color = "white", background = "#0C6EBE") %>% 
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
 ```
 
@@ -231,6 +297,42 @@ knitr::include_graphics("./plots/07_URVs_SNPs_vs_indels_by_NFE.jpg")
 knitr::include_graphics("./plots/07_URVs_by_ethnicity.jpg")
 ```
 
+```{r sample_PC_table, echo=FALSE, warning=FALSE, message=FALSE, out.width = '100%'}
+
+if (file.exists(PLOTS)) {
+  dt_before <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed)
+  dt_removed <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, urv_removed)
+  dt_after <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed)
+
+  dt <- rbind(
+    summary_fun(dt_before),
+    summary_fun(dt_removed),
+    summary_fun(dt_after)
+  )
+
+  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
+
+  dt <- cbind(
+    data.table(
+      Filter = c(
+        "Samples after sex swap removal",
+        "Samples with excess URVs",
+        "Samples after URV filter")),
+    dt)
+
+  fwrite(dt, file = "../site_tables/02_urv_removal_summary.tsv", sep="\t")
+
+} else {
+  dt <- fread("../site_tables/02_urv_removal_summary.tsv")
+}
+
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
+
+```
+
 # PCA to classify non-Finnish Europeans
 
 We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans.
@@ -241,55 +343,52 @@ We then train a classifier to remove non-Europeans. To do this, we train a rando
 Here is the loose classifier, with no probability restriction on classification:
 
 ```{r pca_1kg, echo=FALSE, out.width = '100%', warning=FALSE}
-knitr::include_graphics("./plots/10_PC1_PC2_classify_EUR_loose_1kg_labelled.jpg")
-knitr::include_graphics("./plots/10_PC3_PC4_classify_EUR_loose_1kg_labelled.jpg")
-knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_loose_1kg_labelled.jpg")
+knitr::include_graphics("./plots/00_PC1_PC2_classify_EUR_loose_1kg_labelled.jpg")
+knitr::include_graphics("./plots/00_PC3_PC4_classify_EUR_loose_1kg_labelled.jpg")
+knitr::include_graphics("./plots/00_PC5_PC6_classify_EUR_loose_1kg_labelled.jpg")
 ```
 
 And here are the resultant classifications after imposing a probability cutoff of `r T_European_RF`.
 
 ```{r pca_1kg_strict, echo=FALSE, out.width = '100%', warning=FALSE}
-knitr::include_graphics("./plots/10_PC1_PC2_classify_EUR_strict.jpg")
-knitr::include_graphics("./plots/10_PC3_PC4_classify_EUR_strict.jpg")
-knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_strict.jpg")
+knitr::include_graphics("./plots/00_PC1_PC2_classify_EUR_strict.jpg")
+knitr::include_graphics("./plots/00_PC3_PC4_classify_EUR_strict.jpg")
+knitr::include_graphics("./plots/00_PC5_PC6_classify_EUR_strict.jpg")
 ```
 
 ```{r sample_PC_table, echo=FALSE, warning=FALSE, message=FALSE, out.width = '100%'}
 
-# PCA_SCORES <- 'gsutil cat gs://dalio_bipolar_w1_w2_hail_02/data/samples/09_pca_scores.tsv'
-# EUROPEAN_SAMPLES_STRICT <- "../samples_BipEx/10_european.strict.sample_list"
-# EUROPEAN_SAMPLES_LOOSE <- "../samples_BipEx/10_european.loose.sample_list"
+if (file.exists(PLOTS)) {
+  dt_before <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed)
+  dt_removed  <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, !rf_nfe)
+  dt_after <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, rf_eur)
 
-# dt_pca <- fread(PCA_SCORES, sep='\t', stringsAsFactors=FALSE, header=TRUE, data.table=FALSE)
-# eur_strict <- fread(EUROPEAN_SAMPLES_STRICT, stringsAsFactors=FALSE, header=FALSE, data.table=FALSE)
-# eur_loose <- fread(EUROPEAN_SAMPLES_LOOSE, stringsAsFactors=FALSE, header=FALSE, data.table=FALSE)
+  dt <- rbind(
+    summary_fun(dt_before),
+    summary_fun(dt_removed),
+    summary_fun(dt_after)
+  ) 
 
-# dt_pca_merged <- merge(dt_pca, (dt_pheno %>% rename(s = SAMPLE_ALIAS)), by='s')
+  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
 
-# dt_pca_case <- dt_pca_merged %>% filter(PHENOTYPE_COARSE_NEW == "Bipolar Disorder")
-# dt_pca_control <- dt_pca_merged %>% filter(PHENOTYPE_COARSE_NEW == "Control")
+  dt_rf <- cbind(
+    data.table(
+      Filter = c(
+        "Samples after URV filter",
+        "Non NFE samples",
+        "Non-Finnish European samples")),
+    dt)
 
-# dt <- data.table(Filter = c("Initial samples", "Non-European, strict filter",
-#     "Non-European, loose filter", "Samples after strict European filter"),
-#     Samples = c(nrow(dt_pca),
-#         nrow(dt_pca[which(!(dt_pca$s %in% eur_strict$V1)),]),
-#         nrow(dt_pca[which(!(dt_pca$s %in% eur_loose$V1)),]),
-#         nrow(dt_pca[which((dt_pca$s %in% eur_strict$V1)),])),
-#     'Bipolar cases' = c(nrow(dt_pca_case),
-#         nrow(dt_pca_case[which(!(dt_pca_case$s %in% eur_strict$V1)),]),
-#         nrow(dt_pca_case[which(!(dt_pca_case$s %in% eur_loose$V1)),]),
-#         nrow(dt_pca_case[which((dt_pca_case$s %in% eur_strict$V1)),])),
-#     Controls = c(nrow(dt_pca_control),
-#         nrow(dt_pca_control[which(!(dt_pca_control$s %in% eur_strict$V1)),]),
-#         nrow(dt_pca_control[which(!(dt_pca_control$s %in% eur_loose$V1)),]),
-#         nrow(dt_pca_control[which((dt_pca_control$s %in% eur_strict$V1)),])))
+  fwrite(dt, file = "../site_tables/02_urv_removal_summary.tsv", sep="\t")
 
-# dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+} else {
+  dt <- fread("../site_tables/02_urv_removal_summary.tsv")
+}
 
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
-#   kable_styling('hover')
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
 
 ```
 
@@ -364,17 +463,16 @@ if (file.exists(PLOTS)) {
   dt <- fread(
     paste0(
       '/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE,
-      '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv'),
-    header=FALSE)
-  names(dt) <- c("Filter", "Samples")
+      '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv'))
   fwrite(dt, file = "../site_tables/04_sample_count_summary.tsv", sep="\t")
 } else {
   dt <- fread("../site_tables/04_sample_count_summary.tsv")
 }
-  dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
+
+dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-  kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
 
@@ -385,6 +483,8 @@ dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>%
 After all of this data cleaning, we save the resultant hail matrix tables for downstream analyses.
 
 The resultant composition of the samples according to UKBB centre and sequencing batch was as follows:
+
+<br>
 
 ```{r final_sample_composition, echo=FALSE, out.width = '100%', warning=FALSE}
 
@@ -405,6 +505,6 @@ if (file.exists(PLOTS)) {
 dt_loc %>%
   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
-  kable_styling('hover', font_size=12)
+  kable_styling('hover')
 
 ```
