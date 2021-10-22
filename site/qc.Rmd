@@ -248,7 +248,7 @@ knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_loose_1kg_labelled.jpg"
 
 And here are the resultant classifications after imposing a probability cutoff of `r T_European_RF`.
 
-```{r pca_1kg, echo=FALSE, out.width = '100%', warning=FALSE}
+```{r pca_1kg_strict, echo=FALSE, out.width = '100%', warning=FALSE}
 knitr::include_graphics("./plots/10_PC1_PC2_classify_EUR_strict.jpg")
 knitr::include_graphics("./plots/10_PC3_PC4_classify_EUR_strict.jpg")
 knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_strict.jpg")
