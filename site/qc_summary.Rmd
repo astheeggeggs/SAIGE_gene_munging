@@ -133,6 +133,8 @@ if (file.exists(PLOTS)) {
 
 ```{r sample_summary_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
+if (file.exists(PLOTS)) {
+
 dt_initial <- fread(
   paste0(
     "/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE,
@@ -175,12 +177,16 @@ dt <- cbind(
       "Samples after all sample filters")
     ),
   dt)
+  fwrite(dt, file = "../site_tables/sample_detailed_summary_table.tsv", sep='\t')
+} else {
+  fread("../site_tables/sample_detailed_summary_table.tsv")
+}
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
-  
+
 ```
 
 <br>
@@ -189,31 +195,36 @@ dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>%
 
 ```{r sample_summary_of_summary_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
+if (file.exists(PLOTS)) {
 
-dt <- rbind(
-  summary_fun(dt_pheno %>% filter(initial_vcf)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, !initial_sample_qc)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, sex_removed)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, urv_removed)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, !rf_nfe)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, !final_list)),
-  summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, final_list))
-)
+  dt <- rbind(
+    summary_fun(dt_pheno %>% filter(initial_vcf)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, !initial_sample_qc)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, sex_removed)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, urv_removed)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, !rf_nfe)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, !final_list)),
+    summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, final_list))
+  )
 
-dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
+  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
 
-dt <- cbind(
-  data.table(
-    Filter = c(
-      "Initial samples in vcf",
-      "Below sample metric thresholds",
-      "Samples with sex swap",
-      "Samples with excess URVs",
-      "PCA based filters",
-      "Outliers in batch-specific sample metrics",
-      "Samples after all sample filters")
-    ),
-  dt)
+  dt <- cbind(
+    data.table(
+      Filter = c(
+        "Initial samples in vcf",
+        "Below sample metric thresholds",
+        "Samples with sex swap",
+        "Samples with excess URVs",
+        "PCA based filters",
+        "Outliers in batch-specific sample metrics",
+        "Samples after all sample filters")
+      ),
+    dt)
+  fwrite(dt, file = "../site_tables/sample_summary_table.tsv", sep='\t')
+} else {
+  fread("../site_tables/sample_summary_table.tsv")
+}
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
   kable("html", escape=FALSE, align=c('l', 'r', 'r', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
