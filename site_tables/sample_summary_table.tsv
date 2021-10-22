@@ -1,0 +1,8 @@
+Filter	Samples	Batch 1	Batch 2	%
+Initial samples in vcf	199795	49759	150036	100
+Below sample metric thresholds	8871	4913	3958	4.4
+Samples with sex swap	85	24	61	0
+Samples with excess URVs	76	6	70	0
+PCA based filters	13537	3390	10147	6.8
+Outliers in batch-specific sample metrics	291	55	236	0.1
+Samples after all sample filters	176935	41371	135564	88.6
