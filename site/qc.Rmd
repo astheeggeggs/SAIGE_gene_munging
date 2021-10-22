@@ -42,7 +42,7 @@ summary_fun <- function(dt) {
 
 if (file.exists(PLOTS)) {
   # We're on the cluster, update the plots
-  system("mkdir ../site/plots"))
+  system("mkdir ../site/plots")
   system(paste0("cp ", PLOTS, "*jpg ", "../site/plots/"))
   # Determine all of the removals
   # Everyone
