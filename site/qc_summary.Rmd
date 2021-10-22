@@ -43,10 +43,6 @@ summary_fun <- function(dt) {
 }
 
 if (file.exists(PLOTS)) {
-  # We're on the cluster, update the plots
-  system(paste0("cp ", PLOTS, "*jpg ", "../docs/plots/"))
-
-  # Determine all of the removals
   # Everyone
   dt_pheno <- create_pheno_dt(TRANCHE)
   # Everyone after Nik's initial QC, and initial sample filters
