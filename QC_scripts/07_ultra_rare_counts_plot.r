@@ -61,7 +61,7 @@ dt_pheno <- create_pheno_dt(TRANCHE)
 dt <- merge(dt, dt_pheno)
 
 fwrite(dt, file=URV_COMBINED_FILE, sep='\t')
-system(paste("bgzip", URV_COMBINED_FILE))
+# system(paste("bgzip", URV_COMBINED_FILE))
 
 dt <- fread(URV_COMBINED_FILE)
 dt <- dt[sample(nrow(dt), replace=FALSE),]

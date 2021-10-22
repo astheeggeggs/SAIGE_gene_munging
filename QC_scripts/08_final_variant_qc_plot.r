@@ -54,7 +54,7 @@ p <- create_pretty_hist(dt, aes(x=qc.p_value_hwe), threshold=T_pHWE,  x_label='p
     labels = scales::trans_format("log10", scales::math_format(10^.x))
   )
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.pdf'), p, width=160, height=90, units='mm')
-ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.jpg'), p, width=160, height=90, units='mm', dpi="500")
+ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.jpg'), p, width=160, height=90, units='mm', dpi=500)
 
 
 # cumulative pHWE
@@ -64,4 +64,4 @@ p <- create_pretty_cumulative(dt, aes(x=qc.p_value_hwe), x_label='p(HWE)',
     labels = scales::trans_format("log10", scales::math_format(10^.x))
   )
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_cdf.pdf'), p, width=160, height=90, units='mm')
-ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_cdf.jpg'), p, width=160, height=90, units='mm', dpi="500")
+ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_cdf.jpg'), p, width=160, height=90, units='mm', dpi=500)

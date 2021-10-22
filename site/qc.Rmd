@@ -318,7 +318,7 @@ knitr::include_graphics("./plots/200k_08_callRate_cdf.jpg")
 ```{r variant_final_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
 if (file.exists(PLOTS)) {
-  dt <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_variant_count.tsv') header=FALSE)
+  dt <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_variant_count.tsv'), header=FALSE)
   names(dt) <- c("Filter", "Variants")
   dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
   fwrite(dt, file = "../site_tables/03_variant_count_summary.tsv", sep="\t")
