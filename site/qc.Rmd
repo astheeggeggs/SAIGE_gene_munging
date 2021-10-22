@@ -370,9 +370,9 @@ if (file.exists(PLOTS)) {
       '/ukb_wes_qc/data/samples/09_final_sample.summary.tsv'),
     header=FALSE)
   names(dt) <- c("Filter", "Samples")
-  fwrite()
+  fwrite(dt, file = "../site_tables/04_sample_count_summary.tsv", sep="\t")
 } else {
-
+  dt <- fread("../site_tables/04_sample_count_summary.tsv")
 }
   dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
 
