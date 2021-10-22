@@ -175,7 +175,7 @@ dt <- cbind(
   dt)
   fwrite(dt, file = "../site_tables/sample_detailed_summary_table.tsv", sep='\t')
 } else {
-  fread("../site_tables/sample_detailed_summary_table.tsv")
+  dt <- fread("../site_tables/sample_detailed_summary_table.tsv")
 }
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
@@ -219,7 +219,7 @@ if (file.exists(PLOTS)) {
     dt)
   fwrite(dt, file = "../site_tables/sample_summary_table.tsv", sep='\t')
 } else {
-  fread("../site_tables/sample_summary_table.tsv")
+  dt <- fread("../site_tables/sample_summary_table.tsv")
 }
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
