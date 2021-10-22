@@ -9,6 +9,7 @@ library(ggrastr)
 source('utils/pretty_plotting.r')
 # Thresholds and plotting file locations defined in r_options.r
 source("utils/r_options.r")
+source("utils/helpers.r")
 
 # Function to sanity check the random matrix theory proejctions
 project_onto_ref_PCs <- function(bed.ref, obj.bed, n_PCs = 20, n_PC_plot = 8,
@@ -166,10 +167,14 @@ PCs <- c(1,3,5)
 
 if (perform_plotting)
 {
+    dt_plot <- dt_classify %>% filter(!is.na(classification_loose))
+    # levels(dt_plot$classification_loose) <- c(levels(dt_plot$classification_loose) ,"1000 genomes")
+    # dt_plot$classification_loose[is.na(dt_plot$classification_loose)] <- "1000 genomes"
+
     for (i in PCs)
     {
         aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='classification_loose')
-        p <- create_pretty_scatter(dt_classify, aes,
+        p <- create_pretty_scatter(dt_plot, aes,
           save_figure=save_figures, file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_EUR_loose'), n_x_ticks=5,
           x_label=paste0('Principal Component ',i), y_label=paste0('Principal Component ', i+1))
         if (save_figures) {
@@ -177,10 +182,11 @@ if (perform_plotting)
               mapping=aes_string(x=paste0('PC',i), y=paste0('PC',i+1)),
               inherit.aes=FALSE, shape=4, show.legend=FALSE)
             ggsave(file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_EUR_loose_1kg_labelled.pdf'), width=160, height=90, units='mm')
+            ggsave(file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_EUR_loose_1kg_labelled.jpg'), width=160, height=90, units='mm', dpi=500)
         }
 
         aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='classification_strict')
-        p <- create_pretty_scatter(dt_classify, aes,
+        p <- create_pretty_scatter(dt_plot, aes,
           save_figure=save_figures, file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_classify_EUR_strict'), n_x_ticks=5,
           x_label=paste0('Principal Component ',i), y_label=paste0('Principal Component ', i+1))
     }
@@ -322,43 +328,3 @@ if (creating_new_EUR_def) {
 
 # Write the result to disk.
 fwrite(dt_out_classify_strict, file = "/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv", col.names=FALSE)
-
-# Read in and compare
-dt_pheno <- fread("zcat /well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/200k/UKBB_WES200k_cts_phenotypes.tsv.gz") %>% 
-  select(ID, starts_with("PC"), genetic.eur) %>% mutate(genetic.eur = ifelse(genetic.eur == 1, TRUE, FALSE))
-setkey(dt_pheno, "ID")
-dt_EUR_new <- fread("/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb11867_cal_chr1_v2_s488363_for_plink_EUR.tsv") %>% transmute(ID = V1) %>% mutate(genetic.eur.new = TRUE)
-dt_EUR_no_FIN_new <- fread("/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv") %>% transmute(ID = V1) %>% mutate(genetic.eur.no.fin.new = TRUE)
-setkey(dt_EUR_new, "ID")
-setkey(dt_EUR_no_FIN_new, "ID")
-dt_EUR_new <- merge(dt_EUR_new, dt_EUR_no_FIN_new, all.x=TRUE)
-dt_exome <- merge(dt_pheno, dt_EUR_new, all.x=TRUE) %>% filter(!is.na(genetic.eur)) %>% 
-  mutate(
-    genetic.eur.new = ifelse(is.na(genetic.eur.new), FALSE, genetic.eur.new),
-    genetic.eur.no.fin.new = ifelse(is.na(genetic.eur.no.fin.new), FALSE, genetic.eur.no.fin.new)
-    )
-
-PCs <- c(1, 3, 5)
-if (perform_plotting)
-{
-    for (i in PCs)
-    {
-        aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='genetic.eur.new')
-        create_pretty_scatter(dt_exome, aes,
-          save_figure=save_figures, file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_UKB_PCs_EUR_new'), n_x_ticks=5,
-          x_label=paste0('Principal Component ',i), y_label=paste0('Principal Component ', i+1),
-          title='European samples: new definition')
-
-        aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='genetic.eur.no.fin.new')
-        create_pretty_scatter(dt_exome, aes,
-          save_figure=save_figures, file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_UKB_PCs_EUR_new_no_FIN'), n_x_ticks=5,
-          x_label=paste0('Principal Component ',i), y_label=paste0('Principal Component ', i+1),
-          title='European samples: new definition, no Finns')
-
-        aes <- aes_string(x=paste0('PC',i), y=paste0('PC',i+1), color='genetic.eur')
-        create_pretty_scatter(dt_exome, aes,
-          save_figure=save_figures, file=paste0(PLOTS,'00_PC',i,'_PC',i+1,'_UKB_PCs_EUR'), n_x_ticks=5,
-          x_label=paste0('Principal Component ',i), y_label=paste0('Principal Component ', i+1),,
-          title='European samples: old definition')
-    }
-}

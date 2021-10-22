@@ -128,8 +128,6 @@ Remove variants that either:
 *  Fall outside padded target intervals (50bp padding)
 *  Have GATK ExcessHet > 54.69
 
-<br>
-
 Following this initial curation we perform a series of further QC steps detailed in this repository.
 
 We run the sample_qc function in hail and remove samples according to the following:
@@ -174,9 +172,9 @@ Following this step, we export genotyped variants on the X chromosome (allele fr
 We impute the sexes of the individuals with this pruned set of variants on the X chromosome, and create list of samples with incorrect or unknown sex as defined by:
 
 * Sex is unknown in the phenotype files
-* F-statistic $>$ `r T_impute_sex` and the sex is female in the phenotype file
-* F-statistic $<$ `r T_impute_sex` and the sex is male in the phenotype file
-* DEV: check definition used
+* $F$-statistic $>$ `r T_impute_sex` and the sex is female in the phenotype file
+* $F$-statistic $<$ `r T_impute_sex` and the sex is male in the phenotype file
+* $F$-statistic $>$ `r T_impute_sex` and number of calls on the Y is $<$ 100.
 
 Here we show the distribution of the F-statistic, with the `r T_impute_sex` threshold defining our sex impututation shown as a dashed line.
 
@@ -224,28 +222,36 @@ dt_sex_removal %>% mutate("%" = color_bar("#0081c2")(unlist(dt_sex_removal[,'%']
 
 <br>
 
-# PCA
+# Ultra-rare variant counts
 
-We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans.
+We next annotate with presence in gnomAD v2 liftover, and determine the number of singletons in the dataset that are not present in gnomAD. We then remove samples that contain over `r T_nURVSNP`. 
 
-<br>
-
-## PCA including 1000 genomes
-
-Next, we included the 1000 genomes samples (minus the small subset of related individuals within 1000 geneomes), and rerun PCA after including those individuals. Plots of the first six principal components are shown below. 1000 genomes samples are coloured in dark blue.
-
-```{r pca_1kg, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("QC_plots/10_PC1_PC2_1kg_collection.jpg")
-# knitr::include_graphics("QC_plots/10_PC3_PC4_1kg_collection.jpg")
-# knitr::include_graphics("QC_plots/10_PC5_PC6_1kg_collection.jpg")
+```{r URV_variants, echo=FALSE, out.width = '100%', warning=FALSE}
+knitr::include_graphics("./plots/07_URVs_SNPs_vs_indels_by_NFE.jpg")
+knitr::include_graphics("./plots/07_URVs_by_ethnicity.jpg")
 ```
 
-We first train a classifier to remove non-Europeans. To do this, we train a random forest on the super populations labels of 1000 genomes and predict the super population for each of the UK Biobank samples. We denote strictly defined European subset as those with probability $>$ `r T_European_RF` of being European according to the classifier. UK Biobank samples are coloured by their assignment or unsure if none of the classifier probabilities exceeded `r T_European_RF` in the following plots. Another classifier is trained following restriction of the 1000 genomes samples to Europeans to determine non-Finnish Europeans, using a classifier probability of `r T_Finnish_RF`.
+# PCA to classify non-Finnish Europeans
 
-```{r pca_1kg_class_EUR_strict, echo=FALSE, out.width = '100%', warning=FALSE}
-# knitr::include_graphics("QC_plots/10_PC1_PC2_classify_EUR_strict.jpg")
-# knitr::include_graphics("QC_plots/10_PC3_PC4_classify_EUR_strict.jpg")
-# knitr::include_graphics("QC_plots/10_PC5_PC6_classify_EUR_strict.jpg")
+We next perform a number of principal component analysis (PCA) steps to ensure that we have subset down to Non-Finnish Europeans.
+We first run PCA on the 1000 genomes samples (minus the small subset of related individuals within 1000 geneomes). We then project in the UK Biobank samples, ensuring that we correctly account for shrinkage bias in the projection.
+
+We then train a classifier to remove non-Europeans. To do this, we train a random forest on the super populations labels of 1000 genomes and predict the super population for each of the UK Biobank samples. We denote strictly defined European subset as those with probability $>$ `r T_European_RF` of being European according to the classifier. UK Biobank samples are coloured by their assignment or unsure if none of the classifier probabilities exceeded `r T_European_RF` in the following plots. Another classifier is trained following restriction of the 1000 genomes samples to Europeans to determine non-Finnish Europeans, using a classifier probability of `r T_Finnish_RF`.
+
+Here is the loose classifier, with no probability restriction on classification:
+
+```{r pca_1kg, echo=FALSE, out.width = '100%', warning=FALSE}
+knitr::include_graphics("./plots/10_PC1_PC2_classify_EUR_loose_1kg_labelled.jpg")
+knitr::include_graphics("./plots/10_PC3_PC4_classify_EUR_loose_1kg_labelled.jpg")
+knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_loose_1kg_labelled.jpg")
+```
+
+And here are the resultant classifications after imposing a probability cutoff of `r T_European_RF`.
+
+```{r pca_1kg, echo=FALSE, out.width = '100%', warning=FALSE}
+knitr::include_graphics("./plots/10_PC1_PC2_classify_EUR_strict.jpg")
+knitr::include_graphics("./plots/10_PC3_PC4_classify_EUR_strict.jpg")
+knitr::include_graphics("./plots/10_PC5_PC6_classify_EUR_strict.jpg")
 ```
 
 ```{r sample_PC_table, echo=FALSE, warning=FALSE, message=FALSE, out.width = '100%'}
@@ -290,15 +296,6 @@ We first train a classifier to remove non-Europeans. To do this, we train a rand
 Samples not assigned to the Non-Finnish European cluster were removed from downstream analysis.
 
 <br>
-
-# Ultra-rare variant counts
-
-We next annotate with presence in gnomAD v2 liftover, and determine the number of singletons in the dataset that are not present in gnomAD. We then remove samples that contain over `r T_nURVSNP`. 
-
-```{r URV_variants, echo=FALSE, out.width = '100%', warning=FALSE}
-knitr::include_graphics("./plots/07_URVs_SNPs_vs_indels_by_NFE.jpg")
-knitr::include_graphics("./plots/07_URVs_by_ethnicity.jpg")
-```
 
 # Final variant filtering
 
@@ -377,7 +374,7 @@ if (file.exists(PLOTS)) {
   dt[,"%"] <- round(100 * dt$Samples/dt$Samples[1], 1)
 
 dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-  kable("html", escape=FALSE, align=c('l', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
   kable_styling('hover')
 
@@ -387,53 +384,27 @@ dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>%
 
 After all of this data cleaning, we save the resultant hail matrix tables for downstream analyses.
 
-The resultant composition of the samples according to UKBB centre was as follows:
+The resultant composition of the samples according to UKBB centre and sequencing batch was as follows:
 
 ```{r final_sample_composition, echo=FALSE, out.width = '100%', warning=FALSE}
 
-# dt_final_samples <- fread("gsutil cat gs://dalio_bipolar_w1_w2_hail_02/data/samples/17_final_qc.samples.tsv.bgz | gzcat")
+if (file.exists(PLOTS)) {
+  dt_final_samples <- fread(paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_',TRANCHE,
+    '/ukb_wes_qc/data/samples/09_final_qc.keep.sample_list')) %>% transmute(`UKBB centre` = V20, sequencing_batch = V24)
 
-# dt_loc <- dt_final_samples %>% group_by(LOCATION) %>% 
-#   summarize("Bipolar Disorder" = sum(PHENOTYPE_COARSE=="Bipolar Disorder"),
-#             "Schizoaffective" = sum(PHENOTYPE_COARSE=="Schizoaffective"),
-#             "Schizophrenia" = sum(PHENOTYPE_COARSE=="Schizophrenia"),
-#             "Other" = sum(PHENOTYPE_COARSE=="Other"),
-#             "Unknown" = sum(PHENOTYPE_COARSE=="Unknown"),
-#             "Controls" = sum(PHENOTYPE_COARSE=="Control"),
-#             "Total"=n())
-# dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+  dt_loc <- dt_final_samples %>% group_by(`UKBB centre`) %>% 
+      summarize("Batch 1" = sum(sequencing_batch=="Batch 1", na.rm=TRUE),
+                "Batch 2" = sum(sequencing_batch=="Batch 2", na.rm=TRUE),
+                "Total"=sum(!is.na(sequencing_batch)))
+  dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
+  fwrite(dt_loc, file="../site_tables/05_final_table_ukbb_centre.tsv", sep="\t")
+} else {
+  dt_loc <- fread("../site_tables/05_final_table_ukbb_centre.tsv")
+}
 
-# fwrite(dt_loc, file="../phenotype_data/17_phenotypes_and_location_summary.tsv", row.names=FALSE, sep='\t')
-# dt_loc <- fread("../phenotype_data/17_phenotypes_and_location_summary.tsv") %>% rename(Location=LOCATION)
-# dt_loc %>%
-#   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
-#   kable_styling('hover', font_size=12)
-
-```
-
-The composition by sequencing batch was as follows:
-
-```{r final_sample_subtype_composition, echo=FALSE, out.width = '100%', warning=FALSE}
-
-# dt_loc <- dt_final_samples %>% group_by(LOCATION) %>% 
-#     summarize("Bipolar Disorder 1" = sum(PHENOTYPE_FINE == "Bipolar Disorder 1"),
-#               "Bipolar Disorder 2" = sum(PHENOTYPE_FINE == "Bipolar Disorder 2"),
-#               "Bipolar Disorder NOS" = sum(PHENOTYPE_FINE == "Bipolar Disorder NOS"),
-#               "Schizoaffective" = sum(PHENOTYPE_FINE == "Schizoaffective"),
-#               "Bipolar Total (including schizoaffective)" = sum(
-#                 PHENOTYPE_COARSE == "Bipolar Disorder" |
-#                 PHENOTYPE_COARSE == "Schizoaffective"
-#                 ),
-#               "Controls" = sum(PHENOTYPE_FINE == "Control"))
-# dt_loc <- rbind(dt_loc, c("Total", colSums(dt_loc[,2:ncol(dt_loc)])))
-# fwrite(dt_loc, file="../phenotype_data/17_subphenotypes_and_location_summary.tsv", row.names=FALSE, sep='\t')
-# dt_loc <- fread("../phenotype_data/17_subphenotypes_and_location_summary.tsv") %>% rename(Location=LOCATION)
-# dt_loc$Total = rowSums(dt_loc[,c("Controls", "Bipolar Total (including schizoaffective)")])
-
-# dt_loc %>%
-#   kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
-#   kable_styling('hover', font_size=12)
+dt_loc %>%
+  kable("html", escape=FALSE, format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt_loc), bold = T, color = "white", background = "#0C6EBE") %>%  
+  kable_styling('hover', font_size=12)
 
 ```
