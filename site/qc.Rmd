@@ -297,7 +297,7 @@ knitr::include_graphics("./plots/07_URVs_SNPs_vs_indels_by_NFE.jpg")
 knitr::include_graphics("./plots/07_URVs_by_ethnicity.jpg")
 ```
 
-```{r sample_PC_table, echo=FALSE, warning=FALSE, message=FALSE, out.width = '100%'}
+```{r sample_urv_table, echo=FALSE, warning=FALSE, message=FALSE, out.width = '100%'}
 
 if (file.exists(PLOTS)) {
   dt_before <- dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed)
