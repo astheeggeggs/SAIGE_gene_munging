@@ -1,6 +1,5 @@
 import hail as hl
 
-
 PLOF_CSQS = ["transcript_ablation", "splice_acceptor_variant",
              "splice_donor_variant", "stop_gained", "frameshift_variant"]
 
@@ -54,6 +53,7 @@ def annotate_dbnsfp(ht, vep_vcf_path,
 
 
 def annotation_case_builder(worst_csq_by_gene_canonical_expr,
+                            csq_dbnsfp_expr = ht.dbnsfp,
                             use_loftee: bool = True,
                             use_polyphen_and_sift: bool = False,
                             use_revel_and_cadd: bool = True):
