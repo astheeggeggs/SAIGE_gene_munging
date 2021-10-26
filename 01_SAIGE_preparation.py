@@ -42,7 +42,8 @@ groups="pLoF,damaging_missense|LC,pLoF|damaging_missense|LC,pLoF|damaging_missen
 
 print('chromosome ' + args.chr)
 print('tranche: ' + TRANCHE)
-input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '.mt'
+# input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '.mt'
+input_mt_path = '/well/lindgren/UKBIOBANK/dpalmer/wes_' + TRANCHE + '/ukb_wes_qc/data/final_mt/' + '10_european.strict_filtered_chr' + args.chr + '.mt'
 output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep.ht'
 output_genemap_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_gene_map.ht'
 output_genemap_processed_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_gene_map_processed.ht'
