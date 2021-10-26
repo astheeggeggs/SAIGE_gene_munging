@@ -112,9 +112,9 @@ dt_nik <- data.table(
   Filter = c(
     "Initial variants in raw UKBB vcf",
     "Variants removed in initial filters"),
-  Variants = c(15922704, 159222704 - dt$Variants[1])
+  Variants = c(15922704, 15922704 - dt$Variants[1])
   )
-dt <- rbind(dt_nik, dt[, 1:(ncol(dt)-1)])
+dt <- rbind(dt_nik, dt[2:nrow(dt), 1:(ncol(dt)-1)])
 dt[nrow(dt),1] <- "Variants remaining after all filters"
 
 dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
