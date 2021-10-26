@@ -6,7 +6,8 @@ import os
 from ukb_utils import hail_init
 from ukb_utils import genotypes
 
-from ukb_common import *
+# from ukb_common import *
+from SAIGE_gene_munging/utils import annotations
 from gnomad.utils.vep import process_consequences
 
 # If running vep, ensure that set_up_vep is run,
@@ -46,6 +47,56 @@ output_saige_input_path = UKB_vep_output + 'SAIGE_gene_input/' + 'ukb_wes_' + TR
 mt = hl.read_matrix_table(input_mt_path)
 ht = mt.rows()
 ht = hl.vep(ht, vep_config)
+
+# VEP run on sites only vcf to generate these files.
+# Here are the settings.
+
+# readonly RAW_ROOT="/well/lindgren/UKBIOBANK/nbaya/wes_200k/ukb_wes_qc/data/filtered/"
+# readonly RAW_FILE="/ukb_wes_200k_filtered_chr${chr}.vcf.bgz"
+# readonly TMP_FILE="/ukb_wes_200k_filtered_tmp_chr${chr}.vcf.gz"
+
+# readonly OUT_ROOT="data/vep/full" #output"
+# readonly OUT_FILE1="/ukb_wes_200k_full_vep_chr${chr}.vcf" 
+
+# # Check if outfile already exists
+# if [ ! -f "${OUT_ROOT}${OUT_FILE1}" ]; then
+
+#   # extract variants in format that can be read by VEP
+#   if [ ! -f "${OUT_ROOT}${TMP_FILE}" ]; then
+#     module load BCFtools/1.9-foss-2018b
+#     bcftools query -f '%CHROM %POS %ID %REF %ALT %AC %QUAL\n' "${RAW_ROOT}${RAW_FILE}" -o "${OUT_ROOT}${TMP_FILE}"
+#   fi
+
+# # Load modules (NOTE: load order is important)
+# module purge
+# set_up_vep
+
+# ## run VEP 95 on temporary file
+# vep --input_file "${OUT_ROOT}${TMP_FILE}" \
+# --dir_cache /well/lindgren/flassen/software/VEP/vep95/GRCh38 \
+# --assembly GRCh38 \
+# --cache \
+# --species "homo_sapiens" \
+# --biotype \
+# --canonical \
+# --vcf \
+# --pick \
+# --total_length \
+# --sift b \
+# --polyphen b \
+# --dir_plugins /well/lindgren/flassen/software/VEP/plugins_grch38/ \
+# --plugin LoF,loftee_path:/well/lindgren/flassen/software/VEP/plugins_grch38/,human_ancestor_fa:/well/lindgren/flassen/software/VEP/loftee_human_ancestor/GRCh38/human_ancestor.fa.gz,conservation_file:/well/lindgren/flassen/software/VEP/loftee_human_ancestor/GRCh38/loftee.sql,gerp_bigwig:/well/lindgren/flassen/software/VEP/loftee_human_ancestor/GRCh38/gerp_conservation_scores.homo_sapiens.GRCh38.bw \
+# --plugin dbNSFP,/well/lindgren/flassen/software/VEP/dbNSFP/GRCh38/dbNSFP4.1a_grch38.gz,SIFT_score,SIFT_pred,Polyphen2_HDIV_score,Polyphen2_HDIV_pred,Polyphen2_HVAR_score,Polyphen2_HVAR_pred,LRT_score,LRT_pred,MutationAssessor_score,MutationAssessor_pred,MutationTaster_score,MutationTaster_pred,PROVEAN_score,PROVEAN_pred,REVEL_score,CADD_raw,CADD_phred \
+# --fields "Gene,Feature,Feature_type,Consequence,IMPACT,SYMBOL,SYMBOL_SOURCE,BIOTYPE,CANONICAL,CDS_position,Protein_position,EXON,INTRON,LoF_flags,LoF_filter,LoF,SIFT,SIFT_score,SIFT_pred,Polyphen2_HDIV_score,Polyphen2_HDIV_pred,Polyphen2_HVAR_score,Polyphen2_HVAR_pred,LRT_score,LRT_pred,MutationAssessor_score,MutationAssessor_pred,MutationTaster_score,MutationTaster_pred,PROVEAN_score,PROVEAN_pred,REVEL_score,CADD_raw,CADD_phred" \
+# --output_file "${OUT_ROOT}${OUT_FILE1}.tmp" \
+# --force_overwrite \
+# --no_stats \
+# --verbose \
+# --offline
+
+vep_vcf_path = '/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/vep/full/ukb_wes_200k_full_vep_chr' + args.chr '.vcf'
+
+
 ht = process_consequences(ht)
 ht.write(output_vep_ht_path, overwrite=True)
 
