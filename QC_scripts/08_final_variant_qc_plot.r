@@ -37,6 +37,7 @@ dt <- rbindlist(dt_list)
 fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t', quote=FALSE)
 
 dt <- fread(COMBINED_VARIANT_QC_FILE)
+dt <- dt %>% filter((qc.AF > 0) & (qc.AF < 1))
 # call rate across all variants
 create_pretty_hist(dt, aes(x=qc.call_rate), threshold=T_variant_call_rate, x_label='Call Rate', xlim=c(0.9,1), save_figure=save_figures,
 	file=paste0(PLOTS, TRANCHE, '_08_callRate_hist'))
