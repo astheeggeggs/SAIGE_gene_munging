@@ -20,15 +20,19 @@ args = parser.parse_args()
 
 hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
-def count_variants(vep_ht_path):
+def count_variants(vep_ht_path, vep_vcf_path):
     from gnomad.utils.vep import process_consequences
     ht = hl.read_table(vep_ht_path)
     ht = process_consequences(ht)
+    ht = annotate_dbnsfp(ht, vep_vcf_path)
     ht = ht.explode(ht.vep.worst_csq_by_gene_canonical)
     ht = ht.annotate(
         variant_id=ht.locus.contig + ':' + hl.str(ht.locus.position) + '_' + ht.alleles[0] + '/' + ht.alleles[1],
-        annotation=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical))
-    ht = ht.filter(hl.literal({'pLoF', 'LC', 'missense', 'synonymous'}).contains(ht.annotation))
+        annotation=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical,
+                                           ht.vep.worst_csq_for_variant_canonical,
+                                           ht.dbnsfp)
+        )
+    ht = ht.filter(hl.literal({'pLoF', 'LC', 'damaging_missense', 'other_missense', 'synonymous'}).contains(ht.annotation))
     print(ht.count())
 
 TRANCHE = args.tranche
@@ -103,8 +107,6 @@ vep_vcf_path = '/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/ve
 ht = annotate_dbnsfp(ht, vep_vcf_path)
 
 gene_map_ht = create_gene_map_ht(ht)
-gene_map_ht.show()
-
 gene_map_ht.write(output_genemap_ht_path, overwrite=True)
 
 gene_map_ht = hl.read_table(output_genemap_ht_path)
@@ -140,15 +142,16 @@ for group in groups.split(','):
 
 output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep.ht'
 output_summary_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_summary.ht'
-count_variants(output_vep_ht_path)
+count_variants(output_vep_ht_path, vep_vcf_path)
 
 ht = hl.read_table(output_vep_ht_path)
 ht = process_consequences(ht)
+ht = annotate_dbnsfp(ht, vep_vcf_path)
 ht = ht.explode(ht.vep.worst_csq_by_gene_canonical)
 ht = ht.group_by(
     gene=ht.vep.worst_csq_by_gene_canonical.gene_symbol,
-    consequence=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical)
-).partition_hint(100).aggregate(
-    n_variants=hl.agg.count()
-)
+    consequence=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical,
+                                        ht.vep.worst_csq_for_variant_canonical,
+                                        ht.dbnsfp)
+    ).partition_hint(100).aggregate(n_variants=hl.agg.count())
 ht.write(output_summary_path, overwrite=True)
