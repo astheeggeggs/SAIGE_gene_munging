@@ -94,7 +94,6 @@ ht = hl.vep(ht, vep_config)
 # --verbose \
 # --offline
 
-
 ht = process_consequences(ht)
 ht.write(output_vep_ht_path, overwrite=True)
 
@@ -104,6 +103,8 @@ vep_vcf_path = '/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/ve
 ht = annotate_dbnsfp(ht, vep_vcf_path)
 
 gene_map_ht = create_gene_map_ht(ht)
+gene_map_ht.show()
+
 gene_map_ht.write(output_genemap_ht_path, overwrite=True)
 
 gene_map_ht = hl.read_table(output_genemap_ht_path)
@@ -112,16 +113,16 @@ gene_map_ht.write(output_genemap_processed_ht_path, overwrite=True)
 
 gene_map_ht = hl.read_table(output_genemap_processed_ht_path)
 
-# Read in the protein coding genes
-ht_coding = hl.import_table('/well/lindgren/dpalmer/genesets/data/biomart/protein_coding_genes.tsv',
-    missing=['NA', ''], impute=True, delimiter=' ')
-ht_coding = ht_coding.transmute(gene_id = ht_coding.ensembl_gene_id)
-ht_coding = ht_coding.key_by(ht_coding.gene_id).select()
-ht_coding.count()
+# # Read in the protein coding genes
+# ht_coding = hl.import_table('/well/lindgren/dpalmer/genesets/data/biomart/protein_coding_genes.tsv',
+#     missing=['NA', ''], impute=True, delimiter=' ')
+# ht_coding = ht_coding.transmute(gene_id = ht_coding.ensembl_gene_id)
+# ht_coding = ht_coding.key_by(ht_coding.gene_id).select()
+# ht_coding.count()
 
-# Filter to protein coding genes
-gene_map_ht = gene_map_ht.key_by('gene_id')
-gene_map_ht = gene_map_ht.filter(hl.is_defined(ht_coding[gene_map_ht.key]))
+# # Filter to protein coding genes
+# gene_map_ht = gene_map_ht.key_by('gene_id')
+# gene_map_ht = gene_map_ht.filter(hl.is_defined(ht_coding[gene_map_ht.key]))
 
 # gene_ht.select(
 #     group=gene_ht.gene_id + '_' + gene_ht.gene_symbol + '_' + gene_ht.annotation,
