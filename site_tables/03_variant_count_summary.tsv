@@ -1,6 +1,6 @@
 Filter	Variants	%
 Variants after initial filter	13039044	100
 Invariant sites after sample filters	2744044	21
-Overall variant call rate < 0.97	1435542	11
-Variants failing HWE filter	2749166	21.1
+Overall variant call rate < 0.97	1122987	8.6
+Variants failing HWE filter	5237	0
 Variants after filters	9169408	70.3
