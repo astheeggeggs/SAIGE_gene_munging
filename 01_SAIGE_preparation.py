@@ -34,7 +34,7 @@ def count_variants(vep_ht_path):
 TRANCHE = args.tranche
 UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
 vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
-# groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
+groups="pLoF,damaging_missense|LC,pLoF|damaging_missense|LC,pLoF|damaging_missense,damaging_missense,other_missense,synonymous"
 
 print('chromosome ' + args.chr)
 print('tranche: ' + TRANCHE)

@@ -67,25 +67,22 @@ def annotation_case_builder(worst_csq_by_gene_canonical_expr,
     else:
         case = case.when(hl.set(PLOF_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), 'pLoF')
     
-    if use_polyphen_and_sift:
-        case = (case
-                .when(missense.contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence) &
-                      (mt.vep.worst_csq_for_variant_canonical.polyphen_prediction == "probably_damaging") &
-                      (mt.vep.worst_csq_for_variant_canonical.sift_prediction == "deleterious"), "damaging_missense")
-                .when(missense.contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence), "other_missense"))
-    else:
+    if (use_polyphen_and_sift or use_revel_and_cadd):
+        if use_polyphen_and_sift:
+            case = (case
+                    .when(hl.set(MISSENSE_CSQS).contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence) &
+                          (mt.vep.worst_csq_for_variant_canonical.polyphen_prediction == "probably_damaging") &
+                          (mt.vep.worst_csq_for_variant_canonical.sift_prediction == "deleterious"), "damaging_missense")
+                    .when(hl.set(MISSENSE_CSQS).contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence), "other_missense"))
+
         if use_revel_and_cadd:
             case = (case
-                .when(missense.contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence) &
-                      (mt.vep.worst_csq_for_variant_canonical.polyphen_prediction == "probably_damaging") &
-                      (mt.vep.worst_csq_for_variant_canonical.sift_prediction == "deleterious"), "damaging_missense")
-                .when(missense.contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence), "other_missense"))
-        else:
-            case = (case
-                .when(hl.set(MISSENSE_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence) & 
-                      (csq_dbnsfp_expr.cadd_phred_score >= 20) & 
-                      (csq_dbnsfp_expr.revel_score >= 0.6), "damaging_missense")
-                .when(hl.set(MISSENSE_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), "other_missense"))
+                    .when(hl.set(MISSENSE_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence) & 
+                          (csq_dbnsfp_expr.cadd_phred_score >= 20) & (csq_dbnsfp_expr.revel_score >= 0.6), "damaging_missense")
+                    .when(hl.set(MISSENSE_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), "other_missense"))
+
+    else:
+        case = case.when(hl.set(MISSENSE_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), 'missense')
 
     case = case.when(hl.set(SYNONYMOUS_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), 'synonymous')
     case = case.when(hl.set(OTHER_CSQS).contains(worst_csq_by_gene_canonical_expr.most_severe_consequence), 'non-coding')
