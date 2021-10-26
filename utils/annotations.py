@@ -53,7 +53,8 @@ def annotate_dbnsfp(ht, vep_vcf_path,
 
 
 def annotation_case_builder(worst_csq_by_gene_canonical_expr,
-                            csq_dbnsfp_expr = ht.dbnsfp,
+                            worst_csq_for_variant_canonical_expr,
+                            csq_dbnsfp_expr,
                             use_loftee: bool = True,
                             use_polyphen_and_sift: bool = False,
                             use_revel_and_cadd: bool = True):
@@ -70,10 +71,10 @@ def annotation_case_builder(worst_csq_by_gene_canonical_expr,
     if (use_polyphen_and_sift or use_revel_and_cadd):
         if use_polyphen_and_sift:
             case = (case
-                    .when(hl.set(MISSENSE_CSQS).contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence) &
-                          (mt.vep.worst_csq_for_variant_canonical.polyphen_prediction == "probably_damaging") &
-                          (mt.vep.worst_csq_for_variant_canonical.sift_prediction == "deleterious"), "damaging_missense")
-                    .when(hl.set(MISSENSE_CSQS).contains(mt.vep.worst_csq_for_variant_canonical.most_severe_consequence), "other_missense"))
+                    .when(hl.set(MISSENSE_CSQS).contains(worst_csq_for_variant_canonical_expr.most_severe_consequence) &
+                          (worst_csq_for_variant_canonical_expr.polyphen_prediction == "probably_damaging") &
+                          (worst_csq_for_variant_canonical_expr.sift_prediction == "deleterious"), "damaging_missense")
+                    .when(hl.set(MISSENSE_CSQS).contains(worst_csq_for_variant_canonical_expr.most_severe_consequence), "other_missense"))
 
         if use_revel_and_cadd:
             case = (case
@@ -97,7 +98,10 @@ def create_gene_map_ht(ht, check_gene_contigs=False):
     ht = ht.explode(ht.vep.worst_csq_by_gene_canonical)
     ht = ht.annotate(
         variant_id=ht.locus.contig + ':' + hl.str(ht.locus.position) + '_' + ht.alleles[0] + '/' + ht.alleles[1],
-        annotation=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical))
+        annotation=annotation_case_builder(ht.vep.worst_csq_by_gene_canonical,
+                                           ht.vep.worst_csq_for_variant_canonical,
+                                           ht.dbnsfp)
+        )
     if check_gene_contigs:
         gene_contigs = ht.group_by(
             gene_id=ht.vep.worst_csq_by_gene_canonical.gene_id,
