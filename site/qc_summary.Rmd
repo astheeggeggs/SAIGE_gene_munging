@@ -106,12 +106,14 @@ if (file.exists(PLOTS)) {
 
 ```{r variant_table, echo=FALSE, out.width = '100%', warning=FALSE}
 # Hard-coded summary from Nik's initial QC
-dt_nik <- data.table(
-  Filter = c("Initial variants in raw UKBB vcf"),
-  Variants = c(15922704)
-  )
-dt <- fread('../site_tables/03_variant_count_summary.tsv')
 
+dt <- fread('../site_tables/03_variant_count_summary.tsv')
+dt_nik <- data.table(
+  Filter = c(
+    "Initial variants in raw UKBB vcf",
+    "Variants removed in initial filters"),
+  Variants = c(15922704, 159222704 - dt$Variants[1])
+  )
 dt <- rbind(dt_nik, dt[, 1:(ncol(dt)-1)])
 dt[nrow(dt),1] <- "Variants remaining after all filters"
 
@@ -149,7 +151,6 @@ dt_initial <- rbind(dt_nik,
     col.names=c("Filter", "Samples", "Batch 1", "Batch 2")
     )
   )
-names(dt_initial) <- c("Filter", "Samples", "Batch 1", "Batch 2")
 
 dt_final_sample <- fread(
   paste0(
@@ -171,7 +172,8 @@ dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
 dt <- cbind(
   data.table(
     Filter = c(
-      "Initial samples in vcf",
+      "Initial samples in raw UKBB vcf",
+      "Initial samples in filtered vcf",
       "Sample call rate < 0.95",
       "Mean DP < 19.5",
       "Mean GQ < 47.8",
@@ -215,8 +217,6 @@ if (file.exists(PLOTS)) {
     summary_fun(dt_pheno %>% filter(initial_vcf, initial_sample_qc, !sex_removed, !urv_removed, rf_nfe, final_list))
   )
 
-  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
-
   dt <- cbind(
     data.table(
       Filter = c(
@@ -229,6 +229,9 @@ if (file.exists(PLOTS)) {
         "Samples after all sample filters")
       ),
     dt)
+  dt <- rbind(dt_nik, dt)
+  dt <- dt %>% mutate(`%` = round(100 * Samples/dt$Samples[1], 1))
+
   fwrite(dt, file = "../site_tables/sample_summary_table.tsv", sep='\t')
 } else {
   dt <- fread("../site_tables/sample_summary_table.tsv")

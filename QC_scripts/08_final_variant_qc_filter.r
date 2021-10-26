@@ -42,8 +42,8 @@ dt_final_variant_summary <- data.table(Filter = c("Variants after initial filter
 												  "Variants after filters"),
 									   Variants = c(nrow(dt),
 									   			    nrow(dt %>% filter((qc.AF <= 0) | (qc.AF >= 1))),
-									   			    nrow(dt %>% filter(qc.call_rate < T_variant_call_rate)),
-									   			    nrow(dt %>% filter(qc.p_value_hwe <= T_pHWE)),
+									   			    nrow(dt %>% filter(qc.AF > 0, qc.AF < 1, qc.call_rate < T_variant_call_rate)),
+									   			    nrow(dt %>% filter(qc.AF > 0, qc.AF < 1, qc.p_value_hwe <= T_pHWE)),
 									   			    nrow(dt_out)))
 
 fwrite(dt_final_variant_summary, file=VARIANT_SUMMARY, quote=FALSE, row.names=FALSE, col.names=FALSE, sep='\t')
