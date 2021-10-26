@@ -46,6 +46,5 @@ dt_final_variant_summary <- data.table(Filter = c("Variants after initial filter
 									   			    nrow(dt %>% filter(qc.p_value_hwe <= T_pHWE)),
 									   			    nrow(dt_out)))
 
-
 fwrite(dt_final_variant_summary, file=VARIANT_SUMMARY, quote=FALSE, row.names=FALSE, col.names=FALSE, sep='\t')
 fwrite(dt_out %>% select("locus", "alleles"), file=FINAL_VARIANT_LIST, quote=FALSE, row.names=FALSE, col.names=TRUE, sep='\t')

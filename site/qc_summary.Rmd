@@ -105,19 +105,22 @@ if (file.exists(PLOTS)) {
 ```
 
 ```{r variant_table, echo=FALSE, out.width = '100%', warning=FALSE}
-# dt_1 <- fread('../variants_BipEx/02_summary_variant_table.tsv')
-# dt_2 <- fread('../site_tables/03_variant_count_summary.tsv', header=FALSE)
-# names(dt_2) <- c("Filter", "Variants")
+# Hard-coded summary from Nik's initial QC
+dt_nik <- data.table(
+  Filter = c("Initial variants in raw UKBB vcf"),
+  Variants = c(15922704)
+  )
+dt <- fread('../site_tables/03_variant_count_summary.tsv')
 
-# dt <- rbind(dt_1[1:(nrow(dt_1)-1),], dt_2[2:nrow(dt_2),])
-# dt[nrow(dt),1] <- "Variants remaining after all filters"
+dt <- rbind(dt_nik, dt[, 1:(ncol(dt)-1)])
+dt[nrow(dt),1] <- "Variants remaining after all filters"
 
-# dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
+dt[,"%"] <- round(100 * dt$Variants/dt$Variants[1], 1)
 
-# dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
-#   kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
-#   row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
-#   kable_styling('hover')
+dt %>% mutate("%" = color_bar("#0081c2")(unlist(dt[,'%']))) %>% 
+  kable("html", escape=FALSE, align=c('l', 'r', 'r'), format.args = list(big.mark = ",")) %>% row_spec(0,bold=TRUE) %>%
+  row_spec(nrow(dt), bold = T, color = "white", background = "#0C6EBE") %>% 
+  kable_styling('hover')
 
 ```
 
@@ -130,12 +133,21 @@ if (file.exists(PLOTS)) {
 ```{r sample_summary_table, echo=FALSE, out.width = '100%', warning=FALSE}
 
 if (file.exists(PLOTS)) {
-
-dt_initial <- fread(
-  paste0(
-    "/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE,
-    "/ukb_wes_qc/data/samples/03_sample_count.tsv"),
-  header=FALSE
+# Hard-coded summary from Nik's initial QC
+dt_nik <- data.table(
+  Filter = c("Initial samples in raw UKBB vcf"),
+  Samples = c(200643),
+  `Batch 1` = c(NA),
+  `Batch 2` = c(NA)
+  )
+dt_initial <- rbind(dt_nik,
+  fread(
+    paste0(
+      "/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE,
+      "/ukb_wes_qc/data/samples/03_sample_count.tsv"),
+    header=FALSE,
+    col.names=c("Filter", "Samples", "Batch 1", "Batch 2")
+    )
   )
 names(dt_initial) <- c("Filter", "Samples", "Batch 1", "Batch 2")
 

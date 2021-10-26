@@ -19,7 +19,6 @@ VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/uk
 COMBINED_VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants.tsv')
 
 dt <- fread(cmd = paste('zcat', VARIANT_QC_FILE), header=TRUE, sep='\t')
-dt <- dt %>% filter(qc.AF > 0 & qc.AF < 1)
 
 dt_list <- list()
 dt_list[[1]] <- dt
@@ -29,7 +28,6 @@ for (CHR in c(seq(2,22), "X")) {
     cat(paste0("chromosome ", CHR, "\n"))
     VARIANT_QC_FILE <- paste0('/well/lindgren/UKBIOBANK/dpalmer/wes_', TRANCHE, '/ukb_wes_qc/data/variants/08_final_qc.variants_chr', CHR, '.tsv.bgz')
     dt_tmp <- fread(cmd = paste('zcat', VARIANT_QC_FILE), header=TRUE, sep='\t')
-    dt_tmp <- dt_tmp %>% filter(qc.AF > 0 & qc.AF < 1)
     setkeyv(dt_tmp, c('locus', 'alleles'))
     dt_list[[CHR]] <- dt_tmp
 }
@@ -37,7 +35,6 @@ for (CHR in c(seq(2,22), "X")) {
 dt <- rbindlist(dt_list)
 
 fwrite(dt, file=COMBINED_VARIANT_QC_FILE , sep='\t', quote=FALSE)
-# system(paste("bgzip", COMBINED_VARIANT_QC_FILE))
 
 dt <- fread(COMBINED_VARIANT_QC_FILE)
 # call rate across all variants
@@ -55,7 +52,6 @@ p <- create_pretty_hist(dt, aes(x=qc.p_value_hwe), threshold=T_pHWE,  x_label='p
   )
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.pdf'), p, width=160, height=90, units='mm')
 ggsave(paste0(PLOTS, TRANCHE, '_08_pHWE_hist.jpg'), p, width=160, height=90, units='mm', dpi=500)
-
 
 # cumulative pHWE
 p <- create_pretty_cumulative(dt, aes(x=qc.p_value_hwe), x_label='p(HWE)',
