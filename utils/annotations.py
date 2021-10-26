@@ -20,38 +20,37 @@ OTHER_CSQS = ["mature_miRNA_variant", "5_prime_UTR_variant",
 # TODO: question, what to do with: "splice_region_variant"
 # TODO: question, "missense-damaging" vs "damaging_missense"
 
-def annotate_dbnsfp(mt, vep_path, vep_fields = '/well/lindgren/dpalmer/SAIGE_gene_munging/data/vep_fields.txt'):
+def annotate_dbnsfp(ht, vep_vcf_path,
+    vep_fields = '/well/lindgren/dpalmer/SAIGE_gene_munging/data/vep_fields.txt'):
     r'''Annotate matrix table with dbNSFP consequence from external VEP file.'''
-    print(f'Annotating with VEP file: {vep_path}')
+    print(f'Annotating with VEP vcf file: {vep_vcf_path}')
     
     # Open file containing VEP fields
     with open(vep_fields, 'r') as file:
         fields = file.read().strip().split(',')
-    ht = hl.import_vcf(vep_path).rename({'info':'vep'}) 
+    ht_vep = hl.import_vcf(vep_vcf_path).rename({'info':'vep'}).rows()
     
     # Add VEP fields by iteration
     for i in range(len(fields)):
-        ht = ht.annotate_rows(
-            vep=ht.vep.annotate(
-                col=ht.vep.CSQ.map(lambda x: (x.split('\\|')[i]))[0]
+        ht_vep = ht_vep.annotate(
+            vep=ht_vep.vep.annotate(
+                col=ht_vep.vep.CSQ.map(lambda x: (x.split('\\|')[i]))[0]
                 ).rename({'col':f'{fields[i]}'})
         )
     
     # Extract various categories annotations and change type
-    ht = ht.annotate_rows(vep = ht.vep.annotate(sift_pred = ht.vep.SIFT_pred.split('&')[0]))
-    ht = ht.annotate_rows(vep = ht.vep.annotate(polyphen2_hdiv_pred = ht.vep.Polyphen2_HDIV_pred.split('&')[0]))
-    ht = ht.annotate_rows(vep = ht.vep.annotate(polyphen2_hvar_pred = ht.vep.Polyphen2_HVAR_pred.split('&')[0]))
-    ht = ht.annotate_rows(vep = ht.vep.annotate(cadd_phred_score = hl.parse_float(ht.vep.CADD_phred)))
-    ht = ht.annotate_rows(vep = ht.vep.annotate(revel_score = hl.parse_float(ht.vep.REVEL_score)))
+    ht_vep = ht_vep.annotate(dbnsfp = hl.struct())
+    ht_vep = ht_vep.annotate(dbnsfp = ht_vep.dbnsfp.annotate(
+        sift_pred = ht_vep.vep.SIFT_pred.split('&')[0],
+        polyphen2_hdiv_pred = ht_vep.vep.Polyphen2_HDIV_pred.split('&')[0],
+        polyphen2_hvar_pred = ht_vep.vep.Polyphen2_HVAR_pred.split('&')[0],
+        cadd_phred_score = hl.parse_float(ht_vep.vep.CADD_phred),
+        revel_score = hl.parse_float(ht_vep.vep.REVEL_score))
+    )
     
-    # annotate main table
-    mt = mt.annotate_rows(dbnsfp = hl.struct())
-    mt = mt.annotate_rows(dbnsfp = mt.dbnsfp.annotate(revel_score = ht.index_rows(mt.locus, mt.alleles).vep.revel_score))
-    mt = mt.annotate_rows(dbnsfp = mt.dbnsfp.annotate(cadd_phred_score = ht.index_rows(mt.locus, mt.alleles).vep.cadd_phred_score))
-    mt = mt.annotate_rows(dbnsfp = mt.dbnsfp.annotate(polyphen2_hdiv_pred = ht.index_rows(mt.locus, mt.alleles).vep.polyphen2_hdiv_pred))
-    mt = mt.annotate_rows(dbnsfp = mt.dbnsfp.annotate(polyphen2_hvar_pred = ht.index_rows(mt.locus, mt.alleles).vep.polyphen2_hvar_pred))
-
-    return(mt)
+    # annotate main hail table
+    ht = ht.annotate(dbnsfp = ht_vep[ht.key].dbnsfp)
+    return(ht)
 
 
 def annotation_case_builder(worst_csq_by_gene_canonical_expr,

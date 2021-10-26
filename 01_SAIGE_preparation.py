@@ -7,18 +7,18 @@ from ukb_utils import hail_init
 from ukb_utils import genotypes
 
 # from ukb_common import *
-from SAIGE_gene_munging/utils import annotations
+from SAIGE_gene_munging.utils.annotations import *
 from gnomad.utils.vep import process_consequences
 
 # If running vep, ensure that set_up_vep is run,
 # grab this by sourcing the hail_utils.sh file in /well/lindgren/dpalmer.
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--chr", type=str, required=True)
+parser.add_argument("--chr", type=str, default='20')
 parser.add_argument("--tranche", type=str, default='200k')
 args = parser.parse_args()
 
-hail_init.hail_bmrc_init('logs/hail/hail_export.log', 'GRCh38')
+hail_init.hail_bmrc_init_local('logs/hail/hail_export.log', 'GRCh38')
 
 def count_variants(vep_ht_path):
     from gnomad.utils.vep import process_consequences
@@ -34,10 +34,10 @@ def count_variants(vep_ht_path):
 TRANCHE = args.tranche
 UKB_vep_output = '/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/' + TRANCHE + '/'
 vep_config = "/well/lindgren/dpalmer/wes_ko_ukbb/utils/configs/vep_env.json"
-groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
+# groups = "pLoF,missense|LC,pLoF|missense|LC,synonymous,missense"
 
-pprint('chromosome ' + args.chr)
-pprint('tranche: ' + TRANCHE)
+print('chromosome ' + args.chr)
+print('tranche: ' + TRANCHE)
 input_mt_path = '/well/lindgren/UKBIOBANK/nbaya/wes_' + TRANCHE + '/ukb_wes_qc/data/filtered/ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '.mt'
 output_vep_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_vep.ht'
 output_genemap_ht_path = UKB_vep_output + 'ukb_wes_' + TRANCHE + '_filtered_chr' + args.chr + '_gene_map.ht'
@@ -94,13 +94,14 @@ ht = hl.vep(ht, vep_config)
 # --verbose \
 # --offline
 
-vep_vcf_path = '/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/vep/full/ukb_wes_200k_full_vep_chr' + args.chr '.vcf'
-
 
 ht = process_consequences(ht)
 ht.write(output_vep_ht_path, overwrite=True)
 
 ht = hl.read_table(output_vep_ht_path)
+
+vep_vcf_path = '/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/vep/full/ukb_wes_200k_full_vep_chr' + args.chr + '.vcf'
+ht = annotate_dbnsfp(ht, vep_vcf_path)
 
 gene_map_ht = create_gene_map_ht(ht)
 gene_map_ht.write(output_genemap_ht_path, overwrite=True)
