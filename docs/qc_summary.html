@@ -13,8 +13,8 @@
 
 <title>Summary of QC filtering</title>
 
-<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -24,10 +24,10 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -370,6 +370,100 @@ div.tocify {
 <div id="variant-filtering" class="section level2">
 <h2>Variant filtering</h2>
 <p>For our QC pipeline, we first read in the .vcf file, split multiallelics, and realign indels. A series of careful initial QC steps are applied before a filtered .vcf and matrix table is passed to this QC pipeline.</p>
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;">
+Filter
+</th>
+<th style="text-align:right;font-weight: bold;">
+Variants
+</th>
+<th style="text-align:right;font-weight: bold;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Initial variants in raw UKBB vcf
+</td>
+<td style="text-align:right;">
+15,922,704
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 10.89%">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Variants removed in initial filters
+</td>
+<td style="text-align:right;">
+146,183,660
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">918.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Variants after initial filter
+</td>
+<td style="text-align:right;">
+13,039,044
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 8.92%">81.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Invariant sites after sample filters
+</td>
+<td style="text-align:right;">
+2,744,044
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.87%">17.2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Overall variant call rate &lt; 0.97
+</td>
+<td style="text-align:right;">
+1,435,542
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.98%">9.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Variants failing HWE filter
+</td>
+<td style="text-align:right;">
+2,749,166
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.88%">17.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+Variants remaining after all filters
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+9,169,408
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 6.27%">57.6</span>
+</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 </div>
 <div id="sample-filtering" class="section level2">
@@ -398,7 +492,24 @@ Batch 2
 <tbody>
 <tr>
 <td style="text-align:left;">
-Initial samples in vcf
+Initial samples in raw UKBB vcf
+</td>
+<td style="text-align:right;">
+200,643
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Initial samples in filtered vcf
 </td>
 <td style="text-align:right;">
 199,795
@@ -410,7 +521,7 @@ Initial samples in vcf
 150,036
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 99.60%">99.6</span>
 </td>
 </tr>
 <tr>
@@ -427,7 +538,7 @@ Sample call rate &lt; 0.95
 2,620
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 3.70%">3.7</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 3.70%">3.7</span>
 </td>
 </tr>
 <tr>
@@ -444,7 +555,7 @@ Mean DP &lt; 19.5
 2,742
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.60%">1.6</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.60%">1.6</span>
 </td>
 </tr>
 <tr>
@@ -461,7 +572,7 @@ Mean GQ &lt; 47.8
 1,289
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.10%">1.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.10%">1.1</span>
 </td>
 </tr>
 <tr>
@@ -478,7 +589,7 @@ Samples with sex swap
 61
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -495,7 +606,7 @@ Samples with excess URVs
 70
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -512,7 +623,7 @@ PCA based filters
 10,147
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 6.80%">6.8</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 6.70%">6.7</span>
 </td>
 </tr>
 <tr>
@@ -529,7 +640,7 @@ Within batch Ti/Tv ratio outside 4 standard deviations
 10
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -546,7 +657,7 @@ Within batch Het/HomVar ratio outside 4 standard deviations
 205
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
 </td>
 </tr>
 <tr>
@@ -563,7 +674,7 @@ Within batch Insertion/Deletion ratio outside 4 standard deviations
 5
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -580,7 +691,7 @@ n singletons &gt; 175
 17
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -597,7 +708,7 @@ Samples after all sample filters
 135,564
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 88.60%">88.6</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 88.20%">88.2</span>
 </td>
 </tr>
 </tbody>
@@ -629,6 +740,23 @@ Batch 2
 <tbody>
 <tr>
 <td style="text-align:left;">
+Initial samples in raw UKBB vcf
+</td>
+<td style="text-align:right;">
+200,643
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Initial samples in vcf
 </td>
 <td style="text-align:right;">
@@ -641,7 +769,7 @@ Initial samples in vcf
 150,036
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 99.60%">99.6</span>
 </td>
 </tr>
 <tr>
@@ -658,7 +786,7 @@ Below sample metric thresholds
 3,958
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 4.40%">4.4</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 4.40%">4.4</span>
 </td>
 </tr>
 <tr>
@@ -675,7 +803,7 @@ Samples with sex swap
 61
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -692,7 +820,7 @@ Samples with excess URVs
 70
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -709,7 +837,7 @@ PCA based filters
 10,147
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 6.80%">6.8</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 6.70%">6.7</span>
 </td>
 </tr>
 <tr>
@@ -726,7 +854,7 @@ Outliers in batch-specific sample metrics
 236
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
 </td>
 </tr>
 <tr>
@@ -743,7 +871,7 @@ Samples after all sample filters
 135,564
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 88.60%">88.6</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 88.20%">88.2</span>
 </td>
 </tr>
 </tbody>
@@ -800,7 +928,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0

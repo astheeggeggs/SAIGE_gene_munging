@@ -13,8 +13,8 @@
 
 <title>Quality control pipeline</title>
 
-<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -24,10 +24,10 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -375,13 +375,13 @@ div.tocify {
 <th style="text-align:left;font-weight: bold;">
 UKBB centre
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 1
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 2
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Total
 </th>
 </tr>
@@ -391,265 +391,265 @@ Total
 <td style="text-align:left;">
 Barts
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 65
 </td>
-<td style="text-align:right;">
-4,238
+<td style="text-align:left;">
+4238
 </td>
-<td style="text-align:right;">
-4,303
+<td style="text-align:left;">
+4303
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Birmingham
 </td>
-<td style="text-align:right;">
-9,558
+<td style="text-align:left;">
+9558
 </td>
-<td style="text-align:right;">
-5,249
+<td style="text-align:left;">
+5249
 </td>
-<td style="text-align:right;">
-14,807
+<td style="text-align:left;">
+14807
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Bristol
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 110
 </td>
-<td style="text-align:right;">
-14,890
+<td style="text-align:left;">
+14890
 </td>
-<td style="text-align:right;">
-15,000
+<td style="text-align:left;">
+15000
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Bury
 </td>
-<td style="text-align:right;">
-1,765
+<td style="text-align:left;">
+1765
 </td>
-<td style="text-align:right;">
-8,990
+<td style="text-align:left;">
+8990
 </td>
-<td style="text-align:right;">
-10,755
+<td style="text-align:left;">
+10755
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Cardiff
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 99
 </td>
-<td style="text-align:right;">
-6,258
+<td style="text-align:left;">
+6258
 </td>
-<td style="text-align:right;">
-6,357
+<td style="text-align:left;">
+6357
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Croydon
 </td>
-<td style="text-align:right;">
-7,005
+<td style="text-align:left;">
+7005
 </td>
-<td style="text-align:right;">
-6,825
+<td style="text-align:left;">
+6825
 </td>
-<td style="text-align:right;">
-13,830
+<td style="text-align:left;">
+13830
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Edinburgh
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 59
 </td>
-<td style="text-align:right;">
-5,682
+<td style="text-align:left;">
+5682
 </td>
-<td style="text-align:right;">
-5,741
+<td style="text-align:left;">
+5741
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Glasgow
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 94
 </td>
-<td style="text-align:right;">
-6,017
+<td style="text-align:left;">
+6017
 </td>
-<td style="text-align:right;">
-6,111
+<td style="text-align:left;">
+6111
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Hounslow
 </td>
-<td style="text-align:right;">
-5,471
+<td style="text-align:left;">
+5471
 </td>
-<td style="text-align:right;">
-7,786
+<td style="text-align:left;">
+7786
 </td>
-<td style="text-align:right;">
-13,257
+<td style="text-align:left;">
+13257
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Leeds
 </td>
-<td style="text-align:right;">
-2,110
+<td style="text-align:left;">
+2110
 </td>
-<td style="text-align:right;">
-14,151
+<td style="text-align:left;">
+14151
 </td>
-<td style="text-align:right;">
-16,261
+<td style="text-align:left;">
+16261
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Liverpool
 </td>
-<td style="text-align:right;">
-4,899
+<td style="text-align:left;">
+4899
 </td>
-<td style="text-align:right;">
-9,050
+<td style="text-align:left;">
+9050
 </td>
-<td style="text-align:right;">
-13,949
+<td style="text-align:left;">
+13949
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Manchester
 </td>
-<td style="text-align:right;">
-1,823
+<td style="text-align:left;">
+1823
 </td>
-<td style="text-align:right;">
-4,049
+<td style="text-align:left;">
+4049
 </td>
-<td style="text-align:right;">
-5,872
+<td style="text-align:left;">
+5872
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Middlesborough
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 103
 </td>
-<td style="text-align:right;">
-7,009
+<td style="text-align:left;">
+7009
 </td>
-<td style="text-align:right;">
-7,112
+<td style="text-align:left;">
+7112
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Newcastle
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 153
 </td>
-<td style="text-align:right;">
-12,219
+<td style="text-align:left;">
+12219
 </td>
-<td style="text-align:right;">
-12,372
+<td style="text-align:left;">
+12372
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Nottingham
 </td>
-<td style="text-align:right;">
-1,609
+<td style="text-align:left;">
+1609
 </td>
-<td style="text-align:right;">
-10,726
+<td style="text-align:left;">
+10726
 </td>
-<td style="text-align:right;">
-12,335
+<td style="text-align:left;">
+12335
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Oxford
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 49
 </td>
-<td style="text-align:right;">
-5,087
+<td style="text-align:left;">
+5087
 </td>
-<td style="text-align:right;">
-5,136
+<td style="text-align:left;">
+5136
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Reading
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 67
 </td>
-<td style="text-align:right;">
-9,896
+<td style="text-align:left;">
+9896
 </td>
-<td style="text-align:right;">
-9,963
+<td style="text-align:left;">
+9963
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Sheffield
 </td>
-<td style="text-align:right;">
-13,901
+<td style="text-align:left;">
+13901
 </td>
-<td style="text-align:right;">
-5,280
+<td style="text-align:left;">
+5280
 </td>
-<td style="text-align:right;">
-19,181
+<td style="text-align:left;">
+19181
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Stockport (pilot)
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 75
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 0
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 75
 </td>
 </tr>
@@ -657,27 +657,27 @@ Stockport (pilot)
 <td style="text-align:left;">
 Stoke
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 840
 </td>
-<td style="text-align:right;">
-6,340
+<td style="text-align:left;">
+6340
 </td>
-<td style="text-align:right;">
-7,180
+<td style="text-align:left;">
+7180
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Swansea
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 16
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 760
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 776
 </td>
 </tr>
@@ -685,13 +685,13 @@ Swansea
 <td style="text-align:left;">
 Unknown
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 3
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 11
 </td>
 </tr>
@@ -699,13 +699,13 @@ Unknown
 <td style="text-align:left;">
 Wrexham
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 77
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 182
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 259
 </td>
 </tr>
@@ -713,14 +713,14 @@ Wrexham
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
 Total
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-49,956
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+49956
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-150,687
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+150687
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-200,643
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+200643
 </td>
 </tr>
 </tbody>
@@ -734,13 +734,13 @@ Total
 <th style="text-align:left;font-weight: bold;">
 Self reported ethnicity
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 1
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 2
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Total
 </th>
 </tr>
@@ -750,13 +750,13 @@ Total
 <td style="text-align:left;">
 Asian or Asian British
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 2
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 16
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 18
 </td>
 </tr>
@@ -764,13 +764,13 @@ Asian or Asian British
 <td style="text-align:left;">
 Black or Black British
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 3
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 11
 </td>
 </tr>
@@ -778,13 +778,13 @@ Black or Black British
 <td style="text-align:left;">
 Mixed
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 2
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 13
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 15
 </td>
 </tr>
@@ -792,27 +792,27 @@ Mixed
 <td style="text-align:left;">
 African
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 337
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 905
 </td>
-<td style="text-align:right;">
-1,242
+<td style="text-align:left;">
+1242
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Any other Asian background
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 202
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 558
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 760
 </td>
 </tr>
@@ -820,13 +820,13 @@ Any other Asian background
 <td style="text-align:left;">
 Any other Black background
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 10
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 37
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 47
 </td>
 </tr>
@@ -834,13 +834,13 @@ Any other Black background
 <td style="text-align:left;">
 Any other mixed background
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 119
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 332
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 451
 </td>
 </tr>
@@ -848,27 +848,27 @@ Any other mixed background
 <td style="text-align:left;">
 Any other white background
 </td>
-<td style="text-align:right;">
-1,708
+<td style="text-align:left;">
+1708
 </td>
-<td style="text-align:right;">
-4,869
+<td style="text-align:left;">
+4869
 </td>
-<td style="text-align:right;">
-6,577
+<td style="text-align:left;">
+6577
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Bangladeshi
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 17
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 72
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 89
 </td>
 </tr>
@@ -876,41 +876,41 @@ Bangladeshi
 <td style="text-align:left;">
 British
 </td>
-<td style="text-align:right;">
-43,375
+<td style="text-align:left;">
+43375
 </td>
-<td style="text-align:right;">
-132,661
+<td style="text-align:left;">
+132661
 </td>
-<td style="text-align:right;">
-176,036
+<td style="text-align:left;">
+176036
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Caribbean
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 660
 </td>
-<td style="text-align:right;">
-1,271
+<td style="text-align:left;">
+1271
 </td>
-<td style="text-align:right;">
-1,931
+<td style="text-align:left;">
+1931
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Chinese
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 173
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 470
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 643
 </td>
 </tr>
@@ -918,13 +918,13 @@ Chinese
 <td style="text-align:left;">
 Do not know
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 14
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 61
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 75
 </td>
 </tr>
@@ -932,55 +932,55 @@ Do not know
 <td style="text-align:left;">
 Indian
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 709
 </td>
-<td style="text-align:right;">
-1,913
+<td style="text-align:left;">
+1913
 </td>
-<td style="text-align:right;">
-2,622
+<td style="text-align:left;">
+2622
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Irish
 </td>
-<td style="text-align:right;">
-1,500
+<td style="text-align:left;">
+1500
 </td>
-<td style="text-align:right;">
-3,913
+<td style="text-align:left;">
+3913
 </td>
-<td style="text-align:right;">
-5,413
+<td style="text-align:left;">
+5413
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Other ethnic group
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 505
 </td>
-<td style="text-align:right;">
-1,424
+<td style="text-align:left;">
+1424
 </td>
-<td style="text-align:right;">
-1,929
+<td style="text-align:left;">
+1929
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Pakistani
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 139
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 637
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 776
 </td>
 </tr>
@@ -988,13 +988,13 @@ Pakistani
 <td style="text-align:left;">
 Prefer not to answer
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 177
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 542
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 719
 </td>
 </tr>
@@ -1002,13 +1002,13 @@ Prefer not to answer
 <td style="text-align:left;">
 Unknown
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 16
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 210
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 226
 </td>
 </tr>
@@ -1016,13 +1016,13 @@ Unknown
 <td style="text-align:left;">
 White
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 38
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 187
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 225
 </td>
 </tr>
@@ -1030,13 +1030,13 @@ White
 <td style="text-align:left;">
 White and Asian
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 106
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 264
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 370
 </td>
 </tr>
@@ -1044,13 +1044,13 @@ White and Asian
 <td style="text-align:left;">
 White and Black African
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 48
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 126
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 174
 </td>
 </tr>
@@ -1058,13 +1058,13 @@ White and Black African
 <td style="text-align:left;">
 White and Black Caribbean
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 96
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 198
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 294
 </td>
 </tr>
@@ -1072,14 +1072,14 @@ White and Black Caribbean
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
 Total
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-49,956
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+49956
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-150,687
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+150687
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-200,643
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+200643
 </td>
 </tr>
 </tbody>
@@ -1167,7 +1167,7 @@ Initial samples in vcf
 150,036
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
 </td>
 </tr>
 <tr>
@@ -1184,7 +1184,7 @@ Sample call rate &lt; 0.95
 2,620
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 3.70%">3.7</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 3.70%">3.7</span>
 </td>
 </tr>
 <tr>
@@ -1201,7 +1201,7 @@ Mean DP &lt; 19.5
 2,742
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.60%">1.6</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.60%">1.6</span>
 </td>
 </tr>
 <tr>
@@ -1218,7 +1218,7 @@ Mean GQ &lt; 47.8
 1,289
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.10%">1.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 1.10%">1.1</span>
 </td>
 </tr>
 <tr>
@@ -1235,7 +1235,7 @@ Samples after sample QC filters
 146,078
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 95.60%">95.6</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 95.60%">95.6</span>
 </td>
 </tr>
 </tbody>
@@ -1289,7 +1289,7 @@ Samples after sample QC filters
 146,078
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
 </td>
 </tr>
 <tr>
@@ -1306,7 +1306,7 @@ Samples with sex swap
 61
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0</span>
 </td>
 </tr>
 <tr>
@@ -1323,7 +1323,7 @@ Samples after sex swap removal
 146,017
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
 </td>
 </tr>
 </tbody>
@@ -1338,6 +1338,9 @@ Samples after sex swap removal
 <thead>
 <tr>
 <th style="text-align:left;font-weight: bold;">
+Filter
+</th>
+<th style="text-align:right;font-weight: bold;">
 Samples
 </th>
 <th style="text-align:right;font-weight: bold;">
@@ -1354,44 +1357,53 @@ Batch 2
 <tbody>
 <tr>
 <td style="text-align:left;">
-190,763
+Samples after sex swap removal
 </td>
 <td style="text-align:right;">
-44,816
+190,839
 </td>
 <td style="text-align:right;">
-145,947
+44,822
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+146,017
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-13,537
+Samples with excess URVs
 </td>
 <td style="text-align:right;">
-3,390
+76
 </td>
 <td style="text-align:right;">
-10,147
+6
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 7.10%">7.1</span>
+70
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0</span>
 </td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-177,226
+Samples after URV filter
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-41,426
+190,763
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-135,800
+44,816
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 92.90%">92.9</span>
+145,947
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100</span>
 </td>
 </tr>
 </tbody>
@@ -1434,7 +1446,7 @@ Batch 2
 145,947
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
 </td>
 </tr>
 <tr>
@@ -1448,7 +1460,7 @@ Batch 2
 10,147
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 7.10%">7.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 7.10%">7.1</span>
 </td>
 </tr>
 <tr>
@@ -1462,7 +1474,7 @@ Batch 2
 135,800
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 92.90%">92.9</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 92.90%">92.9</span>
 </td>
 </tr>
 </tbody>
@@ -1500,10 +1512,10 @@ Variants
 Variants after initial filter
 </td>
 <td style="text-align:right;">
-10,295,000
+13,039,044
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
 </td>
 </tr>
 <tr>
@@ -1511,10 +1523,10 @@ Variants after initial filter
 Invariant sites after sample filters
 </td>
 <td style="text-align:right;">
-0
+2,744,044
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 21.00%">21.0</span>
 </td>
 </tr>
 <tr>
@@ -1522,10 +1534,10 @@ Invariant sites after sample filters
 Overall variant call rate &lt; 0.97
 </td>
 <td style="text-align:right;">
-1,122,987
+1,435,542
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 10.90%">10.9</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 11.00%">11.0</span>
 </td>
 </tr>
 <tr>
@@ -1533,10 +1545,10 @@ Overall variant call rate &lt; 0.97
 Variants failing HWE filter
 </td>
 <td style="text-align:right;">
-5,237
+2,749,166
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 21.10%">21.1</span>
 </td>
 </tr>
 <tr>
@@ -1547,7 +1559,7 @@ Variants after filters
 9,169,408
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 89.10%">89.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 70.30%">70.3</span>
 </td>
 </tr>
 </tbody>
@@ -1600,7 +1612,7 @@ Samples after population filters
 135,800
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 100.00%">100.0</span>
 </td>
 </tr>
 <tr>
@@ -1617,7 +1629,7 @@ Within batch Ti/Tv ratio outside 4 standard deviations
 10
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -1634,7 +1646,7 @@ Within batch Het/HomVar ratio outside 4 standard deviations
 205
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.10%">0.1</span>
 </td>
 </tr>
 <tr>
@@ -1651,7 +1663,7 @@ Within batch Insertion/Deletion ratio outside 4 standard deviations
 5
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -1668,7 +1680,7 @@ n singletons &gt; 175
 17
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 0.00%">0.0</span>
 </td>
 </tr>
 <tr>
@@ -1685,7 +1697,7 @@ Samples after final sample filters
 135,564
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 99.80%">99.8</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #0081c2; width: 99.80%">99.8</span>
 </td>
 </tr>
 </tbody>
@@ -1700,13 +1712,13 @@ Samples after final sample filters
 <th style="text-align:left;font-weight: bold;">
 UKBB centre
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 1
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Batch 2
 </th>
-<th style="text-align:right;font-weight: bold;">
+<th style="text-align:left;font-weight: bold;">
 Total
 </th>
 </tr>
@@ -1716,265 +1728,265 @@ Total
 <td style="text-align:left;">
 Barts
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 45
 </td>
-<td style="text-align:right;">
-3,079
+<td style="text-align:left;">
+3079
 </td>
-<td style="text-align:right;">
-3,124
+<td style="text-align:left;">
+3124
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Birmingham
 </td>
-<td style="text-align:right;">
-7,805
+<td style="text-align:left;">
+7805
 </td>
-<td style="text-align:right;">
-4,131
+<td style="text-align:left;">
+4131
 </td>
-<td style="text-align:right;">
-11,936
+<td style="text-align:left;">
+11936
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Bristol
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 93
 </td>
-<td style="text-align:right;">
-13,892
+<td style="text-align:left;">
+13892
 </td>
-<td style="text-align:right;">
-13,985
+<td style="text-align:left;">
+13985
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Bury
 </td>
-<td style="text-align:right;">
-1,544
+<td style="text-align:left;">
+1544
 </td>
-<td style="text-align:right;">
-8,250
+<td style="text-align:left;">
+8250
 </td>
-<td style="text-align:right;">
-9,794
+<td style="text-align:left;">
+9794
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Cardiff
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 80
 </td>
-<td style="text-align:right;">
-5,812
+<td style="text-align:left;">
+5812
 </td>
-<td style="text-align:right;">
-5,892
+<td style="text-align:left;">
+5892
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Croydon
 </td>
-<td style="text-align:right;">
-5,248
+<td style="text-align:left;">
+5248
 </td>
-<td style="text-align:right;">
-5,068
+<td style="text-align:left;">
+5068
 </td>
-<td style="text-align:right;">
-10,316
+<td style="text-align:left;">
+10316
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Edinburgh
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 53
 </td>
-<td style="text-align:right;">
-5,353
+<td style="text-align:left;">
+5353
 </td>
-<td style="text-align:right;">
-5,406
+<td style="text-align:left;">
+5406
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Glasgow
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 85
 </td>
-<td style="text-align:right;">
-5,665
+<td style="text-align:left;">
+5665
 </td>
-<td style="text-align:right;">
-5,750
+<td style="text-align:left;">
+5750
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Hounslow
 </td>
-<td style="text-align:right;">
-3,948
+<td style="text-align:left;">
+3948
 </td>
-<td style="text-align:right;">
-5,764
+<td style="text-align:left;">
+5764
 </td>
-<td style="text-align:right;">
-9,712
+<td style="text-align:left;">
+9712
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Leeds
 </td>
-<td style="text-align:right;">
-1,841
+<td style="text-align:left;">
+1841
 </td>
-<td style="text-align:right;">
-13,026
+<td style="text-align:left;">
+13026
 </td>
-<td style="text-align:right;">
-14,867
+<td style="text-align:left;">
+14867
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Liverpool
 </td>
-<td style="text-align:right;">
-4,246
+<td style="text-align:left;">
+4246
 </td>
-<td style="text-align:right;">
-8,430
+<td style="text-align:left;">
+8430
 </td>
-<td style="text-align:right;">
-12,676
+<td style="text-align:left;">
+12676
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Manchester
 </td>
-<td style="text-align:right;">
-1,534
+<td style="text-align:left;">
+1534
 </td>
-<td style="text-align:right;">
-3,442
+<td style="text-align:left;">
+3442
 </td>
-<td style="text-align:right;">
-4,976
+<td style="text-align:left;">
+4976
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Middlesborough
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 90
 </td>
-<td style="text-align:right;">
-6,660
+<td style="text-align:left;">
+6660
 </td>
-<td style="text-align:right;">
-6,750
+<td style="text-align:left;">
+6750
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Newcastle
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 131
 </td>
-<td style="text-align:right;">
-11,565
+<td style="text-align:left;">
+11565
 </td>
-<td style="text-align:right;">
-11,696
+<td style="text-align:left;">
+11696
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Nottingham
 </td>
-<td style="text-align:right;">
-1,407
+<td style="text-align:left;">
+1407
 </td>
-<td style="text-align:right;">
-9,960
+<td style="text-align:left;">
+9960
 </td>
-<td style="text-align:right;">
-11,367
+<td style="text-align:left;">
+11367
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Oxford
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 40
 </td>
-<td style="text-align:right;">
-4,655
+<td style="text-align:left;">
+4655
 </td>
-<td style="text-align:right;">
-4,695
+<td style="text-align:left;">
+4695
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Reading
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 54
 </td>
-<td style="text-align:right;">
-9,011
+<td style="text-align:left;">
+9011
 </td>
-<td style="text-align:right;">
-9,065
+<td style="text-align:left;">
+9065
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Sheffield
 </td>
-<td style="text-align:right;">
-12,239
+<td style="text-align:left;">
+12239
 </td>
-<td style="text-align:right;">
-4,911
+<td style="text-align:left;">
+4911
 </td>
-<td style="text-align:right;">
-17,150
+<td style="text-align:left;">
+17150
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Stockport (pilot)
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 64
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 0
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 64
 </td>
 </tr>
@@ -1982,27 +1994,27 @@ Stockport (pilot)
 <td style="text-align:left;">
 Stoke
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 747
 </td>
-<td style="text-align:right;">
-6,011
+<td style="text-align:left;">
+6011
 </td>
-<td style="text-align:right;">
-6,758
+<td style="text-align:left;">
+6758
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Swansea
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 11
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 709
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 720
 </td>
 </tr>
@@ -2010,13 +2022,13 @@ Swansea
 <td style="text-align:left;">
 Wrexham
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 66
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 170
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 236
 </td>
 </tr>
@@ -2024,14 +2036,14 @@ Wrexham
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
 Total
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-41,371
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+41371
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-135,564
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+135564
 </td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
-176,935
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #0C6EBE !important;">
+176935
 </td>
 </tr>
 </tbody>
@@ -2088,7 +2100,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0

@@ -1,13 +1,14 @@
 Filter	Samples	Batch 1	Batch 2	%
-Initial samples in vcf	199795	49759	150036	100
+Initial samples in raw UKBB vcf	200643			100
+Initial samples in filtered vcf	199795	49759	150036	99.6
 Sample call rate < 0.95	7400	4780	2620	3.7
 Mean DP < 19.5	3253	511	2742	1.6
 Mean GQ < 47.8	2123	834	1289	1.1
 Samples with sex swap	85	24	61	0
 Samples with excess URVs	76	6	70	0
-PCA based filters	13537	3390	10147	6.8
+PCA based filters	13537	3390	10147	6.7
 Within batch Ti/Tv ratio outside 4 standard deviations	13	3	10	0
 Within batch Het/HomVar ratio outside 4 standard deviations	251	46	205	0.1
 Within batch Insertion/Deletion ratio outside 4 standard deviations	9	4	5	0
 n singletons > 175	19	2	17	0
-Samples after all sample filters	176935	41371	135564	88.6
+Samples after all sample filters	176935	41371	135564	88.2
