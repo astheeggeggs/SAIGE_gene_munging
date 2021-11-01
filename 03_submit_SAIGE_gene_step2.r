@@ -130,7 +130,7 @@ phenotypeFolder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output
 
 for (annotation in annotations) {
 
-    if (annotation == "pLoF") {
+    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense')) {
         queue <- "short.qe@@short.hge"
     } else {
         queue <- "long.qf@@long.hgf"
@@ -164,7 +164,7 @@ for (annotation in annotations) {
 
 for (annotation in annotations) {
     
-    if (annotation == "pLoF") {
+    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense')) {
         queue <- "short.qe@@short.hge"
     } else {
         queue <- "long.qf@@long.hgf"
