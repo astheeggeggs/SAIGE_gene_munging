@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #$ -N hail_shell
 #$ -cwd
-#$ -o /well/lindgren/dpalmer/logs/hail.log
-#$ -e /well/lindgren/dpalmer/logs/hail.errors.log
+#$ -o /well/lindgren/dpalmer/logs/
+#$ -e /well/lindgren/dpalmer/logs/
 #$ -P lindgren.prjc
 #$ -pe shmem 20
-#$ -q short.qf@@short.hgf
+#$ -q short.qe@@short.hge
 #$ -t 1-23
 
 set -o errexit

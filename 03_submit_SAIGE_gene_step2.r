@@ -113,7 +113,6 @@ binary_phenotypes <- c(
     )
 
 annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
-# annotations <- c("pLoF", "synonymous")
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
