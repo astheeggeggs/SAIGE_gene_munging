@@ -33,7 +33,7 @@ args <- parser$parse_args()
 # We use the European subset
 
 sparse_GRM_folder <- "/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input"
-sparse_GRM <- file.path(sparse_GRM_folder, "ukb_imp_eur_chr1_22_sparse_markers_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx")
+sparse_GRM <- file.path(sparse_GRM_folder, "211026_long_ukb_wes_200k_sparse_autosomes_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx")
 sparse_GRM_SampleID <- paste0(sparse_GRM, ".sampleIDs.txt")
 # plink file used to determine the sparse GRM - not actually used in the function call below.
 plinkFile <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_1_22_including_rare_saige_input"
