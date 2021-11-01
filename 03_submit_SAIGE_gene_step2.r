@@ -112,8 +112,8 @@ binary_phenotypes <- c(
     "T2D"
     )
 
-# annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
-annotations <- c("pLoF", "synonymous")
+annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
+# annotations <- c("pLoF", "synonymous")
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
@@ -132,9 +132,9 @@ phenotypeFolder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output
 for (annotation in annotations) {
 
     if (annotation == "pLoF") {
-        queue <- "short.qf"
+        queue <- "short.qe@@short.hge"
     } else {
-        queue <- "long.qf"
+        queue <- "long.qf@@long.hgf"
     }
 
     groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
