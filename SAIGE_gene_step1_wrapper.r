@@ -71,4 +71,3 @@ fitNULLGLMM(
     cateVarRatioMinMACVecExclude = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
     cateVarRatioMaxMACVecInclude = c(1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
     useSparseGRMtoFitNULL = TRUE)
-
