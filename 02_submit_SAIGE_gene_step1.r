@@ -2,8 +2,14 @@
 # Need to loop over all of the required phenotype columns in each of the files that Teresa passed to us.
 
 # Phenotypes
-cts_phenotype_file <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/200k/UKBB_WES200k_filtered_cts_phenotypes.tsv"  
-binary_phenotype_file <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/200k/UKBB_WES200k_filtered_binary_phenotypes.tsv"
+TRANCHE <- '200k'
+
+# Tables to write
+folder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/", TRANCHE)
+# cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes.tsv.gz")  
+# binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes.tsv.gz")
+cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes_with_imputed_genos.tsv.gz")  
+binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes_with_imputed_genos.tsv.gz")
 
 cts_phenotypes <- c(
     "Visceral_adipose_tissue_volume_VAT",

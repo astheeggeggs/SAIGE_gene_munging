@@ -4,8 +4,9 @@ options(scipen=999)
 # R wrapper to submit all SAIGE gene step2 jobs
 # Need to loop over all of the required phenotype columns in each of the files that Teresa passed to us.
 
-# Phenotypes
+TRANCHE <- "200k"
 
+# Phenotypes
 cts_phenotypes <- c(
     "Visceral_adipose_tissue_volume_VAT",
     "Total_adipose_tissue_volume",
@@ -51,7 +52,7 @@ cts_phenotypes <- c(
 binary_phenotypes <- c(
     "colorectal_cancer",
     "Trachea_bronchus_lung_cancer",
-    # "breast_cancer",
+    "breast_cancer",
     "hypothalamic_amenorrhea",
     "POI",
     "dementia",
@@ -77,24 +78,24 @@ binary_phenotypes <- c(
     "proteinuria",
     "acute_renal_failure",
     "chronic_kidney_disease",
-    # "male_infertility",
+    "male_infertility",
     "oligomenorrhea",
-    # "habitual_aborter",
+    "habitual_aborter",
     "female_infertility",
-    # "ectopic_pregnancy",
-    # "Preeclampsia",
+    "ectopic_pregnancy",
+    "Preeclampsia",
     "GDM",
-    # "intrahepatic_cholestasis_in_pregnancy",
+    "intrahepatic_cholestasis_in_pregnancy",
     "polycystic_kidney_disease",
     "T2D",
     "T1D",
     "GDM2",
     "kallmann_syndrome",
-    "E230"#,
-    # "PCOS1",
-    # "PCOS2",
-    # "PCOS3",
-    # "PCOS4"
+    "E230",
+    "PCOS1",
+    "PCOS2",
+    "PCOS3",
+    "PCOS4"
     )
 
 
@@ -111,9 +112,10 @@ binary_phenotypes <- c(
     "T2D"
     )
 
-# annotations <- c("pLoF", "missense|LC", "pLoF|missense|LC", "synonymous", "missense")
+# annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
 annotations <- c("pLoF", "synonymous")
 submission_script <- "03_SAIGE_gene_step2.sh"
+
 # Quantitative traits
 # Loop and submit the jobs separately using qsub
 # For each phenotype, wes want to run gene-based tests for distinct MAF cutoffs
@@ -122,19 +124,20 @@ minMAF_maxMAFforGroupTest <- data.table(
     minMAF = c(0, 0, 0, 0.01),
     maxMAFforGroupTest = c(0.0001, 0.001, 0.01, 0.5)
     )
-vcfFile <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/ukb_wes_qc/data/filtered/ukb_wes_200k_filtered_chr@.vcf.bgz"
-vcfFileIndex <- "/well/lindgren/UKBIOBANK/nbaya/wes_200k/ukb_wes_qc/data/filtered/ukb_wes_200k_filtered_chr@.vcf.bgz.csi"
-phenotypeFolder <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k"
+
+vcfFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr@.vcf.bgz")
+vcfFileIndex <- paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr@.vcf.bgz.csi")
+phenotypeFolder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/", TRANCHE)
 
 for (annotation in annotations) {
 
     if (annotation == "pLoF") {
-        queue <- "short.qc"
+        queue <- "short.qf"
     } else {
-        queue <- "long.qc"
+        queue <- "long.qf"
     }
 
-    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/200k/SAIGE_gene_input/ukb_wes_200k_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
+    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
     for (phenotype in cts_phenotypes) {
         for (row in 1:nrow(minMAF_maxMAFforGroupTest)) {
             job_options <-paste(
@@ -163,12 +166,12 @@ for (annotation in annotations) {
 for (annotation in annotations) {
     
     if (annotation == "pLoF") {
-        queue <- "short.qe"
+        queue <- "short.qe@@short.hge"
     } else {
-        queue <- "long.qf"
+        queue <- "long.qf@@long.hgf"
     }
 
-    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/200k/SAIGE_gene_input/ukb_wes_200k_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
+    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
     for (phenotype in binary_phenotypes) {
     	for (row in 1:nrow(minMAF_maxMAFforGroupTest)) {
             job_options <- paste(

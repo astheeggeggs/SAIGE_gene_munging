@@ -289,3 +289,15 @@ This is the final step! We filter down to the final mt by pruning out the approp
 - `10_european.strict_filtered_chr{CHR}.vcf.bgz`
 
 Read in the saved matrix table, and export a compressed vcf.
+
+## 10_create_vcf_index.sh
+
+*Inputs*
+
+- `10_european.strict_filtered_chr{CHR}.vcf.bgz`
+
+*Outputs*
+
+- `10_european.strict_filtered_chr{CHR}.vcf.bgz.csi`
+
+Index the vcf, ensuring that indexing is `.csi`, to ensure compatability with SAIGE.

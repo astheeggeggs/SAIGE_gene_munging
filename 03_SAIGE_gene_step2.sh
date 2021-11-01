@@ -4,6 +4,7 @@
 #$ -o /well/lindgren/dpalmer/logs/
 #$ -e /well/lindgren/dpalmer/logs/
 #$ -P lindgren.prjc
+#$ -q short.qe@@short.hge
 #$ -t 1-22
 
 module purge
