@@ -14,10 +14,10 @@ mergelist="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/merge_list.txt"
 chr=1
 echo "/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_chr${chr}_saige_input" > ${mergelist}
 for chr in {2..22}; do
-    echo "/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_chr${CHR}_saige_input" >> ${mergelist}
+    echo "/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_snp_chr${chr}_saige_input" >> ${mergelist}
 done
 
-common_bfile <- "/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input/211026_long_ukb_wes_200k_sparse_autosomes"
+common_bfile="/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input/211026_long_ukb_wes_200k_sparse_autosomes"
 
 # Merge in rare variants and remove SNPs with high missingness
 ./../plink --bfile ${common_bfile} --merge-list ${mergelist} --make-bed --out ${out}
