@@ -57,7 +57,6 @@ SAIGEOutputFile <- file.path(
     paste0(args$phenotype, "_", args$chr, "_minMAF", args$minMAF,
         "_maxMAFforGroupTest_", args$maxMAFforGroupTest, "_", annotation)
     )
-SAIGEOutputFile <- "/well/lindgren/dpalmer/test_MC4R_output.tsv"
 
 SPAGMMATtest(
     vcfFile = args$vcfFile,
@@ -75,9 +74,9 @@ SPAGMMATtest(
     IsOutputAFinCaseCtrl = TRUE,
     IsOutputHetHomCountsinCaseCtrl = TRUE,
     IsOutputNinCaseCtrl = TRUE,
-    # IsOutputlogPforSingle = TRUE,
+    IsOutputlogPforSingle = TRUE,
     LOCO = FALSE,
-    # condition = "",
+    condition = "",
     sparseSigmaFile = sparseSigmaFile,
     groupFile = args$groupFile,
     kernel = "linear.weighted",
@@ -88,7 +87,7 @@ SPAGMMATtest(
     weightsIncludeinGroupFile = FALSE,
     weights_for_G2_cond = NULL,
     r.corr = 0,
-    # IsSingleVarinGroupTest = TRUE,
+    IsSingleVarinGroupTest = TRUE,
     cateVarRatioMinMACVecExclude = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
     cateVarRatioMaxMACVecInclude = c(1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
     dosageZerodCutoff = 0.2,

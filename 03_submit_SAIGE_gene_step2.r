@@ -136,7 +136,8 @@ for (annotation in annotations) {
         queue <- "long.qf@@long.hgf"
     }
 
-    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
+    annotation_filename <- gsub("\\|", "_", annotation)
+    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation_filename, "_saige_gene.tsv.gz")
     for (phenotype in cts_phenotypes) {
         for (row in 1:nrow(minMAF_maxMAFforGroupTest)) {
             job_options <-paste(
@@ -170,7 +171,8 @@ for (annotation in annotations) {
         queue <- "long.qf@@long.hgf"
     }
 
-    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation, "_saige_gene.tsv.gz")
+    annotation_filename <- gsub("\\|", "_", annotation)
+    groupFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_variants_vep/", TRANCHE, "/SAIGE_gene_input/ukb_wes_", TRANCHE, "_filtered_chr@_", annotation_filename, "_saige_gene.tsv.gz")
     for (phenotype in binary_phenotypes) {
     	for (row in 1:nrow(minMAF_maxMAFforGroupTest)) {
             job_options <- paste(
