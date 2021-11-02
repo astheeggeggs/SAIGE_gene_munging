@@ -102,6 +102,19 @@ binary_phenotypes <- c(
     "PCOS4"
     )
 
+cts_phenotypes <- c(
+    # "Body_mass_index_BMI",
+    # "Hip_circumference",
+    # "Standing_height",
+    "Waist_circumference",
+    # "Body_fat_percentage"
+    )
+
+binary_phenotypes <- c(
+    "coronary_artery_disease",
+    # "T2D"
+    )
+
 # Covariates
 covariate_cols <- c(
 	"age","PC1","PC2","PC3","PC4","PC5","PC6","PC7","PC8","PC9","PC10",
