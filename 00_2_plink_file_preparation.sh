@@ -14,7 +14,7 @@ source /well/lindgren/dpalmer/ukb_utils/bash/qsub_utils.sh
 chr=$(get_chr ${SGE_TASK_ID})
 
 # Use the fam from the kinship plink file (which went through all of our QC pipeline), filter to just those
-eur_tsv="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_imp_eur_chr1_22_sparse_markers.tsv"
+eur_tsv="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_eur_chr1_22_sparse_markers.tsv"
 
 # UKB genotype calls
 ukb_bed="/well/lindgren/UKBIOBANK/DATA/CALLS/ukb_cal_chr${chr}_v2.bed"

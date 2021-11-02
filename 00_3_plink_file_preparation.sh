@@ -20,7 +20,7 @@ done
 
 common_bed="/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input/211101_long_ukb_wes_200k_sparse_autosomes.bed"
 common_bim="/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input/211101_long_ukb_wes_200k_sparse_autosomes.bim"
-common_fam="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_imp_eur_chr1_22_sparse_markers.fam"
+common_fam="/well/lindgren/UKBIOBANK/dpalmer/ukb_genotype_plink/ukb_eur_chr1_22_sparse_markers.fam"
 
 # Merge in rare variants and remove SNPs with high missingness
 ./../plink --bim ${common_bim} --bed ${common_bed} --fam ${common_fam} --merge-list ${mergelist} --make-bed --out ${out}
