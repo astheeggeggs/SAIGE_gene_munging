@@ -200,9 +200,20 @@ create_pretty_scatter <- function(dt, aes, file='file_out', save_figure=FALSE,
     key_label='', title='', limits=NULL, width=160, height=90, presentation=FALSE,
     add_final_layer=FALSE, final_layer=NULL, n_x_ticks=10, n_y_ticks=10, x_label=NULL,
     y_label=NULL, print_p=FALSE, gradient=FALSE, midpoint=0, gradient_title="", title.hjust=0.5,
-    legend_max_min=NULL, n_legend_step=4, xlim=NULL, ylim=NULL, ggplot_theme=theme_classic, alpha=0.6, size=1)
+    legend_max_min=NULL, n_legend_step=4, xlim=NULL, ylim=NULL, ggplot_theme=theme_classic, alpha=0.6, size=1,
+    include_qq_ribbon=FALSE, ribbon_aes=NULL, ci_ribbon=0.95)
 {
-    p <- ggplot(dt, aes)
+    if (include_qq_ribbon) {
+        dt <- dt %>% mutate(
+            clower = -log10(qbeta(p = (1 - ci) / 2, shape1 = 1:nrow(dt), shape2 = nrow(dt):1)),
+            cupper = -log10(qbeta(p = (1 + ci) / 2, shape1 = 1:nrow(dt), shape2 = nrow(dt):1))
+            )
+        p <- ggplot(dt, aes)
+        p <- p + geom_ribbon(ribbon_aes, fill="grey80", color="grey80")
+    } else {
+        p <- ggplot(dt, aes)
+    }
+    
     if ("size" %in% names(aes)) {
         p <- p + geom_point_rast(alpha=alpha, raster.dpi=500)
     } else {
