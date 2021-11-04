@@ -26,7 +26,6 @@ parser$add_argument("--outdir",
     default = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k")
        
 args <- parser$parse_args()
-print('testing within wrapper')
 print(args)
 
 # Fred has run and created sparse GRMs using step 0 of SAIGE gene. 
@@ -59,7 +58,7 @@ fitNULLGLMM(
     phenoCol = args$phenotype,
     traitType = args$traitType,
     invNormalize = invNormalize,
-    covarColList = args$covarColList,
+    covarColList = unlist(strsplit(args$covarColList)),
     sampleIDColinphenoFile = args$sampleIDColinphenoFile,
     LOCO = FALSE, # Note that we are not running LOCO - doing so will require 22 separate null models.
     outputPrefix = outputPrefix,
