@@ -12,6 +12,8 @@ source activate /well/lindgren/users/mmq446/conda/skylake/envs/RSAIGE
 
 echo "testing"
 echo ${covars}
+var=$( IFS=$','; echo "${covars[*]}" )
+echo ${vars}
 
 Rscript SAIGE_gene_step1_wrapper.r --phenofile ${phenofile} --phenotype ${phenotype} \
 	--covarColList ${covars} --sampleIDColinphenoFile ${ID_col} --traitType ${trait_type}
