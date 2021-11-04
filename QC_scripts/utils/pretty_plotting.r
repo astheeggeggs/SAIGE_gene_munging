@@ -209,7 +209,7 @@ create_pretty_scatter <- function(dt, aes, file='file_out', save_figure=FALSE,
             cupper = -log10(qbeta(p = (1 + ci_ribbon) / 2, shape1 = 1:nrow(dt), shape2 = nrow(dt):1))
             )
         p <- ggplot(dt, aes)
-        p <- p + geom_ribbon(es(ymin=clower, ymax=cupper), fill="grey80", color="grey80")
+        p <- p + geom_ribbon(aes(ymin=clower, ymax=cupper), fill="grey80", color="grey80")
     } else {
         p <- ggplot(dt, aes)
     }
