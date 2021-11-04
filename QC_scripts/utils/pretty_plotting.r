@@ -205,8 +205,8 @@ create_pretty_scatter <- function(dt, aes, file='file_out', save_figure=FALSE,
 {
     if (include_qq_ribbon) {
         dt <- dt %>% mutate(
-            clower = -log10(qbeta(p = (1 - ci_ribbon) / 2, shape1 = nrow(dt):1), shape2 = 1:nrow(dt)),
-            cupper = -log10(qbeta(p = (1 + ci_ribbon) / 2, shape1 = nrow(dt):1), shape2 = 1:nrow(dt))
+            clower = -log10(qbeta(p = (1 - ci_ribbon) / 2, shape1 = nrow(dt):1, shape2 = 1:nrow(dt))),
+            cupper = -log10(qbeta(p = (1 + ci_ribbon) / 2, shape1 = nrow(dt):1, shape2 = 1:nrow(dt)))
             )
         p <- ggplot(dt, aes)
         p <- p + geom_ribbon(aes(ymin=clower, ymax=cupper), fill="grey80", color="grey80")
