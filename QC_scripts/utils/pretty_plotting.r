@@ -284,7 +284,6 @@ create_pretty_qq_plot <- function(dt, aes, file='file_out', save_figure=FALSE,
 {
     cat("Creating scatter-plot...\n")
     dt <- data.table(dt)
-    setkeyv(dt, cols=pval_col)
     p <- create_pretty_scatter(dt, aes, file=file, save_figure=FALSE,
         title=plot_title, limits=limits,
         width=width, height=height, n_x_ticks=n_x_ticks, n_y_ticks=n_y_ticks,
