@@ -10,15 +10,9 @@ module purge
 module load Anaconda3/2020.07
 source activate /well/lindgren/users/mmq446/conda/skylake/envs/RSAIGE
 
-echo "testing"
+echo "passing covariates..."
+covars=${covars//|/,}
 echo ${covars}
-for element in "${covars[@]}"
-do
-    echo "$element"
-done
-var=$( IFS=$','; echo "${covars[*]}" )
-echo ${vars}
-echo "end testing"
 
 Rscript SAIGE_gene_step1_wrapper.r --phenofile ${phenofile} --phenotype ${phenotype} \
 	--covarColList ${covars} --sampleIDColinphenoFile ${ID_col} --traitType ${trait_type}
