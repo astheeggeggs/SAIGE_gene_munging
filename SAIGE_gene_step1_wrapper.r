@@ -53,23 +53,23 @@ outputPrefix <- file.path(args$outdir, args$phenotype)
 outputPrefix_varRatio <- file.path(args$outdir, paste0(args$phenotype, "_cate"))
 
 # Now, let's fit the null model.
-# fitNULLGLMM(
-#     plinkFile = plinkFile,
-#     phenoFile = args$phenofile,
-#     phenoCol = args$phenotype,
-#     traitType = args$traitType,
-#     invNormalize = invNormalize,
-#     covarColList = args$covarColList,
-#     sampleIDColinphenoFile = args$sampleIDColinphenoFile,
-#     LOCO = FALSE, # Note that we are not running LOCO - doing so will require 22 separate null models.
-#     outputPrefix = outputPrefix,
-#     outputPrefix_varRatio = outputPrefix_varRatio,
-#     IsOverwriteVarianceRatioFile = TRUE,
-#     IsSparseKin = TRUE,
-#     sparseGRMFile = sparse_GRM,
-#     sparseGRMSampleIDFile = sparse_GRM_SampleID,
-#     isCateVarianceRatio = TRUE,
-#     cateVarRatioIndexVec = NULL,
-#     cateVarRatioMinMACVecExclude = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
-#     cateVarRatioMaxMACVecInclude = c(1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
-#     useSparseGRMtoFitNULL = TRUE)
+fitNULLGLMM(
+    plinkFile = plinkFile,
+    phenoFile = args$phenofile,
+    phenoCol = args$phenotype,
+    traitType = args$traitType,
+    invNormalize = invNormalize,
+    covarColList = args$covarColList,
+    sampleIDColinphenoFile = args$sampleIDColinphenoFile,
+    LOCO = FALSE, # Note that we are not running LOCO - doing so will require 22 separate null models.
+    outputPrefix = outputPrefix,
+    outputPrefix_varRatio = outputPrefix_varRatio,
+    IsOverwriteVarianceRatioFile = TRUE,
+    IsSparseKin = TRUE,
+    sparseGRMFile = sparse_GRM,
+    sparseGRMSampleIDFile = sparse_GRM_SampleID,
+    isCateVarianceRatio = TRUE,
+    cateVarRatioIndexVec = NULL,
+    cateVarRatioMinMACVecExclude = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
+    cateVarRatioMaxMACVecInclude = c(1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
+    useSparseGRMtoFitNULL = TRUE)
