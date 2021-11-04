@@ -58,7 +58,7 @@ fitNULLGLMM(
     phenoCol = args$phenotype,
     traitType = args$traitType,
     invNormalize = invNormalize,
-    covarColList = unlist(strsplit(args$covarColList)),
+    covarColList = unlist(strsplit(args$covarColList, split=",")),
     sampleIDColinphenoFile = args$sampleIDColinphenoFile,
     LOCO = FALSE, # Note that we are not running LOCO - doing so will require 22 separate null models.
     outputPrefix = outputPrefix,
