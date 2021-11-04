@@ -103,12 +103,12 @@ cts_phenotypes <- c(
     # "Body_mass_index_BMI",
     # "Hip_circumference",
     # "Standing_height",
-    # "Waist_circumference" #,
+    "Waist_circumference" #,
     # "Body_fat_percentage"
     )
 
 binary_phenotypes <- c(
-    # "coronary_artery_disease" #,
+    "coronary_artery_disease",
     "Crohns_disease" #,
     # "T2D"
     )
