@@ -121,7 +121,9 @@ covariate_cols <- c(
 	"age","PC1","PC2","PC3","PC4","PC5","PC6","PC7","PC8","PC9","PC10",
 	"sex2","sequencing.batch2"
 	)
+print(covariate_cols)
 covars <- paste(covariate_cols, collapse=",")
+print(covars)
 ID_col <- "ID"
 submission_script <- "02_SAIGE_gene_step1.sh"
 
@@ -142,6 +144,7 @@ for (phenotype in cts_phenotypes) {
                 )
 	job_submission <- paste("qsub", job_options, submission_script)
 	system(job_submission)
+    print(job_submission)
 }
 
 # Binary traits
@@ -161,4 +164,5 @@ for (phenotype in binary_phenotypes) {
                 )
 	job_submission <- paste("qsub", job_options, submission_script)
 	system(job_submission)
+    print(job_submission)
 }
