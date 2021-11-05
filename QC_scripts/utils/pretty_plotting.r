@@ -295,8 +295,8 @@ create_pretty_qq_plot <- function(dt, aes, file='file_out', save_figure=FALSE,
     if (!is.null(n_to_include)) {
         cat("Adding labels...\n")
         p <- p + geom_label_repel(data=dt[(nrow(dt)-n_to_include+1):nrow(dt), ],
-            aes(label=labels), box.padding = 0.5, label.padding=0.1, point.padding = 0.2,
-            color = 'grey30', segment.color = 'grey50',
+            aes(label=labels), box.padding = 0.4, label.padding=0.1, point.padding = 0.2,
+            color = 'grey30', segment.color = 'grey50', max.overlaps=Inf,
             size=cex_labels, segment.size=0.1, show.legend = FALSE)
     }
 
