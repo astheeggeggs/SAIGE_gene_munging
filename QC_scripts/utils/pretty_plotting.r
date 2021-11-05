@@ -201,17 +201,12 @@ create_pretty_scatter <- function(dt, aes, file='file_out', save_figure=FALSE,
     add_final_layer=FALSE, final_layer=NULL, n_x_ticks=10, n_y_ticks=10, x_label=NULL,
     y_label=NULL, print_p=FALSE, gradient=FALSE, midpoint=0, gradient_title="", title.hjust=0.5,
     legend_max_min=NULL, n_legend_step=4, xlim=NULL, ylim=NULL, ggplot_theme=theme_classic, alpha=0.6, size=1,
-    include_qq_ribbon=FALSE, ci_ribbon=0.95)
+    include_qq_ribbon=FALSE, aes_ribbon=NULL, ribbon_p=0.95)
 {
+    p <- ggplot(dt, aes)
+    print(dt)
     if (include_qq_ribbon) {
-        dt <- dt %>% mutate(
-            clower = -log10(qbeta(p = (1 - ci_ribbon) / 2, shape1 = nrow(dt):1, shape2 = 1:nrow(dt))),
-            cupper = -log10(qbeta(p = (1 + ci_ribbon) / 2, shape1 = nrow(dt):1, shape2 = 1:nrow(dt)))
-            )
-        p <- ggplot(dt, aes)
-        p <- p + geom_ribbon(aes(ymin=clower, ymax=cupper), fill="grey80", color="grey80")
-    } else {
-        p <- ggplot(dt, aes)
+        p <- p + geom_ribbon(aes_ribbon, fill="grey80", color="grey80")
     }
     
     if ("size" %in% names(aes)) {
@@ -278,20 +273,21 @@ create_pretty_qq_plot <- function(dt, aes, file='file_out', save_figure=FALSE,
     x_label=TeX("$-\\log_{10}(\\mathit{p}_{permutation})$"), 
     y_label=TeX("$-\\log_{10}(\\mathit{p}_{observed})$"),
     n_to_include=NULL, cex_labels=1, print_p=TRUE, gradient=FALSE,
-    gradient_title="", pval_col="pval", title.hjust=0.5, legend_max_min=NULL, n_legend_step=4,
+    gradient_title="", title.hjust=0.5, legend_max_min=NULL, n_legend_step=4,
     xlim=NULL, ylim=NULL, y_x_col="grey40", ggplot_theme=theme_classic, alpha=0.6,
-    include_qq_ribbon=TRUE, ci_ribbon=0.95)
+    include_qq_ribbon=TRUE, aes_ribbon=NULL, ribbon_p=0.95, key_cols=c("pval"))
 {
     cat("Creating scatter-plot...\n")
     dt <- data.table(dt)
-    setkeyv(dt, cols=pval_col)
+    setkeyv(dt, cols=key_cols)
+    print(dt)
     p <- create_pretty_scatter(dt, aes, file=file, save_figure=FALSE,
         title=plot_title, limits=limits,
         width=width, height=height, n_x_ticks=n_x_ticks, n_y_ticks=n_y_ticks,
         x_label=x_label, y_label=y_label, gradient=gradient, gradient_title=gradient_title,
         title.hjust=title.hjust, legend_max_min=legend_max_min, n_legend_step=n_legend_step,
         xlim=xlim, ylim=ylim, ggplot_theme=ggplot_theme, alpha=alpha,
-        include_qq_ribbon=include_qq_ribbon, ci_ribbon=ci_ribbon)
+        include_qq_ribbon=include_qq_ribbon, aes_ribbon=aes_ribbon, ribbon_p=ribbon_p)
 
     cat("Adding y=x line...\n")
     p <- p + geom_abline(intercept=0, slope=1, color=y_x_col) #+ coord_fixed()
