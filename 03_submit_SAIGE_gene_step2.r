@@ -8,10 +8,10 @@ TRANCHE <- "200k"
 
 # Phenotypes
 cts_phenotypes <- c(
-    "Visceral_adipose_tissue_volume_VAT",
-    "Total_adipose_tissue_volume",
-    "Abdominal_fat_ratio",
-    "Liver_proton_density_fat_fraction_AMRA",
+    # "Visceral_adipose_tissue_volume_VAT",
+    # "Total_adipose_tissue_volume",
+    # "Abdominal_fat_ratio",
+    # "Liver_proton_density_fat_fraction_AMRA",
     "Alanine_aminotransferase",
     "Albumin",
     "Alkaline_phosphatase",
@@ -49,71 +49,63 @@ cts_phenotypes <- c(
     "Body_fat_percentage"
     )
 
-binary_phenotypes <- c(
-    "colorectal_cancer",
-    "Trachea_bronchus_lung_cancer",
-    "breast_cancer",
-    "hypothalamic_amenorrhea",
-    "POI",
-    "dementia",
-    "Alzheimers_disease",
-    "depression",
-    "autism",
-    "ADHD",
-    "renal_failure",
-    "coronary_artery_disease",
-    "ischaemic_heart_disease",
-    "stroke_hemorrhagic",
-    "stroke",
-    "ischaemic_stroke",
-    "chronic_obstructive_pulmonary_disease",
-    "Crohns_disease",
-    "IBD",
-    "Cirrhosis",
-    "NASH",
-    "NAFLD",
-    "psoriasis",
-    "hyperandrogenism",
-    "hematuria",
-    "proteinuria",
-    "acute_renal_failure",
-    "chronic_kidney_disease",
-    "male_infertility",
-    "oligomenorrhea",
-    "habitual_aborter",
-    "female_infertility",
-    "ectopic_pregnancy",
-    "Preeclampsia",
-    "GDM",
-    "intrahepatic_cholestasis_in_pregnancy",
-    "polycystic_kidney_disease",
-    "T2D",
-    "T1D",
-    "GDM2",
-    "kallmann_syndrome",
-    "E230",
-    "PCOS1",
-    "PCOS2",
-    "PCOS3",
-    "PCOS4"
-    )
-
-
-cts_phenotypes <- c(
-    # "Body_mass_index_BMI",
-    # "Hip_circumference",
-    # "Standing_height",
-    "Waist_circumference" #,
-    # "Body_fat_percentage"
-    )
+# binary_phenotypes <- c(
+#     "colorectal_cancer",
+#     "Trachea_bronchus_lung_cancer",
+#     "breast_cancer",
+#     "hypothalamic_amenorrhea",
+#     "POI",
+#     "dementia",
+#     "Alzheimers_disease",
+#     "depression",
+#     "autism",
+#     "ADHD",
+#     "renal_failure",
+#     "coronary_artery_disease",
+#     "ischaemic_heart_disease",
+#     "stroke_hemorrhagic",
+#     "stroke",
+#     "ischaemic_stroke",
+#     "chronic_obstructive_pulmonary_disease",
+#     "Crohns_disease",
+#     "IBD",
+#     "Cirrhosis",
+#     "NASH",
+#     "NAFLD",
+#     "psoriasis",
+#     "hyperandrogenism",
+#     "hematuria",
+#     "proteinuria",
+#     "acute_renal_failure",
+#     "chronic_kidney_disease",
+#     "male_infertility",
+#     "oligomenorrhea",
+#     "habitual_aborter",
+#     "female_infertility",
+#     "ectopic_pregnancy",
+#     "Preeclampsia",
+#     "GDM",
+#     "intrahepatic_cholestasis_in_pregnancy",
+#     "polycystic_kidney_disease",
+#     "T2D",
+#     "T1D",
+#     "GDM2",
+#     "kallmann_syndrome",
+#     "E230",
+#     "PCOS1",
+#     "PCOS2",
+#     "PCOS3",
+#     "PCOS4"
+#     )
 
 binary_phenotypes <- c(
-    "coronary_artery_disease",
-    "Crohns_disease" #,
+    # "coronary_artery_disease",
+    # "Crohns_disease" #,
     # "T2D"
     )
 
 annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
+annotations <- c('pLoF', 'damaging_missense', 'other_missense', 'synonymous')
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
@@ -121,8 +113,8 @@ submission_script <- "03_SAIGE_gene_step2.sh"
 # For each phenotype, wes want to run gene-based tests for distinct MAF cutoffs
 
 minMAF_maxMAFforGroupTest <- data.table(
-    minMAF = c(0, 0, 0, 0.01),
-    maxMAFforGroupTest = c(0.0001, 0.001, 0.01, 0.5)
+    minMAF = c(0, 0, 0.01),
+    maxMAFforGroupTest = c(0.01, 0.5, 0.5)
     )
 
 vcfFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr@.vcf.bgz")

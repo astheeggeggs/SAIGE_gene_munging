@@ -8,14 +8,12 @@ TRANCHE <- '200k'
 folder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/", TRANCHE)
 cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes.tsv.gz")  
 binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes.tsv.gz")
-# cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes_with_imputed_genos.tsv.gz")  
-# binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes_with_imputed_genos.tsv.gz")
 
 cts_phenotypes <- c(
-    "Visceral_adipose_tissue_volume_VAT",
-    "Total_adipose_tissue_volume",
-    "Abdominal_fat_ratio",
-    "Liver_proton_density_fat_fraction_AMRA",
+    # "Visceral_adipose_tissue_volume_VAT",
+    # "Total_adipose_tissue_volume",
+    # "Abdominal_fat_ratio",
+    # "Liver_proton_density_fat_fraction_AMRA",
     "Alanine_aminotransferase",
     "Albumin",
     "Alkaline_phosphatase",
@@ -53,66 +51,66 @@ cts_phenotypes <- c(
     "Body_fat_percentage"
     )
 
-binary_phenotypes <- c(
-    "colorectal_cancer",
-    "Trachea_bronchus_lung_cancer",
-    "breast_cancer",
-    "hypothalamic_amenorrhea",
-    "POI",
-    "dementia",
-    "Alzheimers_disease",
-    "depression",
-    "autism",
-    "ADHD",
-    "renal_failure",
-    "coronary_artery_disease",
-    "ischaemic_heart_disease",
-    "stroke_hemorrhagic",
-    "stroke",
-    "ischaemic_stroke",
-    "chronic_obstructive_pulmonary_disease",
-    "Crohns_disease",
-    "IBD",
-    "Cirrhosis",
-    "NASH",
-    "NAFLD",
-    "psoriasis",
-    "hyperandrogenism",
-    "hematuria",
-    "proteinuria",
-    "acute_renal_failure",
-    "chronic_kidney_disease",
-    "male_infertility",
-    "oligomenorrhea",
-    "habitual_aborter",
-    "female_infertility",
-    "ectopic_pregnancy",
-    "Preeclampsia",
-    "GDM",
-    "intrahepatic_cholestasis_in_pregnancy",
-    "polycystic_kidney_disease",
-    "T2D",
-    "T1D",
-    "GDM2",
-    "kallmann_syndrome",
-    "E230",
-    "PCOS1",
-    "PCOS2",
-    "PCOS3",
-    "PCOS4"
-    )
+# binary_phenotypes <- c(
+#     "colorectal_cancer",
+#     "Trachea_bronchus_lung_cancer",
+#     "breast_cancer",
+#     "hypothalamic_amenorrhea",
+#     "POI",
+#     "dementia",
+#     "Alzheimers_disease",
+#     "depression",
+#     "autism",
+#     "ADHD",
+#     "renal_failure",
+#     "coronary_artery_disease",
+#     "ischaemic_heart_disease",
+#     "stroke_hemorrhagic",
+#     "stroke",
+#     "ischaemic_stroke",
+#     "chronic_obstructive_pulmonary_disease",
+#     "Crohns_disease",
+#     "IBD",
+#     "Cirrhosis",
+#     "NASH",
+#     "NAFLD",
+#     "psoriasis",
+#     "hyperandrogenism",
+#     "hematuria",
+#     "proteinuria",
+#     "acute_renal_failure",
+#     "chronic_kidney_disease",
+#     "male_infertility",
+#     "oligomenorrhea",
+#     "habitual_aborter",
+#     "female_infertility",
+#     "ectopic_pregnancy",
+#     "Preeclampsia",
+#     "GDM",
+#     "intrahepatic_cholestasis_in_pregnancy",
+#     "polycystic_kidney_disease",
+#     "T2D",
+#     "T1D",
+#     "GDM2",
+#     "kallmann_syndrome",
+#     "E230",
+#     "PCOS1",
+#     "PCOS2",
+#     "PCOS3",
+#     "PCOS4"
+#     )
 
-cts_phenotypes <- c(
-    # "Body_mass_index_BMI",
-    # "Hip_circumference",
-    # "Standing_height",
-    "Waist_circumference" #,
-    # "Body_fat_percentage"
-    )
+# cts_phenotypes <- c(
+#     # "Body_mass_index_BMI",
+#     # "Hip_circumference",
+#     # "Standing_height",
+#     # "Waist_circumference" #,
+#     # "Body_fat_percentage"
+#     )
 
 binary_phenotypes <- c(
-    "Crohns_disease",
-    "coronary_artery_disease" #,
+    # "Crohns_disease",
+    # "coronary_artery_disease" #,
     # "T2D"
     )
 

@@ -63,7 +63,6 @@ read_and_create_qq <- function(
 						cupper = -log10(qbeta(p = (1 + ribbon_p) / 2, shape2 = n():1, shape1 = 1:n()))
 						)
 					)
-
 			create_pretty_qq_plot(
 				plot_title=paste0(
 					gsub("_", " ", paste0(toupper(substring(phenotype, 1,1)), substring(phenotype, 2))), "\n",
