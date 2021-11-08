@@ -106,6 +106,7 @@ binary_phenotypes <- c(
 
 annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
 annotations <- c('pLoF', 'damaging_missense', 'other_missense', 'synonymous')
+annotations <- c('synonymous')
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
@@ -123,7 +124,7 @@ phenotypeFolder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output
 
 for (annotation in annotations) {
 
-    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense')) {
+    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'synonymous')) {
         queue <- "short.qe@@short.hge"
     } else {
         queue <- "long.qf@@long.hgf"
