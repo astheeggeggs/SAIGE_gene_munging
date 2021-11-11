@@ -16,16 +16,17 @@ get_SAIGE_output_path <- function(phenotype="coronary_artery_disease", chr=20,
 	}
 }
 
+
+minMAF = c(0, 0, 0.01),
+    maxMAFforGroupTest = c(0.01, 0.5, 0.5)
+
 read_and_create_qq <- function(
 	phenotype = "coronary_artery_disease",
-	minMAFs=c("0", "0", "0", "0.01"),
-	maxMAFs=c("0.0001","0.001","0.01", "0.5"),
+	minMAFs=c("0", "0", "0.01"),
+	maxMAFs=c("0.01","0.5", "0.5"),
 	variant_classes=c(
 		"pLoF",
-		"pLoF|damaging_missense",
-		"pLoF|damaging_missense|LC",
 		"damaging_missense",
-		"damaging_missense|LC",
 		"other_missense",
 		"synonymous"),
 	outdir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/plots/"
@@ -84,10 +85,42 @@ read_and_create_qq <- function(
 }
 
 phenotypes <- c(
-	"Crohns_disease",
-	"Waist_circumference",
-	"coronary_artery_disease"
-	)
+	"Alanine_aminotransferase",
+    "Albumin",
+    "Alkaline_phosphatase",
+    "Apolipoprotein_A",
+    "Apolipoprotein_B",
+    "Aspartate_aminotransferase",
+    "C_reactive_protein",
+    "Calcium",
+    "Cholesterol",
+    "Creatinine",
+    "Cystatin_C",
+    "Direct_bilirubin",
+    "Gamma_glutamyltransferase",
+    "Glucose",
+    "Glycated_haemoglobin_HbA1c",
+    "HDL_cholesterol",
+    "IGF_1",
+    "LDL_direct",
+    "Lipoprotein_A",
+    "Oestradiol",
+    "Phosphate",
+    "Rheumatoid_factor",
+    "SHBG",
+    "Testosterone",
+    "Total_bilirubin",
+    "Total_protein",
+    "Triglycerides",
+    "Urate",
+    "Urea",
+    "Vitamin_D",
+    "Body_mass_index_BMI",
+    "Hip_circumference",
+    "Standing_height",
+    "Waist_circumference",
+    "Body_fat_percentage"
+    )
 
 for (phenotype in phenotypes) {
 	read_and_create_qq(phenotype=phenotype)

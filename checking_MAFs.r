@@ -1,43 +1,54 @@
 library(data.table)
 library(dplyr)
+library(ggplot2)
+library(ggVennDiagram)
 
-dt <- fread(cmd = "gzcat debugging.tsv.bgz") %>% 
-select(
-	-excessHet_vcf.filters,
-	-Nik_QC.filters,
-	-Nik_QC.info.ExcessHet,
-	-split_multi.info.AC,
-	-split_multi.info.AN
+dt <- list()
+for (chr in c(seq(1,22), "X")) {
+	cat(paste0(chr, "... "))
+	dt[[as.character(chr)]] <- fread(cmd = paste0("gzcat debugging_chr", chr, ".tsv.bgz"))
+}
+dt <- rbindlist(dt)
+dt[, variant:=paste(locus, ref, alt, sep=":")]
+
+# First, just those that are not present in Nik's initial QC
+# Then, those that are not present after my additional QC
+
+variants <- list(
+	`Raw VCF` = dt$variant,
+	`genebass` = (dt %>% filter(genebass_in_variant_list))$variant,
+	`Initial QC` = (dt %>% filter(!is.na(Nik_QC_AF)))$variant,
+	`Subsequent QC` = (dt %>% filter(Duncan_QC_in_variant_list))$variant
 	)
 
-dt <- dt %>% mutate(
-	variant = paste0(
-		locus, ":",
-		gsub("^[^A-Z]*([A-Z]+)[^A-Z]*([A-Z]+)[^A-Z]+", "\\1:\\2", alleles)
-		)
-) %>% select(-locus, -alleles)
+venn <- Venn(variants)
+data <- process_data(venn)
+ggplot() +
+  # 1. region count layer
+  geom_sf(aes(fill = count), data = venn_region(data)) +
+  # 3. set label layer
+  geom_sf_text(aes(label = name), data = venn_setlabel(data)) +
+  # 4. region label layer
+  geom_sf_label(aes(label = count), data = venn_region(data)) +
+  theme_void()
 
-dt <- dt %>% mutate(
-	excessHet_vcf.info.AC = as.integer(gsub("\\[([0-9]+)\\]","\\1", excessHet_vcf.info.AC)),
-	excessHet_vcf.info.AQ = as.integer(gsub("\\[([0-9]+)\\]","\\1", excessHet_vcf.info.AQ)),
-	excessHet_vcf.info.AF = gsub("\\[(.*)\\]","\\1", excessHet_vcf.info.AF),
+dt_check <- dt %>% filter(genebass_in_variant_list, is.na(Nik_QC_AF))
 
-	split_multi.filters = gsub("\\[\"(.*)\"\\]","\\1", split_multi.filters),
-	split_multi.info.AQ = as.integer(gsub("\\[([0-9]+)\\]","\\1", split_multi.info.AQ)),
-	split_multi.info.AF = gsub("\\[(.*)\\]","\\1", split_multi.info.AF),
-
-	Nik_QC.info.AQ = as.integer(gsub("\\[([0-9]+)\\]","\\1", Nik_QC.info.AQ)),
-	Nik_QC.info.AC = as.integer(gsub("\\[([0-9]+)\\]","\\1", Nik_QC.info.AC)),
-	Nik_QC.info.AN = as.integer(gsub("\\[([0-9]+)\\]","\\1", Nik_QC.info.AN)),
-	Nik_QC.info.AF = gsub("\\[(.*)\\]","\\1", Nik_QC.info.AF),
-
-	split_multi.in_variant_list = ifelse(is.na(split_multi.in_variant_list), FALSE, split_multi.in_variant_list),
-	genebass.in_variant_list = ifelse(is.na(genebass.in_variant_list), FALSE, genebass.in_variant_list),
-	Nik_QC.in_variant_list = ifelse(is.na(Nik_QC.in_variant_list), FALSE, Nik_QC.in_variant_list),
-	Duncan_QC.in_variant_list = ifelse(is.na(Duncan_QC.in_variant_list), FALSE, Duncan_QC.in_variant_list),
-	) %>% mutate(
-	excessHet_vcf.info.AF = as.numeric(gsub("E", "e", excessHet_vcf.info.AF)),
-	split_multi.info.AF = as.numeric(gsub("E", "e", split_multi.info.AF)),
-	Nik_QC.info.AF = as.numeric(gsub("E", "e", Nik_QC.info.AF))
+variants_sub <- list(
+	`in our LCR` = (dt_check %>% filter(!not_in_lcr))$variant,
+	`not in target +50bp` = (dt_check %>% filter(!is_in_target_padded_50bp))$variant,
+	`invariant` = (dt_check %>% filter(is.na(excessHet_vcf_AC) & is_in_target_padded_50bp & not_in_lcr))$variant,
+	`genebass` = (dt_check %>% filter(genebass_in_variant_list))$variant,
+	`Excesshet` = (dt_check %>% filter(!excesshet_leq_54.69))$variant
 	)
+venn_sub <- Venn(variants_sub)
 
+data_sub <- process_data(venn_sub)
+ggplot() +
+  # 1. region count layer
+  geom_sf(aes(fill = count), data = venn_region(data_sub)) +
+  # 3. set label layer
+  geom_sf_text(aes(label = name), data = venn_setlabel(data_sub)) +
+  # 4. region label layer
+  geom_sf_label(aes(label = count), data = venn_region(data_sub)) +
+  theme_void()
