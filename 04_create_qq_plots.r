@@ -16,14 +16,10 @@ get_SAIGE_output_path <- function(phenotype="coronary_artery_disease", chr=20,
 	}
 }
 
-
-minMAF = c(0, 0, 0.01),
-    maxMAFforGroupTest = c(0.01, 0.5, 0.5)
-
 read_and_create_qq <- function(
 	phenotype = "coronary_artery_disease",
 	minMAFs=c("0", "0", "0.01"),
-	maxMAFs=c("0.01","0.5", "0.5"),
+	maxMAFs=c("0.01", "0.5", "0.5"),
 	variant_classes=c(
 		"pLoF",
 		"damaging_missense",
