@@ -210,6 +210,12 @@ setkey(sampleListinvcf, "ID")
 dt_cts <- merge(sampleListinvcf, dt_cts)
 dt_binary <- merge(sampleListinvcf, dt_binary)
 
+# Remove all the withdrawn samples
+withdrawn <- fread("/well/lindgren/UKBIOBANK/DATA/QC/w11867_20210809.csv") %>% transmute(ID = V1)
+
+dt_cts <- dt_cts[which(!dt_cts$ID %in% withdrawn$ID), ]
+dt_binary <- dt_binary[which(!dt_binary$ID %in% withdrawn$ID), ]
+
 fwrite(dt_cts, file=cts_filtered_output, sep='\t')
 fwrite(dt_binary, file=binary_filtered_output, sep='\t')
 
@@ -217,7 +223,6 @@ system(paste("bgzip", cts_filtered_output))
 system(paste("bgzip", binary_filtered_output))
 
 # Create a final two files that in addition is filtered to the collection of samples that have IMPUTED genotype information available.
-
 dt_cts <- fread(cmd = paste("zcat", paste0(cts_filtered_output, ".gz")), key="ID")
 dt_binary <- fread(cmd = paste("zcat", paste0(binary_filtered_output, ".gz")), key="ID")
 
