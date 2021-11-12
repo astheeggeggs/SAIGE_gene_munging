@@ -13,7 +13,7 @@ cts_phenotypes <- c(
     "Visceral_adipose_tissue_volume_VAT",
     "Total_adipose_tissue_volume",
     "Abdominal_fat_ratio",
-    "Liver_proton_density_fat_fraction_AMRA",
+    "Liver_proton_density_fat_fraction_AMRA" #,
     # "Alanine_aminotransferase",
     # "Albumin",
     # "Alkaline_phosphatase",
