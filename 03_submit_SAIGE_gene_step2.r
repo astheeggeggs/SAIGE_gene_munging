@@ -152,7 +152,7 @@ for (annotation in annotations) {
 
 for (annotation in annotations) {
     
-    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense')) {
+    if (annotation %in% c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'synonymous')) {
         queue <- "short.qe@@short.hge"
     } else {
         queue <- "long.qf@@long.hgf"

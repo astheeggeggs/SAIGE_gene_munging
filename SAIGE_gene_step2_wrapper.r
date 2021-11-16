@@ -50,7 +50,7 @@ sparseSigmaFile <- grep(paste0(args$phenotype, "_cate.varianceRatio.txt_"), dir(
 
 # Output locations
 dir.create(file.path(args$phenotypeFolder, "step2_results"), showWarnings=FALSE)
-annotation <- gsub("^.*chr[0-9]+_(.*)_saige_gene.tsv.gz", "\\1", args$groupFile)
+annotation <- gsub("^.*chr[0-9XY]+_(.*)_saige_gene.tsv.gz", "\\1", args$groupFile)
 SAIGEOutputFile <- file.path(
     args$phenotypeFolder,
     "step2_results",
