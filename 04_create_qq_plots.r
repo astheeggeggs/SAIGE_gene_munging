@@ -21,10 +21,10 @@ read_and_create_qq <- function(
 	minMAFs=c("0", "0", "0.01"),
 	maxMAFs=c("0.01", "0.5", "0.5"),
 	variant_classes=c(
-		"pLoF",
-		"damaging_missense",
-		"other_missense",
-		"synonymous"),
+		# "pLoF",
+		# "damaging_missense",
+		"other_missense"),#,
+		# "synonymous"),
 	outdir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/plots/"
 	)
 {
@@ -60,6 +60,7 @@ read_and_create_qq <- function(
 						cupper = -log10(qbeta(p = (1 + ribbon_p) / 2, shape2 = n():1, shape1 = 1:n()))
 						)
 					)
+			cat(paste("\nPhenotype:", phenotype))
 			create_pretty_qq_plot(
 				plot_title=paste0(
 					gsub("_", " ", paste0(toupper(substring(phenotype, 1,1)), substring(phenotype, 2))), "\n",
@@ -80,7 +81,7 @@ read_and_create_qq <- function(
 	dev.off()
 }
 
-phenotypes <- c(
+cts_phenotypes <- c(
 	"Alanine_aminotransferase",
     "Albumin",
     "Alkaline_phosphatase",
@@ -115,9 +116,67 @@ phenotypes <- c(
     "Hip_circumference",
     "Standing_height",
     "Waist_circumference",
-    "Body_fat_percentage"
+    "Body_fat_percentage",
+    "Visceral_adipose_tissue_volume_VAT",
+    "Total_adipose_tissue_volume",
+    "Abdominal_fat_ratio",
+    "Liver_proton_density_fat_fraction_AMRA"
     )
 
-for (phenotype in phenotypes) {
+binary_phenotypes <- c(
+    # "colorectal_cancer", - Problem with this one in chromosome 21 - what's going on?
+    "Trachea_bronchus_lung_cancer",
+    "breast_cancer",
+    "hypothalamic_amenorrhea",
+    "POI",
+    "dementia",
+    "Alzheimers_disease",
+    "depression",
+    "autism",
+    "ADHD",
+    # "renal_failure", - Problem with this one - empty...what's the case count?!
+    "coronary_artery_disease",
+    "ischaemic_heart_disease",
+    "stroke_hemorrhagic",
+    # "stroke", - Problem with this one - empty...what's the case count?!
+    "ischaemic_stroke",
+    "chronic_obstructive_pulmonary_disease",
+    "Crohns_disease",
+    "IBD",
+    "Cirrhosis",
+    "NASH",
+    # "NAFLD", - problem with NAFLD in chr21
+    "psoriasis",
+    "hyperandrogenism",
+    "hematuria",
+    "proteinuria",
+    "acute_renal_failure",
+    "chronic_kidney_disease",
+    # "male_infertility", - problem with this one - empty...what's the case count?!
+    "oligomenorrhea",
+    "habitual_aborter",
+    "female_infertility",
+    "ectopic_pregnancy",
+    "Preeclampsia",
+    "GDM",
+    "intrahepatic_cholestasis_in_pregnancy",
+    "polycystic_kidney_disease",
+    "T2D",
+    "T1D",
+    "GDM2",
+    "kallmann_syndrome",
+    "E230",
+    "PCOS1",
+    "PCOS2",
+    "PCOS3",
+    "PCOS4"
+)
+
+for (phenotype in cts_phenotypes) {
 	read_and_create_qq(phenotype=phenotype)
 }
+
+for (phenotype in binary_phenotypes) {
+	read_and_create_qq(phenotype=phenotype)
+}
+
