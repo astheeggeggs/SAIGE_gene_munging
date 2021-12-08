@@ -552,7 +552,7 @@ table(df$age_discrepancy, useNA="always")
 # Simplify
 #*# JB comment: change the ID column to "f.eid".
 
-UKB_diabetes <- subset(df, select=c(
+dt_diabetes <- subset(df, select=c(
   "f.eid",
   "age_discrepancy",
   "agedm_ts_or_ni", # combined field for age of diagnosis: agedm_ts_or_ni
@@ -565,6 +565,6 @@ UKB_diabetes <- subset(df, select=c(
   'dm_unlikely', 'possible_t1dm', 'probable_t1dm', 'possible_t2dm', 'probable_t2dm', 'possible_gdm'
 ))
 
-#*# JB: added lines to save the final extracted table: 
-file <- "/well/lindgren/UKBIOBANK/dpalmer/ukbb_diabetes_EastwooddmAlgorithm.tsv"
-fwrite(UKB_diabetes, file, sep="\t")
+# #*# JB: added lines to save the final extracted table: 
+# file <- "/well/lindgren/UKBIOBANK/dpalmer/ukbb_diabetes_EastwooddmAlgorithm.tsv"
+# fwrite(UKB_diabetes, file, sep="\t")

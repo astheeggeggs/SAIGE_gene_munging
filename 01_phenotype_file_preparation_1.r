@@ -1,4 +1,4 @@
-source("utils/extract_phenotypes.r")
+source("utils/extract_phenotypes.r") # functions to extract phenotypes
 source("utils/phenotypes_plos_genetics.r") # creates a plos_genetics list
 source("utils/phenotypes_biomarkers_rivas.r") # creates a biomarker_fields_dt data.table
 source("utils/phenotypes_remaining_of_interest.r") # creates a remaining_phenotypes list
@@ -13,8 +13,8 @@ dt_remaining <- curate_binary_phenotypes(remaining_phenotypes, phenotype_file)
 # Obtain the T1D, T2D, and GDM phenotypes using utils/phenotypes_diabetes_ukb_cases_cole.r 
 # script from Joanna Cole.
 source("utils/phenotypes_diabetes_ukb_cases_cole.r")
-dt <- fread("/well/lindgren/UKBIOBANK/dpalmer/ukbb_diabetes_EastwooddmAlgorithm.tsv")
 cols_to_retain <- c("eid", "DM_T1D", "DM_T2D", "DM_GD", "DM_ctrl_excl")
+dt_diabetes <- data.table(dt_diabetes)
 setnames(dt, c("f.eid", "probable_t1dm", "probable_t2dm", "possible_gdm", "dm_unlikely"), cols_to_retain)
 dt[, ..(cols_to_retain)]
 # Set dm_unlikely to controls, and the rest to NA.
