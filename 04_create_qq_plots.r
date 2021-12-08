@@ -6,13 +6,17 @@ source("QC_scripts/utils/pretty_plotting.r")
 
 get_SAIGE_output_path <- function(phenotype="coronary_artery_disease", chr=20,
 	minMAF="0", maxMAF="0.01", variant_class = "pLoF",
-	SAIGE_results_dir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/step2_results/") 
+	SAIGE_results_dir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/step2_results/", continue=FALSE) 
 {
 	file <- paste0(SAIGE_results_dir, phenotype, "_chr", chr, "_minMAF", minMAF, "_maxMAFforGroupTest_", maxMAF, "_", variant_class)
 	if(file.exists(file)) {
 		return(file)
 	} else {
-		stop(paste("File:", file, "does not exist"))
+		if (!continue) {
+			stop(paste("File:", file, "does not exist"))
+		} else {
+			warning(paste("File:", file, "does not exist"))
+		}
 	}
 }
 
@@ -21,10 +25,10 @@ read_and_create_qq <- function(
 	minMAFs=c("0", "0", "0.01"),
 	maxMAFs=c("0.01", "0.5", "0.5"),
 	variant_classes=c(
-		# "pLoF",
-		# "damaging_missense",
-		"other_missense"),#,
-		# "synonymous"),
+		"pLoF",
+		"damaging_missense",
+		"other_missense",
+		"synonymous"),
 	outdir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/plots/"
 	)
 {
@@ -60,7 +64,7 @@ read_and_create_qq <- function(
 						cupper = -log10(qbeta(p = (1 + ribbon_p) / 2, shape2 = n():1, shape1 = 1:n()))
 						)
 					)
-			cat(paste("\nPhenotype:", phenotype))
+			cat(paste("\nPhenotype:", phenotype, "\n"))
 			create_pretty_qq_plot(
 				plot_title=paste0(
 					gsub("_", " ", paste0(toupper(substring(phenotype, 1,1)), substring(phenotype, 2))), "\n",
@@ -124,7 +128,7 @@ cts_phenotypes <- c(
     )
 
 binary_phenotypes <- c(
-    # "colorectal_cancer", - Problem with this one in chromosome 21 - what's going on?
+    "colorectal_cancer", # - Problem with this one in chromosome 21 - what's going on?
     "Trachea_bronchus_lung_cancer",
     "breast_cancer",
     "hypothalamic_amenorrhea",
@@ -134,25 +138,25 @@ binary_phenotypes <- c(
     "depression",
     "autism",
     "ADHD",
-    # "renal_failure", - Problem with this one - empty...what's the case count?!
+    "renal_failure", #- Problem with this one - empty...what's the case count?!
     "coronary_artery_disease",
     "ischaemic_heart_disease",
     "stroke_hemorrhagic",
-    # "stroke", - Problem with this one - empty...what's the case count?!
+    "stroke",# - Problem with this one - empty...what's the case count?!
     "ischaemic_stroke",
     "chronic_obstructive_pulmonary_disease",
     "Crohns_disease",
     "IBD",
     "Cirrhosis",
     "NASH",
-    # "NAFLD", - problem with NAFLD in chr21
+    "NAFLD", # - problem with NAFLD in chr21
     "psoriasis",
     "hyperandrogenism",
     "hematuria",
     "proteinuria",
     "acute_renal_failure",
     "chronic_kidney_disease",
-    # "male_infertility", - problem with this one - empty...what's the case count?!
+    "male_infertility", #- problem with this one - empty...what's the case count?!
     "oligomenorrhea",
     "habitual_aborter",
     "female_infertility",
@@ -180,3 +184,36 @@ for (phenotype in binary_phenotypes) {
 	read_and_create_qq(phenotype=phenotype)
 }
 
+checking_outputs <- function(
+	phenotypes,
+	minMAFs=c("0", "0", "0.01"),
+	maxMAFs=c("0.01", "0.5", "0.5"),
+	variant_classes=c(
+		"pLoF",
+		"damaging_missense",
+		"other_missense",
+		"synonymous")
+	) {
+
+	for(phenotype in phenotypes) {
+		# Checking that all results files have been created
+		for (i in 1:length(minMAFs)) {
+			for (variant_class in variant_classes) {
+				variant_class_plot <- gsub("\\|", ", ", variant_class)
+				variant_class_plot <- gsub("_", " ", variant_class_plot)
+				variant_class_filename <- gsub("\\|", "_", variant_class)
+				dt <- list()
+				for (chr in c(seq(1,22), "X")) {
+					file <- get_SAIGE_output_path(phenotype, chr, minMAFs[i], maxMAFs[i], variant_class_filename, continue=TRUE)
+					if( !file.exists(file)) {
+						print(file)
+					}
+				}
+			}
+		}
+	}
+}
+
+
+checking_outputs(binary_phenotypes)
+checking_outputs(cts_phenotypes)

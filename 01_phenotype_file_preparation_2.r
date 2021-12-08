@@ -16,81 +16,195 @@ binary_output <- paste0(output_folder, '/UKBB_WES', TRANCHE, "_binary_phenotypes
 cts_filtered_output <- paste0(output_folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes.tsv")  
 binary_filtered_output <- paste0(output_folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes.tsv")
 
-cts_filtered_output_imp <- paste0(output_folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes_with_imputed_genos.tsv")  
-binary_filtered_output_imp <- paste0(output_folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes_with_imputed_genos.tsv")
-
 # Tables to merge
 # Quantitative phenotypes
-folder <- "/well/lindgren/UKBIOBANK/ferreira/UKBB_phenotypes/"
-files <- c(
-	paste0("UKBB_WES", TRANCHE, "_abdominalcomposition_phenotypes.txt"),
-	paste0("UKBB_WES", TRANCHE, "_biomarkers_phenotypes.txt"),
-	paste0("UKBB_WES", TRANCHE, "_physicalmeasures_phenotypes.txt")
-	)
+folder <- "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/"
+files <- c("UKBB_WES_plos_genetics_phenotypes.txt", "UKBB_WES_biomarkers_phenotypes.txt")
 files <- paste0(folder, files)
 
+# Only thing extra to include is the sequencing batch.
+
 # Cols to drop in dt_tmp
-drop_cols <- c("age", "age2", "age3", "Inferred.Gender", "white.british", "genetic.eur",
-	"genotyping.array", "ukbb.centre", paste0("PC", seq(1,40)), "sex", "sequencing.batch") 
+covariate_cols <- c("age", "ukbb.centre", paste0("PC", seq(1,40)), "sex", "sequencing.batch") 
 
 dt <- fread(files[1])
-dt[, ID:=as.character(ID)]
-setkey(dt, "ID")
+dt[, eid:=as.character(eid)]
+setkey(dt, "eid")
 
-for (file in files[2:length(files)]) {
-	dt_tmp <- fread(file)
-    dt_tmp[, ID:=as.character(ID)]
-	setkey(dt_tmp, "ID")
-	dt_tmp[, (drop_cols):=NULL]
-	dt <- merge(dt, dt_tmp)
+if (length(files) > 1)
+{
+    for (file in files[2:length(files)]) {
+    	dt_tmp <- fread(file)
+        dt_tmp[, eid:=as.character(eid)]
+    	setkey(dt_tmp, "eid")
+    	dt_tmp[, (covariate_cols):=NULL]
+    	dt <- merge(dt, dt_tmp, all=TRUE)
+    }
 }
-
-# Binary traits
-dt_tmp <- fread(paste0(folder, "UKBB_IMPUTED500k_GenetEUR_BinaryTraits.txt"))
-dt_tmp[, (drop_cols):= NULL]
-dt_tmp[, "missing":= NULL]
-dt_tmp[, ID:=as.character(ID)]
-setkey(dt_tmp, "ID")
-
-dt <- merge(dt, dt_tmp, all.x=TRUE)
 
 # Filter to the full set of non inverse rank normalised phenotypes, which we will pass to SAIGE
 
+cts_phenotypes <- c(
+    # Log of the biomarkers
+    "Alanine_aminotransferase",
+    "Albumin",
+    "Alkaline_Phosphatase",
+    "Apolipoprotein_A",
+    "Apolipoprotein_B",
+    "Aspartate_aminotransferase",
+    "C_reactive_Protein",
+    "Calcium",
+    "Cholesterol",
+    "Creatinine_Serum",
+    "Creatinine_Urine",
+    "Cystatin_C_Serum",
+    "Direct_Bilirubin",
+    "Gamma_glutamyltransferase",
+    "Glucose",
+    "HbA1c",
+    "HDL_Cholesterol",
+    "IGF_1",
+    "Lipoprotein_A",
+    "Microalbumin_Urine",
+    "Oestradiol",
+    "Phosphate",
+    "Potassium_Urine",
+    "Rheumatoid_factor",
+    "SHBG",
+    "Sodium_Urine",
+    "Testosterone",
+    "Total_Bilirubin",
+    "Total_Protein",
+    "Triglyceride",
+    "Urate",
+    "Urea",
+    "Vitamin_D",
+    # Residualised log biomarkers. Both sexes, followed by sex specific residualisation of log biomarkers.
+    "Alanine_aminotransferase_residual",
+    "Alanine_aminotransferase_F_residual",
+    "Alanine_aminotransferase_M_residual",
+    "Albumin_residual",
+    "Albumin_F_residual",
+    "Albumin_M_residual",
+    "Alkaline_Phosphatase_residual",
+    "Alkaline_Phosphatase_F_residual",
+    "Alkaline_Phosphatase_M_residual",
+    "Apolipoprotein_A_residual",
+    "Apolipoprotein_A_F_residual",
+    "Apolipoprotein_A_M_residual",
+    "Apolipoprotein_B_residual",
+    "Apolipoprotein_B_F_residual",
+    "Apolipoprotein_B_M_residual",
+    "Aspartate_aminotransferase_residual",
+    "Aspartate_aminotransferase_F_residual",
+    "Aspartate_aminotransferase_M_residual",
+    "C_reactive_Protein_residual",
+    "C_reactive_Protein_F_residual",
+    "C_reactive_Protein_M_residual",
+    "Calcium_residual",
+    "Calcium_F_residual",
+    "Calcium_M_residual",
+    "Cholesterol_residual",
+    "Cholesterol_F_residual",
+    "Cholesterol_M_residual",
+    "Creatinine_Serum_residual",
+    "Creatinine_Serum_F_residual",
+    "Creatinine_Serum_M_residual",
+    "Creatinine_Urine_residual",
+    "Creatinine_Urine_F_residual",
+    "Creatinine_Urine_M_residual",
+    "Cystatin_C_Serum_residual",
+    "Cystatin_C_Serum_F_residual",
+    "Cystatin_C_Serum_M_residual",
+    "Direct_Bilirubin_residual",
+    "Direct_Bilirubin_F_residual",
+    "Direct_Bilirubin_M_residual",
+    "Gamma_glutamyltransferase_residual",
+    "Gamma_glutamyltransferase_F_residual",
+    "Gamma_glutamyltransferase_M_residual",
+    "Glucose_residual",
+    "Glucose_F_residual",
+    "Glucose_M_residual",
+    "HbA1c_residual",
+    "HbA1c_F_residual",
+    "HbA1c_M_residual",
+    "HDL_Cholesterol_residual",
+    "HDL_Cholesterol_F_residual",
+    "HDL_Cholesterol_M_residual",
+    "IGF_1_residual",
+    "IGF_1_F_residual",
+    "IGF_1_M_residual",
+    "Lipoprotein_A_residual",
+    "Lipoprotein_A_F_residual",
+    "Lipoprotein_A_M_residual",
+    "Microalbumin_Urine_residual",
+    "Microalbumin_Urine_F_residual",
+    "Microalbumin_Urine_M_residual",
+    "Oestradiol_residual",
+    "Oestradiol_F_residual",
+    "Oestradiol_M_residual",
+    "Phosphate_residual",
+    "Phosphate_F_residual",
+    "Phosphate_M_residual",
+    "Potassium_Urine_residual",
+    "Potassium_Urine_F_residual",
+    "Potassium_Urine_M_residual",
+    "Rheumatoid_factor_residual",
+    "Rheumatoid_factor_F_residual",
+    "Rheumatoid_factor_M_residual",
+    "SHBG_residual",
+    "SHBG_F_residual",
+    "SHBG_M_residual",
+    "Sodium_Urine_residual",
+    "Sodium_Urine_F_residual",
+    "Sodium_Urine_M_residual",
+    "Testosterone_residual",
+    "Testosterone_F_residual",
+    "Testosterone_M_residual",
+    "Total_Bilirubin_residual",
+    "Total_Bilirubin_F_residual",
+    "Total_Bilirubin_M_residual",
+    "Total_Protein_residual",
+    "Total_Protein_F_residual",
+    "Total_Protein_M_residual",
+    "Triglyceride_residual",
+    "Triglyceride_F_residual",
+    "Triglyceride_M_residual",
+    "Urate_residual",
+    "Urate_F_residual",
+    "Urate_M_residual",
+    "Urea_residual",
+    "Urea_F_residual",
+    "Urea_M_residual",
+    "Vitamin_D_residual",
+    "Vitamin_D_F_residual",
+    "Vitamin_D_M_residual"
+    )
+
+binary_phenotypes <- c(
+    "BC_combined",
+    "CAD_combined",
+    "COPD_combined",
+    "CLD_combined",
+    "CC_combined",
+    "DEM_combined",
+    "INF_combined"       
+    "LC_combined",
+    "NAFLD_combined",
+    "RF_combined",
+    "RF_acute_combined",
+    "RF_chronic_combined",
+    "STR_combined"       
+    "STR_hem_combined",
+    "STR_isc_combined"   
+    )
+
+# Phenotypes we don't have from the biomarkers.
 cts_phenotypes <- c(
     "Visceral_adipose_tissue_volume_(VAT)",
     "Total_adipose_tissue_volume",
     "Abdominal_fat_ratio",
     "Liver_proton_density_fat_fraction_(AMRA)",
-    "Alanine_aminotransferase",
-    "Albumin",
-    "Alkaline_phosphatase",
-    "Apolipoprotein_A",
-    "Apolipoprotein_B",
-    "Aspartate_aminotransferase",
-    "C-reactive_protein",
-    "Calcium",
-    "Cholesterol",
-    "Creatinine",
-    "Cystatin_C",
-    "Direct_bilirubin",
-    "Gamma_glutamyltransferase",
-    "Glucose",
-    "Glycated_haemoglobin_(HbA1c)",
-    "HDL_cholesterol",
-    "IGF-1",
-    "LDL_direct",
-    "Lipoprotein_A",
-    "Oestradiol",
-    "Phosphate",
-    "Rheumatoid_factor",
-    "SHBG",
-    "Testosterone",
-    "Total_bilirubin",
-    "Total_protein",
-    "Triglycerides",
-    "Urate",
-    "Urea",
-    "Vitamin_D",
     "Body_mass_index_(BMI)",
     "Hip_circumference",
     "Standing_height",
@@ -99,52 +213,34 @@ cts_phenotypes <- c(
     )
 
 binary_phenotypes <- c(
-    "colorectal_cancer",
-    "Trachea_bronchus_lung_cancer",
-    "breast_cancer",
     "hypothalamic_amenorrhea",
     "POI",
-    "dementia",
     "Alzheimers_disease",
     "depression",
     "autism",
     "ADHD",
-    "renal_failure",
-    "coronary_artery_disease",
-    "ischaemic_heart_disease",
-    "stroke_hemorrhagic",
-    "stroke",
-    "ischaemic_stroke",
-    "chronic_obstructive_pulmonary_disease",
+    "ischaemic_heart_disease", # What's the difference between this and CAD?
     "Crohns_disease",
     "IBD",
     "Cirrhosis",
     "NASH",
-    "NAFLD",
     "psoriasis",
     "hyperandrogenism",
     "hematuria",
     "proteinuria",
-    "acute_renal_failure",
-    "chronic_kidney_disease",
-    "male_infertility",
     "oligomenorrhea",
     "habitual_aborter",
-    "female_infertility",
     "ectopic_pregnancy",
     "Preeclampsia",
     "GDM",
     "intrahepatic_cholestasis_in_pregnancy",
     "polycystic_kidney_disease",
-    "T2D",
-    "T1D",
+    "T2D", # Grab these from Jenny's definition
+    "T1D", # Grab from Jenny's definition
     "GDM2",
-    "kallmann_syndrome",
-    "E230",
-    "PCOS1",
-    "PCOS2",
-    "PCOS3",
-    "PCOS4"
+    "kallmann_syndrome", # This one is carefully defined - grab from here.
+    "E230", #? Hypopituitarism?
+    "PCOS4" # This one is carefully definied - grab from here.
     )
 
 retain_cols <- c("ID", drop_cols, cts_phenotypes, binary_phenotypes)
