@@ -15,14 +15,43 @@ dt_remaining <- curate_binary_phenotypes(remaining_phenotypes, phenotype_file)
 source("utils/phenotypes_diabetes_ukb_cases_cole.r")
 cols_to_retain <- c("eid", "DM_T1D", "DM_T2D", "DM_GD", "DM_ctrl_excl")
 dt_diabetes <- data.table(dt_diabetes)
-setnames(dt, c("f.eid", "probable_t1dm", "probable_t2dm", "possible_gdm", "dm_unlikely"), cols_to_retain)
-dt[, ..(cols_to_retain)]
+setnames(dt_diabetes, c("f.eid", "probable_t1dm", "probable_t2dm", "possible_gdm", "dm_unlikely"), cols_to_retain)
+dt_diabetes = dt_diabetes[, ..cols_to_retain]
 # Set dm_unlikely to controls, and the rest to NA.
-dt[, DM_T1D := ]
-dt[, DM_T2D := ]
-dt[, DM_GD := ]
+dt_diabetes[, DM_T1D := ifelse((DM_ctrl_excl == 0 & DM_T1D == 0), NA, DM_T1D)]
+dt_diabetes[, DM_T2D := ifelse((DM_ctrl_excl == 0 & DM_T2D == 0), NA, DM_T2D)]
+dt_diabetes[, DM_GD := ifelse((DM_ctrl_excl == 0 & DM_GD == 0), NA, DM_GD)]
+
+dt_diabetes[, DM_T1D := ifelse(DM_T1D == 1, TRUE, FALSE)]
+dt_diabetes[, DM_T2D := ifelse(DM_T2D == 1, TRUE, FALSE)]
+dt_diabetes[, DM_GD := ifelse(DM_GD == 1, TRUE, FALSE)]
 
 # Merge and save all of these for read in.
+setkey(dt_plos_genetics, "eid")
+setkey(dt_biomarkers, "eid")
+setkey(dt_remaining, "eid")
+setkey(dt_diabetes, "eid")
+
+covariates <- setdiff(intersect(names(dt_plos_genetics), names(dt_remaining)), "eid")
+
+to_retain_remaining <- setdiff(names(dt_remaining), covariates)
+to_retain_diabetes <- c("eid", "DM_T1D", "DM_T2D", "DM_GD")
+
+dt_remaining <- dt_remaining[, ..to_retain_remaining]
+dt_diabetes <- dt_diabetes[, ..to_retain_diabetes]
+
+to_retain_biomarkers <- c(biomarker_fields_dt$biomarker)
+to_retain_biomarkers <- c(
+	to_retain_biomarkers,
+	paste0(to_retain_biomarkers, "_residual"),
+	paste0(to_retain_biomarkers, "_M_residual"),
+	paste0(to_retain_biomarkers, "_F_residual")
+	)
+to_retain_biomarkers <- c("eid", to_retain_biomarkers)
+
+dt_biomarkers <- dt_biomarkers[, ..to_retain_biomarkers]
+
+dt <- merge(merge(dt_plos_genetics, dt_remaining), merge(dt_diabetes, dt_biomarkers, all=TRUE))
 
 # Next, we use Teresa's collection of curated ICD10 codes to extract remaining phenotypes of interest.
 kallmann_syndrome - This one is carefully defined - grab from Teresa’s file.

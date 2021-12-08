@@ -14,7 +14,7 @@ for (phenotype in unique(dt$disease)) {
 # Now remove all but the phenotypes that we want to retain (the rest have cleaner definitions in either Jenny or Teresa's work).
 remaining_phenotypes <- remaining_phenotypes[c("ADHD", "Alzheimers_disease", "depression", "hypothalamic_amenorrhea", "autism",
            "Cirrhosis", "Crohns_disease", "IBD", "NASH", "psoriasis", "hematuria", "proteinuria",
-           "oligomenorrhea", "Preeclampsia", "dementia", "ectopic_pregnancy", "polycystic_kidney_disease",
+           "oligomenorrhea", "Preeclampsia", "ectopic_pregnancy", "polycystic_kidney_disease",
            "habitual_aborter", "POI")]
 
 for (phenotype in names(remaining_phenotypes)) {
@@ -37,7 +37,6 @@ rename_list <- list(
     proteinuria = "PRO",
     oligomenorrhea = "OLI",
     Preeclampsia = "PRE",
-    dementia = "DEM",
     ectopic_pregnancy = "EP",
     polycystic_kidney_disease = "PKD",
     habitual_aborter = "HAB",
@@ -77,7 +76,6 @@ for (phenotype in names(remaining_phenotypes)) {
 }
 
 NI_non_cancer_list <- list(
-    DEM = c("1263"), # 1263 = dementia/alzheimers/cognitive impairment
     AD = c("1263"), # 1263 = dementia/alzheimers/cognitive impairment
     DEP = c("1269", "1531"), # 1531 = post-natal depression, 1286 = depression
     PSOR = c("1453"), # 1453 = psoriasis
