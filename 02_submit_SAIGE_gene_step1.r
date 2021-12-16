@@ -117,7 +117,7 @@ binary_phenotypes <- c(
 # Covariates
 covariate_cols <- c(
 	"age","PC1","PC2","PC3","PC4","PC5","PC6","PC7","PC8","PC9","PC10",
-	"sex2","sequencing.batch2"
+	"sex","sequencing.batch"
 	)
 covars <- paste(covariate_cols, collapse="|")
 ID_col <- "ID"

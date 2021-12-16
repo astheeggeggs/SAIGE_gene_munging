@@ -26,12 +26,6 @@ dt_diabetes[, DM_T1D := ifelse(DM_T1D == 1, TRUE, FALSE)]
 dt_diabetes[, DM_T2D := ifelse(DM_T2D == 1, TRUE, FALSE)]
 dt_diabetes[, DM_GD := ifelse(DM_GD == 1, TRUE, FALSE)]
 
-# Merge and save all of these for read in.
-setkey(dt_plos_genetics, "eid")
-setkey(dt_biomarkers, "eid")
-setkey(dt_remaining, "eid")
-setkey(dt_diabetes, "eid")
-
 covariates <- setdiff(intersect(names(dt_plos_genetics), names(dt_remaining)), "eid")
 
 to_retain_remaining <- setdiff(names(dt_remaining), covariates)
@@ -50,15 +44,26 @@ to_retain_biomarkers <- c(
 to_retain_biomarkers <- c("eid", to_retain_biomarkers)
 
 dt_biomarkers <- dt_biomarkers[, ..to_retain_biomarkers]
+dt_biomarkers[, eid := as.character(eid)]
+dt_diabetes[, eid := as.character(eid)]
 
-dt <- merge(merge(dt_plos_genetics, dt_remaining), merge(dt_diabetes, dt_biomarkers, all=TRUE))
+# Merge and save all of these for read in.
+setkey(dt_plos_genetics, "eid")
+setkey(dt_biomarkers, "eid")
+setkey(dt_remaining, "eid")
+setkey(dt_diabetes, "eid")
+
+dt_bin <- merge(merge(dt_plos_genetics, dt_remaining), dt_diabetes, all=TRUE)
+source("utils/phenotypes_cts_traits.r")
+dt_cts[, eid := as.character(eid)]
+dt_cts <- merge(dt_biomarkers, dt_cts, all=TRUE)
+
+fwrite(dt_bin, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_binary.tsv"), sep='\t')
+fwrite(dt_cts, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_cts.tsv"), sep='\t')
+
+# bgzip the resultant .tsv file.
 
 # Next, we use Teresa's collection of curated ICD10 codes to extract remaining phenotypes of interest.
-kallmann_syndrome - This one is carefully defined - grab from Teresa’s file.
-PCOS4 - This one is carefully defined - grab from Teresa’s file.
-# Does Teresa have a detailed def of this?
-POI (Teresa has a detailed definition of this)
+# kallmann_syndrome - This one is carefully defined - grab from Teresa’s file.
+# PCOS4 - This one is carefully defined - grab from Teresa’s file.
 
-NI_non_cancer_list <- list(
-	PCOS = c("1350") # 1350	polycystic ovaries/polycystic ovarian syndrome
-)

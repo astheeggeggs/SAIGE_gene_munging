@@ -2,7 +2,40 @@ library(data.table)
 library(dplyr)
 library(readxl)
 
-curate_binary_phenotypes <- function(phenotype_list, phenotype_file)
+reformat_clinical <- function(primary_care_read_codes = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PRIMARY_CARE/gp_clinical.txt") {
+    dt <- fread(primary_care_read_codes)
+    dt_v2 <- dt[read_2 != "",c('eid', 'read_2')]
+    dt_v3 <- dt[read_3 != "",c('eid', 'read_3')]
+
+    paste_unique <- function(v) { return(paste(unique(v), collapse=" ")) }
+
+    dt_v2 <- dcast(dt_v2, eid ~ ., fun.aggregate=paste_unique, value.var="read_2")
+    dt_v3 <- dcast(dt_v3, eid ~ ., fun.aggregate=paste_unique, value.var="read_3")
+
+    # Name the columns
+    setnames(dt_v2, ".", "read_v2_string")
+    setnames(dt_v3, ".", "read_v3_string")
+
+    # Pad each end with a space, so we can apply the same methods as below.
+    dt_v2[, read_v2_string := gsub("^(.*)$", " \\1 ", read_v2_string)]
+    dt_v3[, read_v3_string := gsub("^(.*)$", " \\1 ", read_v3_string)]
+
+    # Set keys
+    setkey(dt_v2, "eid")
+    setkey(dt_v3, "eid")
+
+    # Merge the result, for combination 
+    dt <- merge(dt_v2, dt_v3, all=TRUE)
+
+    return(dt)
+}
+
+curate_binary_phenotypes <- function(
+    phenotype_list,
+    phenotype_file = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv",
+    primary_care_read_codes = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PRIMARY_CARE/gp_clinical.txt",
+    create_primary_care = TRUE
+    )
 {
 
 	get_cols <- function(codes, dt, na.filter=FALSE)
@@ -95,6 +128,15 @@ curate_binary_phenotypes <- function(phenotype_list, phenotype_file)
 	dt[, self_reported_diagnosis_by_doctor_CAD_STR_string := gsub("^(.*)$", " \\1 ", self_reported_diagnosis_by_doctor_CAD_STR_string)]
 	dt[, self_reported_diagnosis_by_doctor_COPD_string := gsub("^(.*)$", " \\1 ", self_reported_diagnosis_by_doctor_COPD_string)]
 
+    # If we want to include the primary care data, read in and format
+    if (create_primary_care) {
+        dt_clin <- reformat_clinical(primary_care_read_codes=primary_care_read_codes)
+        dt_clin[, eid := as.character(eid)]
+        setkey(dt_clin, "eid")
+        setkey(dt, "eid")
+        dt <- merge(dt, dt_clin, all=TRUE)
+    }
+
 	# grep out boolean phenotypes according to the rules
 	for (phenotype in names(phenotype_list)) {
 		cat(paste0(phenotype, "...\n"))
@@ -116,6 +158,31 @@ curate_binary_phenotypes <- function(phenotype_list, phenotype_file)
 			dt[, (combined):=ifelse((dt[[combined]] | dt[[new_colname]]), TRUE, FALSE)]
 			cat(paste(sum(dt[[combined]]), "\n"))
 		}
+
+        if (create_primary_care) {
+            cat("creating encoding including primary care information...\n")
+            combined <- paste0(phenotype, "_combined")
+            combined_with_read <- paste0(phenotype, "_combined_primary_care")
+            dt[, (combined_with_read):=dt[[combined]]]
+            if (length(phenotype_list[[phenotype]][["read_codings"]]) > 0) {
+                for (i in 1:length(phenotype_list[[phenotype]][["read_codings"]])) {
+                    coding <- phenotype_list[[phenotype]][["read_codings"]][[i]]
+                    coding_name <- names(phenotype_list[[phenotype]][["read_codings"]])[i]
+                    cat(paste0(coding_name, "..."))
+                    dt_col <- paste0(coding_name, "_string")
+                    new_colname <- paste0(phenotype, "_", coding_name)
+                    coding <- gsub("\\.", "\\\\.", coding)
+                    grep_exp <- paste0(" ", paste(coding, collapse=" | "), " ")
+                    if (!(dt_col %in% names(dt))) {
+                        stop("Error: column not found in data.table")
+                    }
+                    dt[, (new_colname):=grepl(grep_exp, dt[[dt_col]])]
+                    cat(paste(sum(dt[[new_colname]]), "\n"))
+                    dt[, (combined_with_read):=ifelse((dt[[combined_with_read]] | dt[[new_colname]]), TRUE, FALSE)]
+                    cat(paste(sum(dt[[combined_with_read]]), "\n"))
+                }
+            }
+        }
 	}
 
 	# Define the final phenotypes
@@ -139,6 +206,28 @@ curate_binary_phenotypes <- function(phenotype_list, phenotype_file)
 			}
 		}
 	}
+
+    if (create_primary_care)
+    {
+        for (phenotype in gsub("_ctrl_excl", "", phenotypes_with_ctrl_excl))
+        {
+            cat(paste0(phenotype, "...\n"))
+            current_phenotypes <- grep(phenotype, names(phenotype_list), value=TRUE)
+            if (length(current_phenotypes) == 1) {
+                cat("skip this one, no exclusions...\n")
+                next
+            } else {
+                case_phenotypes <- setdiff(current_phenotypes, paste0(phenotype, "_ctrl_excl"))
+                for (case_phenotype in case_phenotypes) {
+                    cat(paste0(case_phenotype, "...\n"))
+                    new_colname <- paste0(case_phenotype, "_combined_primary_care")
+                    dt[, (new_colname):=ifelse(
+                        (dt[[paste0(phenotype, "_ctrl_excl_combined_primary_care")]] & !dt[[paste0(case_phenotype, "_combined_primary_care")]]),
+                        NA, dt[[paste0(case_phenotype, "_combined_primary_care")]])]
+                }
+            }
+        }
+    }
 
 	PC_cols <-  get_cols(PCs, dt)
 	sex_col <-  get_cols(sex, dt)[1]
@@ -421,3 +510,6 @@ extract_terms <- function(
     dt <- data.table(read_excel(mapping_file, sheet = mapping_file_sheet))
     return(setdiff(unique(dt[get(from_col) %in% strings_to_map][,get(to_col)]), "UNDEF"))
 }
+
+# Further curation of binary phenotypes to extract the read codes etc and include further
+# putative cases
