@@ -58,8 +58,8 @@ source("utils/phenotypes_cts_traits.r")
 dt_cts[, eid := as.character(eid)]
 dt_cts <- merge(dt_biomarkers, dt_cts, all=TRUE)
 
-fwrite(dt_bin, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_binary.tsv"), sep='\t')
-fwrite(dt_cts, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_cts.tsv"), sep='\t')
+fwrite(dt_bin, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_binary.tsv", sep='\t')
+fwrite(dt_cts, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_cts.tsv", sep='\t')
 
 # bgzip the resultant .tsv file.
 
