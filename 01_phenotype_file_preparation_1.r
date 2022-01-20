@@ -4,7 +4,40 @@ source("utils/phenotypes_biomarkers_rivas.r") # creates a biomarker_fields_dt da
 source("utils/phenotypes_remaining_of_interest.r") # creates a remaining_phenotypes list
 
 # Read in the data and extract the phenotypes with these encodings, and IDs.
-phenotype_file <- "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv"
+# Old version
+# phenotype_file <- "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv"
+phenotype_file <- "/well/lindgren-ukbb/projects/ukbb-11867/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844_ukb50009_updateddiagnoses_14012022.csv"
+
+# Create a data.table to use in the methods
+methods_list <- c(plos_genetics, remaining_phenotypes)
+methods_table <- data.table(
+	outcome_code=character(),
+	ICD10=character(), ICD9=character(),
+	OPCS4=character(),
+	NI_non_cancer=character(), NI_cancer=character(), NI_operation=character(),
+	self_report=character(),
+	read_v2=character(), read_v3=character()
+	)
+
+for (name in names(methods_list)) {
+	methods_table <- rbind(
+		methods_table,
+		data.table(
+			outcome_code = name,
+			ICD10 = ifelse(!is.null(methods_list[[name]][["codings"]][["ICD10"]]), paste(methods_list[[name]][["codings"]][["ICD10"]], collapse="; "), ""),
+			ICD9 = ifelse(!is.null(methods_list[[name]][["codings"]][["ICD9"]]), paste(methods_list[[name]][["codings"]][["ICD9"]], collapse="; "), ""),
+			OPCS4 = ifelse(!is.null(methods_list[[name]][["codings"]][["OPCS4"]]), paste(methods_list[[name]][["codings"]][["OPCS4"]], collapse="; "), ""),
+			NI_non_cancer = ifelse(!is.null(methods_list[[name]][["codings"]][["NI_non_cancer"]]), paste(methods_list[[name]][["codings"]][["NI_non_cancer"]], collapse="; "), ""),
+			NI_cancer = ifelse(!is.null(methods_list[[name]][["codings"]][["NI_cancer"]]), paste(methods_list[[name]][["codings"]][["NI_cancer"]], collapse="; "), ""),
+			NI_operation = ifelse(!is.null(methods_list[[name]][["codings"]][["NI_operation"]]), paste(methods_list[[name]][["codings"]][["NI_operation"]], collapse="; "), ""),
+			self_report = ifelse(any(grepl("self_reported", names(methods_list[[name]][["codings"]]))), paste(methods_list[[name]][["codings"]][grep("self_reported", names(methods_list[[name]][["codings"]]))], collapse="; "), ""),
+			read_v2 = ifelse(!is.null(methods_list[[name]][["read_codings"]][["read_v2"]]), paste(methods_list[[name]][["read_codings"]][["read_v2"]], collapse="; "), ""),
+			read_v3 = ifelse(!is.null(methods_list[[name]][["read_codings"]][["read_v3"]]), paste(methods_list[[name]][["read_codings"]][["read_v3"]], collapse="; "), "")
+		)
+	)
+}
+
+fwrite(methods_table, file="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/ukb_binary_phenotype_definitions.tsv", sep="\t")
 
 dt_plos_genetics <- curate_binary_phenotypes(plos_genetics, phenotype_file)
 dt_biomarkers <- curate_biomarker_phenotypes()
