@@ -99,4 +99,6 @@ fwrite(dt_cts, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curat
 # Next, we use Teresa's collection of curated ICD10 codes to extract remaining phenotypes of interest.
 # kallmann_syndrome - This one is carefully defined - grab from Teresa’s file.
 # PCOS4 - This one is carefully defined - grab from Teresa’s file.
+# Also, infertility traits aren't quite right - need to consider male and female specific traits separately.
+# Need to account for statins in three of the biomarkers too - follow the Nature genetics UKB biomarkers paper.
 
