@@ -1,6 +1,7 @@
 library(data.table)
 library(dplyr)
 library(readxl)
+library(lubridate)
 
 reformat_clinical <- function(primary_care_read_codes = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PRIMARY_CARE/gp_clinical.txt") {
     dt <- fread(primary_care_read_codes)
@@ -252,9 +253,9 @@ curate_biomarker_phenotypes <- function(
 
     get_cols <- function(codes, dt, na.filter=FALSE)
     {
-    cols <- c()
-    for (code in codes) { cols <- c(cols, grep(paste0("^", code, "\\-"), names(dt), value=TRUE)) }
-    return(cols)
+        cols <- c()
+        for (code in codes) { cols <- c(cols, grep(paste0("^", code, "\\-"), names(dt), value=TRUE)) }
+        return(cols)
     }
 
     dt_pheno <- fread(phenotype_file, na.strings=NULL, nrow=1)
@@ -309,6 +310,9 @@ curate_biomarker_phenotypes <- function(
     dt_pheno <- fread(phenotype_file, na.strings=NULL, select=pheno_cols, key='eid')
     dt_bio <- fread(biomarker_file, na.strings=NULL, select=biomarker_cols, key='eid')
     dt <- merge(dt_pheno, dt_bio, all=TRUE)
+    # rm(dt_pheno)
+    # rm(dt_bio)
+    # gc()
 
     # Rename all the columns
     PC_colnames <- gsub(".*\\.", "PC", PC_cols)
@@ -336,8 +340,10 @@ curate_biomarker_phenotypes <- function(
     dt[, age := as.factor(age)]
     dt[, ancestry := as.factor(ifelse(is.na(ancestry) | ancestry %in% c(0,-1,-3), NA, ancestry))]
     # Convert sampling time to nearest second in the day.
-    dt[, sampling_time_blood := as.numeric(hms(gsub("[^ ]+ (.*)", "\\1", as.character(sampling_time_blood))))]
-    dt[, sampling_time_urine := as.numeric(hms(gsub("[^ ]+ (.*)", "\\1", as.character(sampling_time_urine))))]
+    dt[, sampling_time_blood := as.numeric(hms(gsub("[^ ]+T(.*)", "\\1", as.character(sampling_time_blood))))] # Note that the date format has changed between phenotype files.
+    dt[, sampling_time_urine := as.numeric(hms(gsub("[^ ]+T(.*)", "\\1", as.character(sampling_time_urine))))] # Note that the date format has changed between phenotype files.
+    cat("Sanity checking time in the day has been correctly parsed...")
+    print(head(dt[["sampling_time_blood"]]))
     # Quantize these times and convert to indicators
     dt[, sampling_time_blood_icosatile := as.factor(cut(sampling_time_blood,
             quantile(sampling_time_blood, probs = seq(0, 1, length.out = 21), type = 1, na.rm=TRUE),
@@ -364,11 +370,12 @@ curate_biomarker_phenotypes <- function(
     # Send the non-reportable values to NA
     wday_factor <- function(x) {
         days <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-        return(as.factor(days[wday(x)]))
+        return(as.factor(days[data.table::wday(x)]))
     }
     dt[, (paste0(biomarker_fields[["biomarker"]][-to_remove], "_day")) := lapply(.SD, "wday_factor"),
         .SDcols = paste0(biomarker_fields[["biomarker"]][-to_remove], "_date")]
-    
+    cat("Sanity checking the day has been correctly parsed...")    
+    print(head(dt[[paste0(biomarker_fields[["biomarker"]][-to_remove][1], "_day")]]))
     # Log the biomarker values
     dt[, (biomarker_fields[["biomarker"]]) := lapply(.SD, "log"), .SDcols = biomarker_fields[["biomarker"]]]
     
@@ -379,6 +386,8 @@ curate_biomarker_phenotypes <- function(
     dt_EUR_no_FIN_new <- fread("/well/lindgren/dpalmer/ukb_get_EUR/data/final_EUR_list.tsv",
         header=FALSE, col.names="eid", key="eid")
     dt <- merge(dt, dt_EUR_no_FIN_new)
+    # rm(dt_EUR_no_FIN_new)
+    # gc()
     # Run the linear models
     for (biomarker in biomarker_fields[["biomarker"]]) {
         cat(paste0("fitting biomarker: ", biomarker, "..."))
