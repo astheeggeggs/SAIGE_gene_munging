@@ -1,7 +1,7 @@
 library(data.table)
 library(dplyr)
 library(readxl)
-library(lubridate)
+# library(lubridate)
 
 reformat_clinical <- function(primary_care_read_codes = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PRIMARY_CARE/gp_clinical.txt") {
     dt <- fread(primary_care_read_codes)
@@ -251,6 +251,8 @@ curate_biomarker_phenotypes <- function(
     biomarker_fields=biomarker_fields_dt,
     filter_before_fitting="/well/lindgren/UKBIOBANK/samvida/icp_phewas/eids_passed_QC_210526.txt") {
 
+    cat(paste("phenotype file passed:", phenotype_file), "\n")
+    cat(paste("biomarker file passed:", biomarker_file), "\n")
     get_cols <- function(codes, dt, na.filter=FALSE)
     {
         cols <- c()
@@ -340,6 +342,7 @@ curate_biomarker_phenotypes <- function(
     dt[, age := as.factor(age)]
     dt[, ancestry := as.factor(ifelse(is.na(ancestry) | ancestry %in% c(0,-1,-3), NA, ancestry))]
     # Convert sampling time to nearest second in the day.
+    print(head(dt[["sampling_time_blood"]]))
     dt[, sampling_time_blood := as.numeric(hms(gsub("[^ ]+T(.*)", "\\1", as.character(sampling_time_blood))))] # Note that the date format has changed between phenotype files.
     dt[, sampling_time_urine := as.numeric(hms(gsub("[^ ]+T(.*)", "\\1", as.character(sampling_time_urine))))] # Note that the date format has changed between phenotype files.
     cat("Sanity checking time in the day has been correctly parsed...")
