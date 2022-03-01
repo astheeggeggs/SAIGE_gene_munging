@@ -85,6 +85,77 @@ read_and_create_qq <- function(
 	dev.off()
 }
 
+read_and_create_gene_manhattan <- function(
+	phenotype = "coronary_artery_disease",
+	minMAFs=c("0", "0", "0.01"),
+	maxMAFs=c("0.01", "0.5", "0.5"),
+	variant_classes=c(
+		"pLoF",
+		"damaging_missense",
+		"other_missense",
+		"synonymous"),
+	outdir="/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k/plots/",
+	gene_mapping="/well/lindgren/dpalmer/SAIGE_gene_munging/data/gene_mapping.txt.gz",
+	tests_to_plot=c("Burden"),
+	threshold=4,
+	significance_T=0.05/20000
+	)
+{
+	if(length(minMAFs) != length(maxMAFs)) { stop("minMAFs and maxMAFs must be the same length") }
+	# Mapping file to obtain gene-start positions for each gene.
+	# The default mapping file is taken from Biomart, build 38 with stable ID, start and end, chr, and gene name.
+	if (grepl("*.gz$", gene_mapping)) {
+		dt_gene <- fread(cmd = paste("zcat", gene_mapping))
+	} else {
+		dt_gene <- fread(gene_mapping)
+	}
+
+	names(dt_gene) <- c("GeneID", "GeneIDversion", "start", "stop", "chr", "GeneName_biomart")
+	setkey(dt_gene, "GeneID")
+	
+	# Create the QQ plots
+	pdf(file=paste0(outdir, phenotype, "_manhattan.pdf"), width=(230/25.4), height=(100/25.4))
+	for (i in 1:length(minMAFs)) {
+		for (variant_class in variant_classes) {
+			variant_class_plot <- gsub("\\|", ", ", variant_class)
+			variant_class_plot <- gsub("_", " ", variant_class_plot)
+			variant_class_filename <- gsub("\\|", "_", variant_class)
+			dt <- list()
+			for (chr in seq(1,22)) {
+				cat(paste0("chromosome ", chr, "..."))
+				dt[[chr]] <- fread(get_SAIGE_output_path(phenotype, chr, minMAFs[i], maxMAFs[i], variant_class_filename))
+			}
+			cols <- c("Gene", "Pvalue", "Pvalue_Burden", "Pvalue_SKAT")
+			dt <- rbindlist(dt)[, ..cols]
+			dt[, Burden := ifelse(is.na(Pvalue_Burden), -log10(Pvalue), -log10(Pvalue_Burden))]
+			dt[, SKAT := ifelse(is.na(Pvalue_SKAT), -log10(Pvalue), -log10(Pvalue_SKAT))]
+			dt[, `SKAT-O` := -log10(Pvalue)]
+			dt[, GeneID := gsub("_.*", "", Gene)]
+			dt[, GeneName := gsub("^[^_]*_([^_]*)_.*", "\\1", Gene)]
+			setkey(dt, "GeneID")
+			dt <- merge(dt, dt_gene)
+			cat(paste("\nPhenotype:", phenotype, "\n"))
+			for (t in tests_to_plot) {
+				dt_tmp <- dt %>% select(chr, start, Pvalue, GeneName, matches(paste0("^", t, "$")))
+				make_manhattan_plot(
+					dt_tmp$chr, dt_tmp$start, dt$Pvalue, labels=dt$GeneName,
+					title=paste0(
+						gsub("_", " ", paste0(toupper(substring(phenotype, 1,1)), substring(phenotype, 2))), "\n",
+						"MAF: ", minMAFs[i], "-", maxMAFs[i], "\n",
+						variant_class_plot
+						),
+					threshold=threshold,
+					significance_T=significance_T,
+					save_figure=FALSE,
+					print_p=TRUE
+				)
+			}
+		}
+	}
+	dev.off()
+}
+
+
 cts_phenotypes <- c(
 	"Alanine_aminotransferase",
     "Albumin",
@@ -178,10 +249,12 @@ binary_phenotypes <- c(
 
 for (phenotype in cts_phenotypes) {
 	read_and_create_qq(phenotype=phenotype)
+	read_and_create_gene_manhattan(phenotype=phenotype)
 }
 
 for (phenotype in binary_phenotypes) {
 	read_and_create_qq(phenotype=phenotype)
+	read_and_create_gene_manhattan(phenotype=phenotype)
 }
 
 checking_outputs <- function(
@@ -213,7 +286,6 @@ checking_outputs <- function(
 		}
 	}
 }
-
 
 checking_outputs(binary_phenotypes)
 checking_outputs(cts_phenotypes)

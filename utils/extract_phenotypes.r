@@ -245,8 +245,8 @@ curate_binary_phenotypes <- function(
 }
 
 curate_biomarker_phenotypes <- function(
-    # phenotype_file = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv", # Old version
-    phenotype_file = "/well/lindgren-ukbb/projects/ukbb-11867/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844_ukb50009_updateddiagnoses_14012022.csv",
+    phenotype_file = "/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv", # Old version
+    # phenotype_file = "/well/lindgren-ukbb/projects/ukbb-11867/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844_ukb50009_updateddiagnoses_14012022.csv",
     biomarker_file="/well/lindgren/UKBIOBANK/DATA/Biomarker_data/ukb27722.csv",
     biomarker_fields=biomarker_fields_dt,
     filter_before_fitting="/well/lindgren/UKBIOBANK/samvida/icp_phewas/eids_passed_QC_210526.txt") {
