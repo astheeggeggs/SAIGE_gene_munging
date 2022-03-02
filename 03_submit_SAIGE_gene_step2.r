@@ -98,8 +98,13 @@ binary_phenotypes <- c(
     "PCOS4"
     )
 
+binary_phenotypes <- c("NAFLD")
+cts_phenotypes <- c()
+
 annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
 annotations <- c('pLoF', 'damaging_missense', 'other_missense', 'synonymous')
+annotations <- c('synonymous')
+
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
@@ -109,6 +114,11 @@ submission_script <- "03_SAIGE_gene_step2.sh"
 minMAF_maxMAFforGroupTest <- data.table(
     minMAF = c(0, 0, 0.01),
     maxMAFforGroupTest = c(0.01, 0.5, 0.5)
+    )
+
+minMAF_maxMAFforGroupTest <- data.table(
+    minMAF = c(0),
+    maxMAFforGroupTest = c(0.01)
     )
 
 vcfFile <- paste0("/well/lindgren/UKBIOBANK/dpalmer/wes_", TRANCHE, "/ukb_wes_qc/data/final_mt/10_european.strict_filtered_chr@.vcf.bgz")
