@@ -19,7 +19,9 @@
 ############################################################################################################
 ## Read in Phenotype File
 library(data.table)
-df = fread("/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv", data.table=FALSE, sep = ",")
+# df = fread("/well/lindgren/UKBIOBANK/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844.csv", data.table=FALSE, sep = ",")
+df <- fread("/well/lindgren-ukbb/projects/ukbb-11867/DATA/PHENOTYPE/PHENOTYPE_MAIN/ukb10844_ukb50009_updateddiagnoses_14012022.csv", data.table=FALSE, sep = ",")
+
 colnames(df) <- paste0("f.", gsub("-", ".", colnames(df)))
 
 ############################################################################################################
