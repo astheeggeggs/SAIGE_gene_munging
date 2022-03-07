@@ -205,7 +205,7 @@ covariate_cols <- c(
 	"sex","sequencing.batch"
 	)
 covars <- paste(covariate_cols, collapse="|")
-ID_col <- "ID"
+ID_col <- "eid"
 submission_script <- "02_SAIGE_gene_step1.sh"
 
 # Quantitative traits
