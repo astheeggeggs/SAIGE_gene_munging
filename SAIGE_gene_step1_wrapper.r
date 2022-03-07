@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 
 # Ensure that the SAIGE environment has been activated:
-# conda activate /well/lindgren/users/mmq446/conda/skylake/envs/RSAIGE
+# conda activate /well/lindgren/users/mmq446/conda/skylake/envs/saige
 
-library(SAIGE, lib.loc='/well/lindgren/flassen/software/tmp/') 
+library(SAIGE)#, lib.loc='/well/lindgren/flassen/software/tmp/') 
 suppressPackageStartupMessages(library("argparse"))
 
 parser <- ArgumentParser()
