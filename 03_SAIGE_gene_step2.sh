@@ -9,7 +9,7 @@
 
 module purge
 module load Anaconda3/2020.07
-source activate /well/lindgren/users/mmq446/conda/skylake/envs/RSAIGE
+source activate /well/lindgren/users/mmq446/conda/skylake/envs/saige
 
 source /well/lindgren/dpalmer/ukb_utils/bash/qsub_utils.sh
 chr=$(get_chr ${SGE_TASK_ID})
