@@ -5,7 +5,7 @@
 #$ -e /well/lindgren/dpalmer/logs/
 #$ -P lindgren.prjc
 #$ -q short.qe@@short.hge
-#$ -t 22-22
+#$ -t 1-22
 
 module purge
 module load Anaconda3/2020.07

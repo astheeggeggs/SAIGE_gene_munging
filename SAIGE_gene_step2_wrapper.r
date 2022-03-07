@@ -98,3 +98,27 @@ SPAGMMATtest(
     DosageCutoff_for_UltraRarePresence = 0.5
 )
 
+# SPAGMMATtest(
+#     vcfFile = args$vcfFile,
+#     vcfFileIndex = args$vcfFileIndex,
+#     vcfField = "GT",
+#     chrom = args$chr,
+#     min_MAF = as.numeric(args$minMAF),
+#     maxMAF_in_groupTest = as.numeric(args$maxMAFforGroupTest),
+#     min_Info = 0,
+#     GMMATmodelFile = GMMATmodelFile,
+#     varianceRatioFile = varianceRatioFile,
+#     SAIGEOutputFile = SAIGEOutputFile,
+#     is_output_moreDetails = TRUE,
+#     LOCO = FALSE,
+#     condition = "",
+#     sparseSigmaFile = sparseSigmaFile,
+#     groupFile = args$groupFile,
+#     weights.beta = c(1, 25),
+#     r.corr = 0,
+#     cateVarRatioMinMACVecExclude = c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
+#     cateVarRatioMaxMACVecInclude = c(1.5, 2.5, 3.5, 4.5, 5.5, 10.5, 20.5),
+#     dosage_zerod_cutoff = 0.2,
+#     MACCutoff_to_CollapseUltraRare = 10,
+# )
+
