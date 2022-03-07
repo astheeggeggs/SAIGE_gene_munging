@@ -89,6 +89,7 @@ setkey(dt_diabetes, "eid")
 dt_bin <- merge(merge(dt_plos_genetics, dt_remaining), dt_diabetes, all=TRUE)
 source("utils/phenotypes_cts_traits.r")
 dt_cts[, eid := as.character(eid)]
+setkey(dt_cts, "eid")
 dt_cts <- merge(dt_biomarkers, dt_cts, all=TRUE)
 
 fwrite(dt_bin, file = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/curated_phenotypes_binary.tsv", sep='\t')
