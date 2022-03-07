@@ -9,7 +9,7 @@ folder <- paste0("/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_phenotypes/", TRANCHE
 # cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , "_filtered_cts_phenotypes.tsv.gz")  
 # binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, "_filtered_binary_phenotypes.tsv.gz")
 cts_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE , '_filtered_cts_dec2021_phenotypes.tsv.gz') 
-binary_phenotype_file <- paste0(folder, 'UKBB_WES', TRANCHE, '_filtered_binary_dec2021_phenotypes.tsv.gz')
+binary_phenotype_file <- paste0(folder, '/UKBB_WES', TRANCHE, '_filtered_binary_dec2021_phenotypes.tsv.gz')
 
 cts_phenotypes <- c(
     "Alanine_aminotransferase_residual" #,
