@@ -195,23 +195,14 @@ binary_phenotypes <- c(
     "DM_T2D",
     "DM_GD")
 
-binary_phenotypes <- c("NAFLD")
-cts_phenotypes <- c()
-
-annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
+# annotations <- c('pLoF', 'damaging_missense|LC', 'pLoF|damaging_missense|LC', 'pLoF|damaging_missense',  'damaging_missense', 'other_missense', 'synonymous')
 annotations <- c('pLoF', 'damaging_missense', 'other_missense', 'synonymous')
-annotations <- c('synonymous')
 
 submission_script <- "03_SAIGE_gene_step2.sh"
 
 # Quantitative traits
 # Loop and submit the jobs separately using qsub
 # For each phenotype, wes want to run gene-based tests for distinct MAF cutoffs
-
-minMAF_maxMAFforGroupTest <- data.table(
-    minMAF = c(0)#, 0, 0.01),
-    maxMAFforGroupTest = c(0.01)#, 0.5, 0.5)
-    )
 
 minMAF_maxMAFforGroupTest <- data.table(
     minMAF = c(0),
