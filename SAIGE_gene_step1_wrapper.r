@@ -17,7 +17,7 @@ parser$add_argument("--covarColList",
         "PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20,PC21"),
     help = "Collection of covariates in the phenotype file to use")
 parser$add_argument("--sampleIDColinphenoFile",
-    default = "ID",
+    default = "eid",
     help = "Sample ID column in the phenotype file")
 parser$add_argument("--traitType",
     default = "quantitative",
