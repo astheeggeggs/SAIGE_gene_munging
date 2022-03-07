@@ -30,7 +30,7 @@ for (i in 1:length(file)) {
     setkey(dt_sb, "eid")
 
     dt <- merge(dt, dt_sb, all.x=TRUE)
-    dt[, sex := as.factor(sex)]
+    dt[, sex:=as.factor(sex)]
     dt[, ukbb.centre:=as.factor(ukbb.centre)]
     dt[, sequencing.batch:=as.factor(sequencing.batch - 1)]
 
@@ -74,7 +74,9 @@ for (i in 1:length(file)) {
     system(paste("bgzip", filtered_output[i]))
 
     # Create a final two files that in addition is filtered to the collection of samples that have IMPUTED genotype information available.
-    dt <- fread(cmd = paste("zcat", paste0(filtered_output[i], ".gz")), key="ID")
+    dt <- fread(cmd = paste("zcat", paste0(filtered_output[i], ".gz")))
+    dt[, eid:=as.character(eid)]
+    setkey(dt, "eid")
 
     imputed_EUR_fam <- fread(
         paste0("/well/lindgren/UKBIOBANK/flassen/projects/KO/wes_ko_ukbb/data/saige/grm/input/211026_long_ukb_wes_",
