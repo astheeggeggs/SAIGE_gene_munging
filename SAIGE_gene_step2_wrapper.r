@@ -46,7 +46,7 @@ args <- parser$parse_args()
 # Inputs from step 1.
 GMMATmodelFile <- file.path(args$phenotypeFolder, paste0(args$phenotype, ".rda"))
 varianceRatioFile <- file.path(args$phenotypeFolder, paste0(args$phenotype, "_cate.varianceRatio.txt"))
-sparseSigmaFile <- grep(paste0(args$phenotype, "_cate.varianceRatio.txt_"), dir(args$phenotypeFolder, full.names=TRUE), value=TRUE)
+sparseSigmaFile <- grep(paste0("\\/", args$phenotype, "_cate.varianceRatio.txt_"), dir(args$phenotypeFolder, full.names=TRUE), value=TRUE)
 
 # Output locations
 dir.create(file.path(args$phenotypeFolder, "step2_results"), showWarnings=FALSE)
