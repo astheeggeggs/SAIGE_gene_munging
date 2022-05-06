@@ -8,21 +8,21 @@ require(optparse)
 print(sessionInfo())
 
 option_list <- list(
-make_option("--phenofile", type="character", default="",
-    help = "Which phenotype file to pass")
-make_option("--phenotype", type="character", default="",
-    help = "Which phenotype column to use in the phenotype file that was passed")
-make_option("--covarColList", type="character",
-    default = paste0(
-        "age,age2,age3,Inferred.Gender,genotyping.array,",
-        "PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20,PC21"),
-    help = "Collection of covariates in the phenotype file to use")
-make_option("--sampleIDColinphenoFile", type="character", default = "eid",
-    help = "Sample ID column in the phenotype file")
-make_option("--traitType", type="character", default = "quantitative",
-    help = "What type of trait is the phenotype? Binary or quantitative?")
-make_option("--outdir", type="character",
-    default = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k")
+    make_option("--phenofile", type="character", default="",
+        help = "Which phenotype file to pass")
+    make_option("--phenotype", type="character", default="",
+        help = "Which phenotype column to use in the phenotype file that was passed")
+    make_option("--covarColList", type="character",
+        default = paste0(
+            "age,age2,age3,Inferred.Gender,genotyping.array,",
+            "PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20,PC21"),
+        help = "Collection of covariates in the phenotype file to use")
+    make_option("--sampleIDColinphenoFile", type="character", default = "eid",
+        help = "Sample ID column in the phenotype file")
+    make_option("--traitType", type="character", default = "quantitative",
+        help = "What type of trait is the phenotype? Binary or quantitative?")
+    make_option("--outdir", type="character",
+        default = "/well/lindgren/UKBIOBANK/dpalmer/ukb_wes_SAIGE_output/200k")
 )
 
 # List of options
