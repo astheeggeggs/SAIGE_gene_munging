@@ -38,7 +38,7 @@ option_list <- list(
     make_option("--minMAF", type="numeric", default = 0,
         help= cat("Maximum minor allele frequency of markers to test in",
         "group test."))
-    make_option("--maxMAF_in_groupTest", type="character", default = "0.5",
+    make_option("--maxMAFforgroupTest", type="character", default = "0.5",
         help= cat("Maximum minor allele frequency of markers to test in",
         "group test."))
 )
