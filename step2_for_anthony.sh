@@ -43,6 +43,7 @@ Rscript step2_SPAtests.R \
     --SAIGEOutputFile ${outputfile} \
     --annotation_in_groupTest="pLoF"
 
+# This is an example of an interactive singularity container for step 2 - using the old version of SAIGE
 
 saige_singularity_dir="/well/lindgren/dpalmer/saige_singularity"
 version="0.45"
