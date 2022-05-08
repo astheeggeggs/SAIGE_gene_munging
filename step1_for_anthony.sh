@@ -1,7 +1,7 @@
 # This is an example of an interactive singularity container for step 1.
 
 saige_singularity_dir="/well/lindgren/dpalmer/saige_singularity"
-version="1.0.5"
+version="1.0.7"
 singularity shell --bind /well/lindgren/UKBIOBANK,/well/lindgren/dpalmer ${saige_singularity_dir}/saige.${version}.sif
 
 # Navigate to the extdata folder of the new version of SAIGE (https://github.com/saigegit/SAIGE) and run this:
