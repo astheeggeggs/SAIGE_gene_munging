@@ -177,7 +177,7 @@ create_pretty_cumulative <- function(df, aes, x_label, threshold, threshold_max=
 {
     # These next ones are cdfs.
     p = ggplot(df, aes) + 
-        stat_ecdf(geom='line', pad=FALSE) +
+        stat_ecdf(geom='step', pad=FALSE) +
         geom_vline(xintercept=threshold, linetype='dashed') +
         coord_cartesian(xlim=xlim) +
         labs(x=x_label, y='Cumulative Proportion', title=title, color=key_label) +

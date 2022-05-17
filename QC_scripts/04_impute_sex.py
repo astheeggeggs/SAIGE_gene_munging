@@ -97,7 +97,7 @@ print(n[1])
 print('n variants:')
 print(n[0])
 
-imputed_sex = hl.impute_sex(mt.GT, female_threshold=0.6, male_threshold=0.6)
+imputed_sex = hl.impute_sex(mt.GT, female_threshold=0.2, male_threshold=0.8)
 mt = mt.annotate_cols(phenotype = sample_annotations[mt.s])
 mt = mt.annotate_cols(impute_sex = imputed_sex[mt.s])
 
