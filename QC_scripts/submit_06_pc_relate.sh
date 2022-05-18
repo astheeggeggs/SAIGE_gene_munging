@@ -23,4 +23,4 @@ export PYSPARK_SUBMIT_ARGS="--conf spark.local.dir=${new_spark_dir} --conf spark
 export PYTHONPATH="${PYTHONPATH-}:/well/lindgren/dpalmer/ukb_utils/python:/well/lindgren/dpalmer:/well/lindgren/dpalmer/ukb_common/src"
 
 python 06_0_pc_relate.py
-print_update "Finished running Hail for chr${chr}" "${SECONDS}"
+print_update "Finished running Hail "${SECONDS}"
